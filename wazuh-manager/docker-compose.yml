@@ -80,6 +80,7 @@ services:
   # add service digital twin
   digital_twin:
     build: ../twin
+    image: digital_twin
     hostname: twin
     container_name: twin
     privileged: true

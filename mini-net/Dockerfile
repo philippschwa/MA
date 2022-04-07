@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 # update packages
-RUN apt-get update 
+RUN apt-get
 
 # install necessary packages
 RUN apt-get install -y sudo \
@@ -14,7 +14,7 @@ RUN apt-get install -y sudo \
 	&& apt-get install -y screen 
 
 WORKDIR /app
-# noch hier in den Projektordner clonen und dann nurnoch installieren?
+
 # install & setup mininet
 RUN git clone https://github.com//mininet/mininet \
 	&& ./mininet/util/install.sh -a \
@@ -24,6 +24,7 @@ RUN git clone https://github.com//mininet/mininet \
 	&& apt-get install -y hping3 
 
 # start mininet
+USER root
 COPY . .
 RUN chmod u+x ./mini_start.sh 
 CMD ["./mini_start.sh"]
