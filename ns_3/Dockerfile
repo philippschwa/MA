@@ -30,8 +30,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 # Manuelle Installation 
 RUN git clone https://gitlab.com/nsnam/ns-3-allinone.git \
     && cd ns-3-allinone \
-    && ./download.py
-# ./build.py
+    && ./download.py -n ns-3.36 \
+    && ./build.py
 
 
 # Befehle für Installation mit bake --> Fehler im build Prozess...
