@@ -28,7 +28,7 @@ RUN git clone https://github.com//mininet/mininet \
 RUN curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - \
     && echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list \
     && apt-get update \
-    && WAZUH_MANAGER="wazuh-manager" apt-get install -y wazuh-agent
+    && WAZUH_MANAGER="wazuh.manager" apt-get install -y wazuh-agent
 
 COPY ./deploy.sh ./
 RUN chmod u+x ./deploy.sh
