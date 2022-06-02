@@ -28,9 +28,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 # install ns3 & set environment variables
 # Manuelle Installation 
-# git clone https://gitlab.com/nsnam/ns-3-allinone.git
-# cd ns-3-allinone
-# ./download.py
+RUN git clone https://gitlab.com/nsnam/ns-3-allinone.git \
+    && cd ns-3-allinone \
+    && ./download.py
 # ./build.py
 
 
