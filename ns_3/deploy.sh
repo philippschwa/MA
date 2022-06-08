@@ -17,7 +17,7 @@ fi
 #cd ./bake
 
 #bake.py check 
-#bake.py configure -e ns-3.29 
+#bake.py configure -e ns-3.36
 #bake.py show 
 #bake.py deploy
 

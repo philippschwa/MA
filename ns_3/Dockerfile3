@@ -1,3 +1,5 @@
+# Dockerfile von Youtube Video
+
 FROM ubuntu:20.04
 
 USER root
@@ -26,21 +28,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     imagemagick python3-sphinx dia tcpdump libxml2 libxml2-dev cmake \
     libc6-dev libc6-dev-i386 libclang-6.0-dev llvm-6.0-dev automake 
 
-# install ns3 & set environment variables
-# Manuelle Installation (Optional: Hier noch hinter build.py '--enable-examples --enable-tests' einsetzen, damit tests etc. gemacht werden können; ca 3h kompilierungs Zeit)
-RUN git clone https://gitlab.com/nsnam/ns-3-allinone.git \
-    && cd ns-3-allinone \
-    && ./download.py -n ns-3.36 \
-    && ./build.py --enable-examples --enable-tests
+
 
 
 # Befehle für Installation mit bake --> Fehler im build Prozess...
-#RUN git clone https://gitlab.com/nsnam/bake 
+RUN git clone https://gitlab.com/nsnam/bake 
 #RUN chmod +x ./bake/bake.py
 
-#ENV BAKE_HOME="/app/bake"
-#ENV PATH="${PATH}:${BAKE_HOME}"   
-#ENV PYTHONPATH="${PYTHONPATH}:${BAKE_HOME}"
+
 
 # copy deploy script into container an make it executable
 COPY ./deploy.sh ./ 
