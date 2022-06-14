@@ -9,7 +9,8 @@ RUN apt-get update -y && apt-get upgrade -y
 # install core dependencies for build and compilation
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     build-essential libsqlite3-dev libboost-all-dev \
-    libssl-dev git python3-setuptools castxml
+    libssl-dev git python3-setuptools castxml apt-utils \
+    iputils-ping net-tools curl systemctl screen
 # python-dev missing - not an essential dependency
 
 # install dependencies for ns-3 python bindings
@@ -31,16 +32,17 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN git clone https://gitlab.com/nsnam/ns-3-allinone.git \
     && cd ns-3-allinone \
     && ./download.py -n ns-3.36 \
-    && ./build.py --enable-examples --enable-tests
+    && ./build.py --enable-examples 
+    # --enable-tests
 
 
-# Befehle für Installation mit bake --> Fehler im build Prozess...
-#RUN git clone https://gitlab.com/nsnam/bake 
-#RUN chmod +x ./bake/bake.py
+# Hier jetzt noch Wazuh Agent Installieren (Packages sind schon oben mit eingtragen.)
+# Add the Wazuh repository to download the official packages & Install Wazuh Agent
+RUN curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - \
+    && echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list \
+    && apt-get update \
+    && WAZUH_MANAGER="wazuh.manager" apt-get install -y wazuh-agent
 
-#ENV BAKE_HOME="/app/bake"
-#ENV PATH="${PATH}:${BAKE_HOME}"   
-#ENV PYTHONPATH="${PYTHONPATH}:${BAKE_HOME}"
 
 # copy deploy script into container an make it executable
 COPY ./deploy.sh ./ 

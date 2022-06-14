@@ -1,31 +1,28 @@
 #!/bin/bash
 
 echo "########## deploy.sh - Container Started ##########"
-
-# Start ns-3
-echo "########## Installing pip packages. ##########"
-#pip3 install cxxfilt pygccxml pybindgen castxml distro requests
-
 status=$?
 if [ $status -ne 0 ]; then
-    echo "Failed to install python packages!"
+    echo "Failed to echo Container Started!"
     exit $status
 fi
 
 
-#echo "########## Deploying ns-3 with bake. ##########"
-#cd ./bake
+# Wazuh Befehle
 
-#bake.py check 
-#bake.py configure -e ns-3.36
-#bake.py show 
-#bake.py deploy
-
+# Enable and start Wazuh agent service
+#echo "SYSTEMCTL COMMANDS"
+#systemctl daemon-reload
+#systemctl enable wazuh-agent
+#service wazuh-agent start
+#tail -n 10 /var/ossec/logs/ossec.log
+#echo "WAZUH AGENT IS RUNNING"
 status=$?
 if [ $status -ne 0 ]; then
-    echo "Failed to deploy ns-3!"
+    echo "Failed to deploy Wazuh!"
     exit $status
 fi
+
 
 # Dummy process to keep container running
 echo "########## Dummy process started! ##########"
