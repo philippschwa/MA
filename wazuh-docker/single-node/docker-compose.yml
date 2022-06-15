@@ -97,8 +97,8 @@ services:
 
   # add service digital twin
   ns_3_wazuh_agent:
-    build: ../ns_3
-    image: ns_3_wazuh_agent
+    #build: ../../ns_3
+    image: ns3_wazuh:latest
     hostname: ns3
     container_name: ns3
     privileged: true
