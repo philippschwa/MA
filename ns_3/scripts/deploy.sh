@@ -10,6 +10,7 @@ fi
 # Start suricata
 echo "########## Starting suricata ##########"
 suricata -i eth0 -D
+suricata-update
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start suricata: $status"
