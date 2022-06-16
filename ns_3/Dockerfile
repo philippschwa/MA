@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 USER root
-WORKDIR /app
+WORKDIR /ma
 
 # Update Ubuntu Repo 
 RUN apt-get update -y && apt-get upgrade -y
@@ -11,7 +11,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     build-essential libsqlite3-dev libboost-all-dev \
     libssl-dev git python3-setuptools castxml apt-utils \
     iputils-ping net-tools curl systemctl screen
-# python-dev missing - not an essential dependency
 
 # install dependencies for ns-3 python bindings
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -32,8 +31,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN git clone https://gitlab.com/nsnam/ns-3-allinone.git \
     && cd ns-3-allinone \
     && ./download.py -n ns-3.36 \
-    && ./build.py --enable-examples 
-    # --enable-tests
+    && ./build.py 
+    # --enable-tests --enable-examples 
 
 
 # Hier jetzt noch Wazuh Agent Installieren (Packages sind schon oben mit eingtragen.)
@@ -43,9 +42,16 @@ RUN curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - \
     && apt-get update \
     && WAZUH_MANAGER="wazuh.manager" apt-get install -y wazuh-agent
 
+# install Suricata
+RUN RUN apt-get update && apt-get install -y suricata suricata-update
+RUN suricata-update -o /etc/suricata/rules
+
+# copy custom config files for suricata wazuh agent
+COPY config/suricata.yaml /etc/suricata/suricata.yaml
+COPY config/ossec.conf /var/ossec/etc/ossec.conf
 
 # copy deploy script into container an make it executable
-COPY ./deploy.sh ./ 
+COPY scripts/deploy.sh ./deploy.sh
 RUN chmod u+x ./deploy.sh
 
 CMD ["./deploy.sh"]
