@@ -38,12 +38,16 @@ main(int argc, char *argv[])
     cmd.Parse(argc, argv);
 
     // Enable logging
-    LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_ALL);
-    LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_ALL);
+    //LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_ALL);
+    //LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_ALL);
+
+    NS_LOG_COMPONENT_DEFINE("SampleApplication");
+    LogComponentEnable("SampleApplication", LOG_LEVEL_ALL);
+
 
     // Creating Network Nodes
     // n1 & n2 are normal nodes, n3 acts as attacker
-    // NS_LOG_INFO ("Create nodes.");
+    NS_LOG_INFO("Create nodes.");
     NodeContainer nodes;
     nodes.Create(3);
 
@@ -59,7 +63,7 @@ main(int argc, char *argv[])
     NetDeviceContainer d = csma.Install(nodes);
 
     // assign IP adresses; n1 = 10.1.1.1; n2 = 10.1.1.2; n3 = 10.1.1.3
-    // NS_LOG_INFO ("Assign IP Addresses.");
+    NS_LOG_INFO("Assign IP Addresses.");
     Ipv4AddressHelper ipv4;
     ipv4.SetBase("10.1.1.0", "255.255.255.0");
     Ipv4InterfaceContainer i = ipv4.Assign(d);
@@ -88,34 +92,46 @@ main(int argc, char *argv[])
         apps = client.Install(nodes.Get(0));
         apps.Start(Seconds(2.0));
         apps.Stop(Seconds(10.0));
+
+        csma.EnablePcapAll("/ma/pcaps/echo", false);
     }
 
-    // DoS Attack with n2 as attacker and n3 as target
+    // DoS Attack with n2 as attacker and n3 as target; n1 sends normal traffic to n3
     if (dos)
     {   
-        // Set up n3 as echoServer
-        //UdpEchoServerHelper server(49153);
-        //ApplicationContainer apps = server.Install(nodes.Get(2));
+        // declare some variables
+        uint32_t packetSize = 1024;
+        Time interPacketInterval = Seconds(1.5);
         
+        // Set up n3 as udp packet sink (does not respond to recieved packages)
+        NS_LOG_INFO("Setting up UDP sink on n3.");
         PacketSinkHelper sink("ns3::UdpSocketFactory", (InetSocketAddress (i.GetAddress(2), 49153)));
-        ApplicationContainer app = sink.Install(nodes.Get(2));
-        //sinkapps.Start(Seconds(2.0));
-        //sinkapps.Stop(Seconds(10.0));
+        ApplicationContainer sinkApp = sink.Install(nodes.Get(2));
+        sinkApp.Start(Seconds(0.0));
+        sinkApp.Stop(Seconds(10.0));
 
         // Set up n2 as attacker
-        uint32_t packetSize = 1024;
+        NS_LOG_INFO("Setting up DoS attacker on n2.");
         OnOffHelper onoff("ns3::UdpSocketFactory", (InetSocketAddress (i.GetAddress(2), 49153)));
-
         onoff.SetConstantRate(DataRate("50Mbps"), packetSize);
-        app = onoff.Install(nodes.Get(1));
-        app.Start(Seconds(2.0));
-        app.Stop(Seconds(5.0));
+        ApplicationContainer dosApp = onoff.Install(nodes.Get(1));
+        dosApp.Start(Seconds(5.0));
+        dosApp.Stop(Seconds(10.0));
+
+
+        // Set up n1 as normal sender (EchoClient)
+        NS_LOG_INFO("Setting up Echo Client on n1.");
+        UdpEchoClientHelper client(i.GetAddress(2), 49153);
+        client.SetAttribute("Interval", TimeValue(interPacketInterval));
+        client.SetAttribute("PacketSize", UintegerValue(packetSize));
+        ApplicationContainer clientApp = client.Install(nodes.Get(0));
+        clientApp.Start(Seconds(1.0));
+        clientApp.Stop(Seconds(10.0));
+        csma.EnablePcapAll("/ma/pcaps/dos", false);
     }
 
-    csma.EnablePcapAll("topo_test", false);
-
     // Run simulator
-    // NS_LOG_INFO("Run Simulation");
+    NS_LOG_INFO("Run Simulation.");
     Simulator::Run();
     Simulator::Destroy();
 

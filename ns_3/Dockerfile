@@ -57,4 +57,7 @@ COPY config/ossec.conf /var/ossec/etc/ossec.conf
 COPY scripts/deploy.sh ./deploy.sh
 RUN chmod u+x ./deploy.sh
 
+# copy ns_3 custom application 
+COPY scripts/topo.cc /ma/ns-3-allinone/ns-3.36/scratch/topo.cc
+
 CMD ["./deploy.sh"]
