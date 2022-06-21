@@ -69,7 +69,7 @@ main(int argc, char *argv[])
     Ipv4InterfaceContainer i = ipv4.Assign(d);
 
     // Sample application with n3 as EchoServer and n1 as EchoClients
-    // next step: n3 is attacker and wants to get role as mitm
+    // next step: one node is attacker and wants to get role as mitm
     if (echo)
     {
         // NS_LOG_INFO ("Set up Echo Server and Clients.");
@@ -89,7 +89,7 @@ main(int argc, char *argv[])
         client.SetAttribute("MaxPackets", UintegerValue(maxPacketCount));
         client.SetAttribute("Interval", TimeValue(interPacketInterval));
         client.SetAttribute("PacketSize", UintegerValue(packetSize));
-        apps = client.Install(nodes.Get(0));
+        apps = client.Install(nodes.Get(0), nodes.Get(1));
         apps.Start(Seconds(2.0));
         apps.Stop(Seconds(10.0));
 
