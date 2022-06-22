@@ -101,20 +101,20 @@ services:
    # links:
     #  - wazuh.manager:wazuh.manager
    ##### Add wazuh agent and ns3 container to compose -- working 
-#  wazuh.agent:
- #   build: ../ns_3
- #   image: ns3_wazuh:latest
- #   hostname: ns3.wazuh
- #   container_name: ns3_wazuh
- #   privileged: true
- #   depends_on:
- #     - wazuh.manager
- #   cap_add:
- #     - NET_ADMIN
- #   volumes:
- #     - ./rules:/etc/suricata/rules
- #   links:
- #    - wazuh.manager:wazuh.manager
+  wazuh.agent:
+    build: ../ns_3
+    image: ns3_wazuh:latest
+    hostname: ns3.wazuh
+    container_name: ns3_wazuh
+    privileged: true
+    depends_on:
+      - wazuh.manager
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./rules:/etc/suricata/rules
+    links:
+     - wazuh.manager:wazuh.manager
 
 
 volumes:
