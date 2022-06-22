@@ -9,8 +9,12 @@ fi
 
 # Start suricata
 echo "########## Starting suricata ##########"
-suricata -i eth0 -D
+
 suricata-update
+#systemctl enable suricata
+#service suricata start
+suricata -i eth0 -D
+
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start suricata: $status"
