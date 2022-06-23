@@ -12,8 +12,8 @@ echo "########## Starting suricata ##########"
 
 #suricata-update
 #systemctl enable suricata
-service suricata start
-#suricata -i eth0 -D
+#service suricata start
+suricata -i eth0 -D
 
 status=$?
 if [ $status -ne 0 ]; then
@@ -30,8 +30,8 @@ fi
 #tail -n 10 /var/ossec/logs/ossec.log
 #echo "WAZUH AGENT IS RUNNING"
 
-/var/ossec/bin/wazuh-control start
 echo "########## Starting wazuh agent ##########"
+/var/ossec/bin/wazuh-control start
 status=$?
 if [ $status -ne 0 ]; then
     echo "Failed to deploy Wazuh: $status"
