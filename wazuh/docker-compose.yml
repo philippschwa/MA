@@ -127,13 +127,13 @@ services:
         ipv4_address: 172.17.0.5
 
 networks:
-  test:
+  wazuh_default:
     driver: bridge
     ipam:
       config:
         - subnet: 172.17.0.0/16
           gateway: 172.17.0.1 
-          
+
 volumes:
   wazuh_api_configuration:
   wazuh_etc:
