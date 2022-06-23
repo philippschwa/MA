@@ -119,7 +119,7 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - ./rules:/etc/suricata/rules
+      - ../ns_3/rules:/etc/suricata/rules
     links:
      - wazuh.manager:wazuh.manager
     networks:
