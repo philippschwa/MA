@@ -52,6 +52,7 @@ RUN suricata-update -o /etc/suricata/rules
 # copy custom config files for suricata wazuh agent
 COPY config/suricata.yaml /etc/suricata/suricata.yaml
 COPY config/ossec.conf /var/ossec/etc/ossec.conf
+COPY scripts/dos.sh /ma/dos.sh
 
 # copy deploy script into container an make it executable
 COPY scripts/deploy.sh ./deploy.sh

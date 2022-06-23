@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "########## Executing deploy script ##########"
+echo "########## Executing deploy script! ##########"
 status=$?
 if [ $status -ne 0 ]; then
     echo "Failed to start container!"
@@ -8,13 +8,9 @@ if [ $status -ne 0 ]; then
 fi
 
 # Start suricata
-echo "########## Starting suricata ##########"
+echo "########## Starting suricata! ##########"
 
-#suricata-update
-#systemctl enable suricata
-#service suricata start
 suricata -i eth0 -D
-
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start suricata: $status"
@@ -24,13 +20,8 @@ fi
 
 
 # Enable and start Wazuh agent service
-#systemctl daemon-reload
-#systemctl enable wazuh-agent
-#service wazuh-agent start
-#tail -n 10 /var/ossec/logs/ossec.log
-#echo "WAZUH AGENT IS RUNNING"
+echo "########## Starting wazuh agent! ##########"
 
-echo "########## Starting wazuh agent ##########"
 /var/ossec/bin/wazuh-control start
 status=$?
 if [ $status -ne 0 ]; then
@@ -38,7 +29,6 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-echo "background jobs running, listening for changes"
-
+# Dummy process to keep container running
 echo "########## Dummy process started! ##########"
 tail -f /dev/null
