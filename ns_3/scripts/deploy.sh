@@ -10,10 +10,10 @@ fi
 # Start suricata
 echo "########## Starting suricata ##########"
 
-suricata-update
+#suricata-update
 #systemctl enable suricata
-#service suricata start
-suricata -i eth0 -D
+service suricata start
+#suricata -i eth0 -D
 
 status=$?
 if [ $status -ne 0 ]; then
@@ -40,6 +40,5 @@ fi
 
 echo "background jobs running, listening for changes"
 
-# Dummy process to keep container running
 echo "########## Dummy process started! ##########"
 tail -f /dev/null

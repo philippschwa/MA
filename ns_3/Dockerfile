@@ -45,9 +45,8 @@ RUN curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - \
 # install Suricata
 RUN apt install -y software-properties-common && apt-get update
 RUN add-apt-repository ppa:oisf/suricata-stable 
-RUN apt-get update && apt-get install -y suricata iproute2
-# suricata-update
-# RUN suricata-update -o /etc/suricata/rules
+RUN apt-get update && apt-get install -y suricata iproute2 suricata-update
+RUN suricata-update -o /etc/suricata/rules
 
 # copy custom config files for suricata wazuh agent
 COPY config/suricata.yaml /etc/suricata/suricata.yaml
