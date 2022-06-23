@@ -126,7 +126,14 @@ services:
       wazuh_default:
         ipv4_address: 172.17.0.5
 
-
+networks:
+  test:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.17.0.0/16
+          gateway: 172.17.0.1 
+          
 volumes:
   wazuh_api_configuration:
   wazuh_etc:
@@ -140,11 +147,3 @@ volumes:
   filebeat_etc:
   filebeat_var:
   wazuh-indexer-data:
-
-  networks:
-    wazuh_default:
-      driver: bridge
-      ipam:
-        config:
-          - subnet: 172.17.0.0/16
-            gateway: 172.17.0.1 
