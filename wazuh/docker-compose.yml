@@ -39,7 +39,7 @@ services:
       - ./config/wazuh_cluster/wazuh_manager.conf:/wazuh-config-mount/etc/ossec.conf
     networks:
       wazuh_default:
-        ipv4_address: 172.17.0.2
+        ipv4_address: 10.0.0.2
 
   wazuh.indexer:
     image: wazuh/wazuh-indexer:4.3.4
@@ -67,7 +67,7 @@ services:
       - ./config/wazuh_indexer/internal_users.yml:/usr/share/wazuh-indexer/plugins/opensearch-security/securityconfig/internal_users.yml
     networks:
       wazuh_default:
-        ipv4_address: 172.17.0.3
+        ipv4_address: 10.0.0.3
 
   wazuh.dashboard:
     image: wazuh/wazuh-dashboard:4.3.4
@@ -94,7 +94,7 @@ services:
       - wazuh.manager:wazuh.manager
     networks:
       wazuh_default:
-        ipv4_address: 172.17.0.4
+        ipv4_address: 10.0.0.4
 
   # add service digital twin -- not working
   #ns_3_wazuh_agent:
@@ -124,15 +124,15 @@ services:
      - wazuh.manager:wazuh.manager
     networks:
       wazuh_default:
-        ipv4_address: 172.17.0.5
+        ipv4_address: 10.0.0.5
 
 networks:
   wazuh_default:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.17.0.0/16
-          gateway: 172.17.0.1 
+        - subnet: 10.0.0.0/16
+          gateway: 10.0.0.1 
 
 volumes:
   wazuh_api_configuration:
