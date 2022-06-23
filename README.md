@@ -1,4 +1,4 @@
-# Detection of Simulated Cyberattacks with SIEM System
+# Detection of simulated Cyber Attacks against an IIoT Network using a SIEM System
 
 SIEM systems are already in use as part of the Security Operations Center (SOC) within
 the organizations overall security strategy. They offer comprehensive security analyses
