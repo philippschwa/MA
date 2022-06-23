@@ -1,4 +1,4 @@
-# Deploy ns3, wazuh-agent & suricata
+# Deploy Wazuh Docker in single node configuration
 
 This deployment is defined in the `Dockerfile` file with one Wazuh manager containers, one Wazuh indexer containers, and one Wazuh dashboard container. Additionally the ns3 Simulation container is deployed from here as well.
 
