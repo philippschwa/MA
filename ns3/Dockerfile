@@ -58,7 +58,7 @@ COPY scripts/deploy.sh ./deploy.sh
 RUN chmod u+x ./deploy.sh
 
 # copy ns_3 custom application 
-COPY topo.cc /ma/ns-3-allinone/ns-3.36/scratch/topo.cc
+COPY scripts/topo.cc /ma/ns-3-allinone/ns-3.36/scratch/topo.cc
 RUN mkdir /ma/pcaps
 
 CMD ["./deploy.sh"]

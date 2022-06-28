@@ -89,7 +89,8 @@ main(int argc, char *argv[])
         client.SetAttribute("MaxPackets", UintegerValue(maxPacketCount));
         client.SetAttribute("Interval", TimeValue(interPacketInterval));
         client.SetAttribute("PacketSize", UintegerValue(packetSize));
-        apps = client.Install(nodes.Get(0), nodes.Get(1));
+        apps = client.Install(nodes.Get(0));
+        apps = client.Install(nodes.Get(1));
         apps.Start(Seconds(2.0));
         apps.Stop(Seconds(10.0));
 
