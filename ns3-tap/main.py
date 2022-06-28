@@ -17,17 +17,8 @@ baseContainer = 'myminimalubuntu'
 
 # Node Configurations
 nodeNames = ["node1", "node2"]
-nodeIPs = ["10.10.0.1", "10.10.0.2"]
+nodeIPs = ["10.1.1.0", "10.1.1.1"]
 nodeMACs = ["00:00:00:00:00:01", "00:00:00:00:00:02"]
-
-node1 = "node1"
-ip_node1 = "10.10.0.1"
-mac_node1 = "00:00:00:00:00:01"
-
-# Node2 config
-node2 = "node2"
-ip_node2 = "10.10.0.2"
-mac_node2 = "00:00:00:00:00:02"
 
 
 ################################################################################
@@ -148,8 +139,8 @@ def setup():
         status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s" %
                                   (nodeNames[i], nodeIPs[i], nodeMACs[i]), shell=True)
 
-    status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s" %
-                              (node2, ip_node2, mac_node2), shell=True)
+   #status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s" %
+    #                          (node2, ip_node2, mac_node2), shell=True)
 
     # If something went wrong creating the bridges and tap interfaces, we panic and exit
     # check_return_code( status, "Creating bridge side-int-X and side-ext-X" )

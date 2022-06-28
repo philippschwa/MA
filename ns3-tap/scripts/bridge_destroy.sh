@@ -11,11 +11,11 @@ fi
 
 NAME=$1
 
-ifconfig br-$NAME down
-brctl delif br-$NAME tap-$NAME
-brctl delbr br-$NAME
-ifconfig tap-$NAME down
-tunctl -d tap-$NAME
+sudo ifconfig br-$NAME down
+sudo brctl delif br-$NAME tap-$NAME
+sudo brctl delbr br-$NAME
+sudo ifconfig tap-$NAME down
+sudo tunctl -d tap-$NAME
 
 status=$?
 if [ $status -ne 0 ]; then

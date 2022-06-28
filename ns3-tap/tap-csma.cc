@@ -101,12 +101,12 @@ main (int argc, char *argv[])
   Ipv4InterfaceContainer interfaces = addresses.Assign (devices);
 
   TapBridgeHelper tapBridge1;
-  tapBridge1.SetAttribute ("Mode", StringValue (mode));
+  tapBridge1.SetAttribute ("Mode", StringValue ("UseLocal"));
   tapBridge1.SetAttribute ("DeviceName", StringValue (tapName1));
   tapBridge1.Install (nodes.Get (0), devices.Get (0));
 
   TapBridgeHelper tapBridge2;
-  tapBridge2.SetAttribute ("Mode", StringValue (mode));
+  tapBridge2.SetAttribute ("Mode", StringValue ("UseLocal"));
   tapBridge2.SetAttribute ("DeviceName", StringValue (tapName2));
   tapBridge2.Install (nodes.Get (1), devices.Get (1));
 
