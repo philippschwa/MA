@@ -72,18 +72,21 @@ NS_LOG_COMPONENT_DEFINE ("TapCsmaExample");
 int 
 main (int argc, char *argv[])
 {
-  std::string mode = "ConfigureLocal";
-  std::string tapName1 = "tap-node1";
-  std::string tapName2 = "tap-node2";
+  LogComponentEnable("TapCsmaExample", LOG_LEVEL_ALL);
 
-  CommandLine cmd (__FILE__);
-  cmd.AddValue ("mode", "Mode setting of TapBridge", mode);
-  cmd.AddValue ("tapName1", "Name of the OS tap device", tapName1);
-  cmd.Parse (argc, argv);
+  std::string mode = "ConfigureLocal";
+  std::string tapName1 = "left";
+  std::string tapName2 = "right";
+
+  //CommandLine cmd (__FILE__);
+  //cmd.AddValue ("mode", "Mode setting of TapBridge", mode);
+  //cmd.AddValue ("tapName1", "Name of the OS tap device", tapName1);
+  //cmd.Parse (argc, argv);
 
   GlobalValue::Bind ("SimulatorImplementationType", StringValue ("ns3::RealtimeSimulatorImpl"));
   GlobalValue::Bind ("ChecksumEnabled", BooleanValue (true));
 
+  NS_LOG_INFO("Create nodes.");
   NodeContainer nodes;
   nodes.Create (4);
 
@@ -96,10 +99,13 @@ main (int argc, char *argv[])
   InternetStackHelper stack;
   stack.Install (nodes);
 
+  NS_LOG_INFO("Assign addresses.");
   Ipv4AddressHelper addresses;
   addresses.SetBase ("10.1.1.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaces = addresses.Assign (devices);
 
+
+  NS_LOG_INFO("Install Tap Bridges.");
   TapBridgeHelper tapBridge1;
   tapBridge1.SetAttribute ("Mode", StringValue ("UseLocal"));
   tapBridge1.SetAttribute ("DeviceName", StringValue (tapName1));
@@ -113,6 +119,7 @@ main (int argc, char *argv[])
   csma.EnablePcapAll ("tap-csma", false);
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
+  NS_LOG_INFO("Start Simulation.");
   Simulator::Stop (Seconds (600.));
   Simulator::Run ();
   Simulator::Destroy ();

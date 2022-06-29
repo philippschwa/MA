@@ -10,6 +10,7 @@ import datetime
 
 # Globale variables
 baseContainer = 'myminimalubuntu'
+pidsDirectory = "./var/pid/"
 
 
 # TODO: Daten in Arrays speichern -> bei Funktionen müssen nur die indizes
@@ -41,7 +42,7 @@ def main():
 
     if operation == "setup":
         print("Destroying legacy stuff...")
-        destroy()
+        #destroy()
         print("Setting up stuff...")
         setup()
         print("Work done.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
@@ -127,6 +128,9 @@ def setup():
         "bash scripts/bridge_end_setup.sh", shell=True)
     check_return_code(status, "Finalizing bridges and tap interfaces")
 
+    if not os.path.exists(pidsDirectory):
+        os.makedirs(pidsDirectory)
+
     print('Finished creating bridges and taps | Date now: %s' %
           datetime.datetime.now())
 
@@ -136,11 +140,17 @@ def setup():
     # https://docs.docker.com/v1.7/articles/networking/
 
     for i in range(0, len(nodeNames)):
+       
+        cmd = ['docker', 'inspect', '--format', "'{{ .State.Pid }}'", nodeNames[i]]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        pid = out[1:-2].strip()
+
+        with open(pidsDirectory + nodeNames[i], "w") as text_file:
+            text_file.write(str(pid, 'utf-8'))
+        
         status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s" %
                                   (nodeNames[i], nodeIPs[i], nodeMACs[i]), shell=True)
-
-   #status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s" %
-    #                          (node2, ip_node2, mac_node2), shell=True)
 
     # If something went wrong creating the bridges and tap interfaces, we panic and exit
     # check_return_code( status, "Creating bridge side-int-X and side-ext-X" )
@@ -150,6 +160,7 @@ def setup():
     check_return_code_chill(
         status, "Creating bridge side-int-X and side-ext-X")
 
+   
     print("Done.")
     print('Finished setting up bridges | Date now: %s' %
           datetime.datetime.now())
@@ -171,6 +182,16 @@ def destroy():
         status += subprocess.call("bash scripts/bridge_destroy.sh %s" % (node), shell=True)
 
         check_return_code_chill(status, "Destroying container, bridge or tap interface %s" % (node))
+
+        if os.path.exists(pidsDirectory + node):
+            with open(pidsDirectory + node, "rt") as in_file:
+                text = in_file.read()
+                r_code = subprocess.call("rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
+                check_return_code_chill(r_code, "Destroying docker bridges %s" % (node))
+
+        r_code = subprocess.call("rm -rf %s" % (pidsDirectory + node), shell=True)
+        check_return_code_chill(r_code, "Removing pids directory")
+
 
     return
 
