@@ -17,12 +17,15 @@
 #
 
 import sys
-
 import ns.core
 import ns.csma
 import ns.internet
 import ns.network
 import ns.tap_bridge
+
+
+# Node Configurations
+nodeNames = ["node1", "node2"]
 
 def main(argv):
 
@@ -37,7 +40,7 @@ def main(argv):
     ns.core.GlobalValue.Bind("ChecksumEnabled", ns.core.BooleanValue("true"))
 
     #
-    # Create two ghost nodes.  The first will represent the virtual machine host
+    # Create ghost nodes.  The first will represent the virtual machine host
     # on the left side of the network; and the second will represent the VM on 
     # the right side.
     #
@@ -53,29 +56,24 @@ def main(argv):
     devices = csma.Install(nodes)
 
     #
-    # Use the TapBridgeHelper to connect to the pre-configured tap devices for 
-    # the left side.  We go with "UseLocal" mode since the wifi devices do not
+    # Use the TapBridgeHelper to connect to the pre-configured tap devices.  
+    # We go with "UseLocal" mode since the wifi devices do not
     # support promiscuous mode (because of their natures0.  This is a special
     # case mode that allows us to extend a linux bridge into ns-3 IFF we will
     # only see traffic from one other device on that bridge.  That is the case
     # for this configuration.
     #
     tapBridge = ns.tap_bridge.TapBridgeHelper()
-    tapBridge.SetAttribute ("Mode", ns.core.StringValue ("UseLocal"))
-    tapBridge.SetAttribute ("DeviceName", ns.core.StringValue ("tap-left"))
-    tapBridge.Install (nodes.Get (0), devices.Get (0))
+    for i in range (0, len(nodeNames)):
+        tapBridge.SetAttribute ("Mode", ns.core.StringValue ("UseLocal"))
+        tapBridge.SetAttribute ("DeviceName", ns.core.StringValue (nodeNames[i]))
+        tapBridge.Install (nodes.Get (i), devices.Get (i))
 
-    #
-    # Connect the right side tap to the right side wifi device on the right-side
-    # ghost node.
-    #
-    tapBridge.SetAttribute ("DeviceName", ns.core.StringValue ("tap-right"))
-    tapBridge.Install (nodes.Get (1), devices.Get (1))
 
     #
     # Run the simulation for ten minutes to give the user time to play around
     #
-    ns.core.Simulator.Stop (ns.core.Seconds (600))
+    ns.core.Simulator.Stop (ns.core.Seconds (600.))
     ns.core.Simulator.Run(signal_check_frequency = -1)
     ns.core.Simulator.Destroy()
     return 0
