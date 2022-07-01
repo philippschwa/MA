@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from ipaddress import ip_address
 import sys
 import subprocess
 import os
@@ -13,12 +14,10 @@ baseContainer = 'myminimalubuntu'
 pidsDirectory = "./var/pid/"
 
 
-# TODO: Daten in Arrays speichern -> bei Funktionen müssen nur die indizes
-# verwendet werden nicht 1000 verschiedene Variablen
-
 # Node Configurations
 nodeNames = ["node1", "node2"]
-nodeIPs = ["10.1.1.0", "10.1.1.1"]
+nodeSubnets = ["10.10.0.0/16", "10.20.0.0/16"]
+nodeIPs = ["10.10.0.5", "10.20.0.5"]
 nodeMACs = ["00:00:00:00:00:01", "00:00:00:00:00:02"]
 
 
@@ -42,7 +41,7 @@ def main():
 
     if operation == "setup":
         print("Destroying legacy stuff...")
-        #destroy()
+        # destroy()
         print("Setting up stuff...")
         setup()
         print("Work done.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
@@ -101,20 +100,34 @@ def setup():
     #   - --name the name of the container, using emuX
     #   - finally the name of our own Ubuntu image.
 
+    # docker run --privileged -dit --net=test --ip 172.18.0.22 --mac-address 00:00:00:00:00:01 --name node1 myminimalubuntu
+
     # create node1 for x in range(0, numberOfNodes):
     for name in nodeNames:
+        
         status += subprocess.call(
             "docker run --privileged -dit --net=none --name %s %s" % (
                 name, baseContainer),
             shell=True)
-
+        
+        # Versuch für jeden Docker Container ein einzelnes Netzwerk zu erzeugen und so dann die 
+        # Verbindung herzustellen -> Tap-Bridge für ns3 auf die von Docker erstellte Bridge geben 
+        # -> VM ist abgestürzt...
+    '''
+    for i in range(0, len(nodeNames)):    
+        print('Creating docker container %s' % nodeNames[i])
+        status += subprocess.call("docker network create --subnet=%s net_%s" %
+                                  (nodeSubnets[i], nodeNames[i]), shell=True)
+        status += subprocess.call("docker run --privileged -dit --net=net_%s --ip %s --mac-address %s --name %s myminimalubuntu" % (
+            nodeNames[i], nodeIPs[i], nodeMACs[i], nodeNames[i]), shell=True)
+    '''
     # If something went wrong running the docker containers, we panic and exit
     check_return_code(status, "Running docker containers")
 
     time.sleep(1)
     print('Finished running containers | Date now: %s' %
           datetime.datetime.now())
-
+    
     #############################
     # Third:
     # -> create bridges and the tap interfaces for NS3 (based on the ns3 example)
@@ -164,7 +177,7 @@ def setup():
     print("Done.")
     print('Finished setting up bridges | Date now: %s' %
           datetime.datetime.now())
-
+    
     return
 
 
@@ -179,19 +192,23 @@ def destroy():
         # remove docker container
         status += subprocess.call("docker rm -f %s" % (node), shell=True)
         # remove bridge and tap
-        status += subprocess.call("bash scripts/bridge_destroy.sh %s" % (node), shell=True)
+        status += subprocess.call("bash scripts/bridge_destroy.sh %s" %
+                                  (node), shell=True)
 
-        check_return_code_chill(status, "Destroying container, bridge or tap interface %s" % (node))
+        check_return_code_chill(
+            status, "Destroying container, bridge or tap interface %s" % (node))
 
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
                 text = in_file.read()
-                r_code = subprocess.call("rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
-                check_return_code_chill(r_code, "Destroying docker bridges %s" % (node))
+                r_code = subprocess.call(
+                    "rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
+                check_return_code_chill(
+                    r_code, "Destroying docker bridges %s" % (node))
 
-        r_code = subprocess.call("rm -rf %s" % (pidsDirectory + node), shell=True)
+        r_code = subprocess.call("rm -rf %s" %
+                                 (pidsDirectory + node), shell=True)
         check_return_code_chill(r_code, "Removing pids directory")
-
 
     return
 

@@ -34,7 +34,8 @@ sudo brctl show
 # config files won't work as expected
 #sudo lxc-create -f lxc-left.conf -t download -n left -- -d ubuntu -r focal -a amd64
 #sudo lxc-create -f lxc-right.conf -t download -n right -- -d ubuntu -r focal -a amd64 
-sudo lxc-create -t download -n $NAME -- -d ubuntu -r focal -a amd64
+sudo lxc-create  -t download -n $NAME -- -d ubuntu -r focal -a amd64
+#sudo lxc-create --rcfile=../config/lxc-left.conf -t download -n left -- -d ubuntu -r focal -a amd64
 
 # Start lxc container
 sudo lxc-start -n $NAME -d

@@ -22,17 +22,17 @@
 // Packets destined for the CSMA device on node zero will be sent to the
 // device "thetap" on the linux Host.
 //
-//  +----------+
-//  | external |
-//  |  Linux   |
-//  |   Host   |
-//  |          |
-//  | "thetap" |
-//  +----------+
-//       |           n0            n1            n2            n3
-//       |       +--------+    +--------+    +--------+    +--------+
-//       +-------|  tap   |    |        |    |        |    |        |
-//               | bridge |    |        |    |        |    |        |
+//  +-----------+         +-----------+     
+//  |   docker  |         |   docker  |
+//  | container |         | container |
+//  |           |         |           |
+//  |           |         |           |
+//  |"tap-node1"|         |"tap-node2"|
+//  +-----------+         +-----------+
+//       |           n0      |     n1            n2            n3
+//       |       +--------+  | +--------+    +--------+    +--------+
+//       +-------|  tap   |  -+|  tap   |    |        |    |        |
+//               | bridge |    | bridge |    |        |    |        |
 //               +--------+    +--------+    +--------+    +--------+
 //               |  CSMA  |    |  CSMA  |    |  CSMA  |    |  CSMA  |
 //               +--------+    +--------+    +--------+    +--------+
@@ -75,8 +75,8 @@ main (int argc, char *argv[])
   LogComponentEnable("TapCsmaExample", LOG_LEVEL_ALL);
 
   std::string mode = "ConfigureLocal";
-  std::string tapName1 = "left";
-  std::string tapName2 = "right";
+  std::string tapName1 = "tap-node1";
+  std::string tapName2 = "tap-node2";
 
   //CommandLine cmd (__FILE__);
   //cmd.AddValue ("mode", "Mode setting of TapBridge", mode);
