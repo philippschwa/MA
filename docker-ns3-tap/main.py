@@ -17,9 +17,10 @@ pidsDirectory = "./var/pid/"
 # Node Configurations
 nodeNames = ["node1", "node2"]
 nodeSubnets = ["10.10.0.0/16", "10.20.0.0/16"]
-nodeIPs = ["10.10.0.5", "10.20.0.5"]
+nodeIPs = ["123.100.0.2", "123.200.0.2"]
 nodeMACs = ["00:00:00:00:00:01", "00:00:00:00:00:02"]
 
+bridgeIPs = ["123.100.0.1", "123.200.0.1"]
 
 ################################################################################
 # main ()
@@ -116,10 +117,19 @@ def setup():
     '''
     for i in range(0, len(nodeNames)):    
         print('Creating docker container %s' % nodeNames[i])
-        status += subprocess.call("docker network create --subnet=%s net_%s" %
+        Befehl lässt VM abstürzen !!!! status += subprocess.call("docker network create --subnet=%s net_%s" %
                                   (nodeSubnets[i], nodeNames[i]), shell=True)
+       
         status += subprocess.call("docker run --privileged -dit --net=net_%s --ip %s --mac-address %s --name %s myminimalubuntu" % (
             nodeNames[i], nodeIPs[i], nodeMACs[i], nodeNames[i]), shell=True)
+
+         # Befehl für Netzwerk -> bridge wird richtig nach angegebenen Namen benannt
+        docker network create -o "com.docker.network.bridge.enable_icc"="false" -o "com.docker.network.bridge.host_binding_ipv4"="0.0.0.0" -o "com.docker.network.bridge.name"="br-node1" net_node1
+        docker network create -o "com.docker.network.bridge.enable_icc"="false" -o "com.docker.network.bridge.host_binding_ipv4"="0.0.0.0" -o "com.docker.network.bridge.name"="br-node2" net_node2
+        
+        docker run --privileged -dit --net=none --name node1 myminimalubuntu
+        docker run --privileged -dit --net=net_node2 --name node2 myminimalubuntu
+
     '''
     # If something went wrong running the docker containers, we panic and exit
     check_return_code(status, "Running docker containers")
@@ -131,9 +141,9 @@ def setup():
     #############################
     # Third:
     # -> create bridges and the tap interfaces for NS3 (based on the ns3 example)
-    for name in nodeNames:
-        status += subprocess.call("bash scripts/bridge_setup.sh %s" %
-                                  (name), shell=True)
+    for i in range(0,len(nodeNames)):
+        status += subprocess.call("bash scripts/bridge_setup.sh %s %s" %
+                                  (nodeNames[i], bridgeIPs[i]), shell=True)
 
     check_return_code(status, "Creating bridges and tap interfaces")
 
@@ -153,7 +163,7 @@ def setup():
     # https://docs.docker.com/v1.7/articles/networking/
 
     for i in range(0, len(nodeNames)):
-       
+        ''' 
         cmd = ['docker', 'inspect', '--format', "'{{ .State.Pid }}'", nodeNames[i]]
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
@@ -161,9 +171,9 @@ def setup():
 
         with open(pidsDirectory + nodeNames[i], "w") as text_file:
             text_file.write(str(pid, 'utf-8'))
-        
-        status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s" %
-                                  (nodeNames[i], nodeIPs[i], nodeMACs[i]), shell=True)
+        ''' 
+        status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s %s" %
+                                  (nodeNames[i], nodeIPs[i], nodeMACs[i], bridgeIPs[i]), shell=True)
 
     # If something went wrong creating the bridges and tap interfaces, we panic and exit
     # check_return_code( status, "Creating bridge side-int-X and side-ext-X" )

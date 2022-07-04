@@ -18,3 +18,10 @@ wie der zu machen. lxc container funktioniert an das ns3 Netzwerk zu koppeln und
 
 --> tap-csma-virtual-machine.py ist das Script für die Netzwerk Simulation in tapName die Name der taps angeben
 --> lxc...conf funktioniert nicht, da bei booten immer ip überschrieben wird und so überhaupt keine ip gesetzt wird
+
+### Versuch 3:
+
+docker container hat bereits eigene Bridge. Jetzt wäre der nächste Versch einfach eine tap-bridge mit der docker bridge zu verbinden und die erstellte Tap von ns3 aus zu verwenden --> container sollte intern richtig funktionieren
+
+- https://www.ithands-on.com/2020/12/networking-101-linux-tap-interface-and.html
+- https://docs.docker.com/engine/reference/commandline/network_create/

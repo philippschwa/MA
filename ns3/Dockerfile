@@ -6,7 +6,7 @@ WORKDIR /ma
 # Update Ubuntu Repo 
 RUN apt-get update -y && apt-get upgrade -y
 
-# install core dependencies for build and compilation
+# install core dependencies for build and compilation --> TODO: die meisten dependencies hier sind wars. überflüssig. Vgl. install_packages.sh
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     build-essential libsqlite3-dev libboost-all-dev \
     libssl-dev git python3-setuptools castxml apt-utils \

@@ -14,19 +14,30 @@
 # to the same bridge via another mechanism ... that will make the docker container
 # to be able to communicate via the NS3 simulation.
 
-
+# $1 Node's name
 if [ -z "$1" ]; then
     echo "bridge_setup.sh --- No name supplied"
     exit 1
 fi
+# $2 = Bridge IP address
+if [ -z "$2" ]
+  then
+    echo "No IP address supplied"
+    exit 1
+fi
+
 
 NAME=$1
+BR_NAME=br-$NAME
+BR_ADDR=$2
 
-sudo brctl addbr br-$NAME
+sudo brctl addbr $BR_NAME
 sudo tunctl -t tap-$NAME
 sudo ifconfig tap-$NAME 0.0.0.0 promisc up
-sudo brctl addif br-$NAME tap-$NAME
-sudo ifconfig br-$NAME up
+sudo brctl addif $BR_NAME tap-$NAME
+sudo ifconfig $BR_NAME up
+
+sudo ip addr add ${BR_ADDR}/16 dev $BR_NAME
 
 status=$?
 if [ $status -ne 0 ]; then
