@@ -131,9 +131,9 @@ def setup():
     #############################
     # Third:
     # -> create bridges and the tap interfaces for NS3 (based on the ns3 example)
-    for i in range(0, len(nodeNames)):
+    for name in nodeNames:
         status += subprocess.call("bash scripts/bridge_setup.sh %s" %
-                                  (nodeNames[i]), shell=True)
+                                  (name), shell=True)
 
     check_return_code(status, "Creating bridges and tap interfaces")
 
