@@ -148,18 +148,18 @@ def setup():
     #############################
     # Third:
     # -> create bridges and the tap interfaces for NS3 (based on the ns3 example)
-    for i in range(0,len(nodeNames)):
-        status += subprocess.call("bash scripts/bridge_setup.sh %s %s" %
-                                  (nodeNames[i], bridgeIPs[i]), shell=True)
+    #for i in range(0,len(nodeNames)):
+       # status += subprocess.call("bash scripts/bridge_setup.sh %s %s" %
+       #                           (nodeNames[i], bridgeIPs[i]), shell=True)
 
-    check_return_code(status, "Creating bridges and tap interfaces")
+    #check_return_code(status, "Creating bridges and tap interfaces")
+    
+    #status += subprocess.call(
+     #   "bash scripts/bridge_end_setup.sh", shell=True)
+    #check_return_code(status, "Finalizing bridges and tap interfaces")
 
-    status += subprocess.call(
-        "bash scripts/bridge_end_setup.sh", shell=True)
-    check_return_code(status, "Finalizing bridges and tap interfaces")
-
-    print('Finished creating bridges and taps | Date now: %s' %
-          datetime.datetime.now())
+    #print('Finished creating bridges and taps | Date now: %s' %
+     #     datetime.datetime.now())
 
     #############################
     # Fourth:
@@ -178,8 +178,13 @@ def setup():
         with open(pidsDirectory + nodeNames[i], "w") as text_file:
             text_file.write(str(pid, 'utf-8'))
          
-        status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s %s" %
+        #status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s %s" %
+         #                         (nodeNames[i], nodeIPs[i], nodeMACs[i], bridgeIPs[i]), shell=True)
+        status += subprocess.call("bash scripts/test_bridge.sh %s %s %s %s" %
                                   (nodeNames[i], nodeIPs[i], nodeMACs[i], bridgeIPs[i]), shell=True)
+
+    
+    status += subprocess.call("bash scripts/bridge_end_setup.sh", shell=True)
 
     # If something went wrong creating the bridges and tap interfaces, we panic and exit
     # check_return_code( status, "Creating bridge side-int-X and side-ext-X" )
