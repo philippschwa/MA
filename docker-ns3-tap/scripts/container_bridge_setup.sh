@@ -35,8 +35,9 @@ MAC=$3
 BR_NAME=br-$NAME
 BR_ADDR=$4
 
-SIDE_A=veth-host-$NAME
-SIDE_B=veth-docker-$NAME
+SIDE_A=veth-ho-$NAME
+# not a vaild ifname
+SIDE_B=veth-con-$NAME
 
 # At another shell, learn the container process ID and create its namespace entry in /var/run/netns/ for the "ip netns" command we will be using below
 PID=$(docker inspect --format '{{ .State.Pid }}' $NAME)
@@ -60,6 +61,7 @@ sudo ip netns exec $PID ip addr add $IP dev eth0
 sudo ip netns exec $PID ip link set eth0 up
 
 # hier hinzugefüght, damit Container Bridge findet
+sudo ip netns exec $PID ip route add $BR_ADDR dev eth0
 sudo ip netns exec $PID ip route add default via $BR_ADDR
 
 status=$?

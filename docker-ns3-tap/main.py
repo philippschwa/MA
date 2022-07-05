@@ -16,7 +16,7 @@ pidsDirectory = "./var/pid/"
 
 # Node Configurations
 nodeNames = ["node1", "node2"]
-nodeSubnets = ["10.10.0.0/16", "10.20.0.0/16"]
+#nodeSubnets = ["10.10.0.0/16", "10.20.0.0/16"]
 nodeIPs = ["123.100.0.2", "123.200.0.2"]
 nodeMACs = ["00:00:00:00:00:01", "00:00:00:00:00:02"]
 

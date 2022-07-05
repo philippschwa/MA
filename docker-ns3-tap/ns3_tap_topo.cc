@@ -101,7 +101,7 @@ main (int argc, char *argv[])
 
   NS_LOG_INFO("Assign addresses.");
   Ipv4AddressHelper addresses;
-  addresses.SetBase ("10.1.1.0", "255.255.255.0");
+  addresses.SetBase ("123.100.0.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaces = addresses.Assign (devices);
 
 
