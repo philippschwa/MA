@@ -29,12 +29,20 @@ if [ -z "$4" ]
     exit 1
 fi
 
+# $5 = Bridge MAC address
+if [ -z "$4" ]
+  then
+    echo "No Bridge MAC address supplied"
+    exit 1
+fi
+
 # set variables
 NAME=$1
 IP=$2
 MAC=$3
 BR_NAME=br-$NAME
 BR_ADDR=$4
+BR_MAC=$5
 TAP_NAME=tap-$NAME
 
 SIDE_A=veth-ho-$NAME

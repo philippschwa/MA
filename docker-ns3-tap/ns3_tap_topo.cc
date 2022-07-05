@@ -97,26 +97,23 @@ main (int argc, char *argv[])
 
   NetDeviceContainer devices = csma.Install (nodes);
 
-  InternetStackHelper stack;
-  stack.Install (nodes);
+  //InternetStackHelper stack;
+  //stack.Install (nodes);
 
-  NS_LOG_INFO("Assign addresses.");
-  Ipv4AddressHelper addresses;
-  addresses.SetBase ("123.100.10.0", "255.255.255.0");
-  Ipv4InterfaceContainer interfaces = addresses.Assign (devices);
+  //NS_LOG_INFO("Assign addresses.");
+  //Ipv4AddressHelper addresses;
+  //addresses.SetBase ("123.100.10.0", "255.255.255.0");
+  //Ipv4InterfaceContainer interfaces = addresses.Assign (devices);
 
   NS_LOG_INFO("Install Tap Bridges.");
-  TapBridgeHelper tapBridge1;
+  TapBridgeHelper tapBridge;
   // tapBridge1.SetAttribute ("Mode", StringValue ("UseLocal"));
-  tapBridge1.SetAttribute ("Mode", StringValue ("UseBridge"));
-  tapBridge1.SetAttribute ("DeviceName", StringValue (tapName1));
-  tapBridge1.Install (nodes.Get (0), devices.Get (0));
+  tapBridge.SetAttribute ("Mode", StringValue ("UseBridge"));
+  tapBridge.SetAttribute ("DeviceName", StringValue (tapName1));
+  tapBridge.Install (nodes.Get (0), devices.Get (0));
 
-  TapBridgeHelper tapBridge2;
-  // tapBridge2.SetAttribute ("Mode", StringValue ("UseLocal"));
-  tapBridge2.SetAttribute ("Mode", StringValue ("UseBridge"));
-  tapBridge2.SetAttribute ("DeviceName", StringValue (tapName2));
-  tapBridge2.Install (nodes.Get (1), devices.Get (1));
+  tapBridge.SetAttribute ("DeviceName", StringValue (tapName2));
+  tapBridge.Install (nodes.Get (1), devices.Get (1));
 
   csma.EnablePcapAll ("tap-csma", false);
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
