@@ -100,12 +100,13 @@ main (int argc, char *argv[])
   stack.Install (nodes);
 
   NS_LOG_INFO("Assign addresses.");
-  Ipv4AddressHelper addresses;
-  addresses.SetBase ("123.100.0.1", "255.255.255.0");
-  Ipv4InterfaceContainer interfaces = addresses.Assign (devices.Get(0));
+  Ipv4AddressHelper addressNode1;
+  addressNode1.SetBase ("123.100.0.1", "255.255.255.0");
+  Ipv4InterfaceContainer interfaces = addressNode1.Assign (devices.Get(0));
 
-  addresses.SetBase ("123.200.0.1", "255.255.255.0");
-  Ipv4InterfaceContainer interfaces2 = addresses.Assign (devices.Get(1));
+  Ipv4AddressHelper addressNode2;
+  addressNode2.SetBase ("123.200.0.1", "255.255.255.0");
+  Ipv4InterfaceContainer interfaces2 = addressNode2.Assign (devices.Get(1));
 
   NS_LOG_INFO("Install Tap Bridges.");
   TapBridgeHelper tapBridge1;
