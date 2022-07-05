@@ -22,7 +22,7 @@ if [ -z "$3" ]
 fi
 
 # $4 = Bridge IP address
-if [ -z "$3" ]
+if [ -z "$4" ]
   then
     echo "No Bridge IP address supplied"
     exit 1
@@ -43,22 +43,65 @@ SIDE_B=veth-con-$NAME
 PID=$(docker inspect --format '{{ .State.Pid }}' $NAME)
 sudo mkdir -p /var/run/netns
 sudo ln -s /proc/$PID/ns/net /var/run/netns/$PID
-
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ln -s /proc/$PID/ns/net /var/run/netns/$PID!"
+    exit $status
+fi
 
 # Create a pair of "peer" interfaces A and B,
 # bind the A end to the bridge, and bring it up
 sudo ip link add $SIDE_A type veth peer name $SIDE_B
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ip link add $SIDE_A type veth peer name $SIDE_B!"
+    exit $status
+fi
 sudo brctl addif $BR_NAME $SIDE_A
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo brctl addif $BR_NAME $SIDE_A!"
+    exit $status
+fi
 sudo ip link set $SIDE_A up
-
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ip link set $SIDE_A up!"
+    exit $status
+fi
 
 # Place B inside the container's network namespace,
 # rename to eth0, and activate it with the given IP & MAC
 sudo ip link set $SIDE_B netns $PID
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ip link set $SIDE_B netns $PID!"
+    exit $status
+fi
 sudo ip netns exec $PID ip link set dev $SIDE_B name eth0
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ip netns exec $PID ip link set dev $SIDE_B name eth0!"
+    exit $status
+fi
 sudo ip netns exec $PID ip link set eth0 address $MAC
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ip netns exec $PID ip link set eth0 address $MAC!"
+    exit $status
+fi
 sudo ip netns exec $PID ip addr add $IP dev eth0
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ip netns exec $PID ip addr add $IP dev eth0!"
+    exit $status
+fi
 sudo ip netns exec $PID ip link set eth0 up
+status=$?
+if [ $status -ne 0 ]; then
+    echo "container_bridge_setup.sh --- sudo ip netns exec $PID ip link set eth0 up!"
+    exit $status
+fi
 
 # hier hinzugefüght, damit Container Bridge findet
 sudo ip netns exec $PID ip route add $BR_ADDR dev eth0

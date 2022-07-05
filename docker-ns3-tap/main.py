@@ -16,7 +16,6 @@ pidsDirectory = "./var/pid/"
 
 # Node Configurations
 nodeNames = ["node1", "node2"]
-#nodeSubnets = ["10.10.0.0/16", "10.20.0.0/16"]
 nodeIPs = ["123.100.0.2", "123.200.0.2"]
 nodeMACs = ["00:00:00:00:00:01", "00:00:00:00:00:02"]
 
@@ -42,7 +41,7 @@ def main():
 
     if operation == "setup":
         print("Destroying legacy stuff...")
-        # destroy()
+        destroy()
         print("Setting up stuff...")
         setup()
         print("Work done.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
@@ -151,9 +150,6 @@ def setup():
         "bash scripts/bridge_end_setup.sh", shell=True)
     check_return_code(status, "Finalizing bridges and tap interfaces")
 
-    if not os.path.exists(pidsDirectory):
-        os.makedirs(pidsDirectory)
-
     print('Finished creating bridges and taps | Date now: %s' %
           datetime.datetime.now())
 
@@ -162,8 +158,10 @@ def setup():
     # -> create the bridges for the docker containers
     # https://docs.docker.com/v1.7/articles/networking/
 
+    if not os.path.exists(pidsDirectory):
+        os.makedirs(pidsDirectory)
     for i in range(0, len(nodeNames)):
-        ''' 
+        # Speichert die PID von den erzeugten Docker containeren zwischen, damit sie in destroy() richtig gelöscht werden können
         cmd = ['docker', 'inspect', '--format', "'{{ .State.Pid }}'", nodeNames[i]]
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
@@ -171,7 +169,7 @@ def setup():
 
         with open(pidsDirectory + nodeNames[i], "w") as text_file:
             text_file.write(str(pid, 'utf-8'))
-        ''' 
+         
         status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s %s" %
                                   (nodeNames[i], nodeIPs[i], nodeMACs[i], bridgeIPs[i]), shell=True)
 
