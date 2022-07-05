@@ -40,14 +40,22 @@ def main():
     operation = args.operationStr
 
     if operation == "setup":
+        print("\n############################################\n")
         print("Destroying legacy stuff...")
+        print("\n############################################\n")
         destroy()
+        print("\n############################################\n")
         print("Setting up stuff...")
+        print("\n############################################\n")
         setup()
+        print("\n############################################\n")
         print("Work done.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
     elif operation == "destroy":
+        print("\n############################################\n")
         print("Destroying stuff...")
+        print("\n############################################\n")
         destroy()
+        print("\n############################################\n")
         print("Work done.\nCheck out running containers with 'docker ps'. \nCheck out if bridges were removed with 'ifconfig'.")
     else:
         print("No args given. Choose operation mode (setup or destroy).")

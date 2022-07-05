@@ -101,9 +101,11 @@ main (int argc, char *argv[])
 
   NS_LOG_INFO("Assign addresses.");
   Ipv4AddressHelper addresses;
-  addresses.SetBase ("123.100.0.0", "255.255.255.0");
-  Ipv4InterfaceContainer interfaces = addresses.Assign (devices);
+  addresses.SetBase ("123.100.0.1", "255.255.255.0");
+  Ipv4InterfaceContainer interfaces = addresses.Assign (devices.Get(0));
 
+  addresses.SetBase ("123.200.0.1", "255.255.255.0");
+  interfaces = addresses.Assign (devices.Get(1));
 
   NS_LOG_INFO("Install Tap Bridges.");
   TapBridgeHelper tapBridge1;
