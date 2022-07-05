@@ -38,8 +38,8 @@ sudo ip addr add ${BR_ADDR}/16 dev $BR_NAME
 
 # Create TAP device for ns3
 sudo tunctl -t tap-$NAME
-sudo ifconfig $TAP_NAME hw ether 00:00:00:00:00:01
-sudo ifconfig $TAP_NAME 0.0.0.0 up
+#sudo ifconfig $TAP_NAME hw ether 00:00:00:00:00:01
+sudo ifconfig $TAP_NAME 0.0.0.0 promisc up
 
 # link bridge and TAP device
 sudo brctl addif $BR_NAME $TAP_NAME
