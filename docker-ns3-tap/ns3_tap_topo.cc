@@ -88,7 +88,8 @@ main (int argc, char *argv[])
 
   NS_LOG_INFO("Create nodes.");
   NodeContainer nodes;
-  nodes.Create (4);
+  // nodes.Create (4);
+  nodes.Create(2);
 
   CsmaHelper csma;
   csma.SetChannelAttribute ("DataRate", DataRateValue (5000000));
@@ -106,12 +107,14 @@ main (int argc, char *argv[])
 
   NS_LOG_INFO("Install Tap Bridges.");
   TapBridgeHelper tapBridge1;
-  tapBridge1.SetAttribute ("Mode", StringValue ("UseLocal"));
+  // tapBridge1.SetAttribute ("Mode", StringValue ("UseLocal"));
+  tapBridge1.SetAttribute ("Mode", StringValue ("UseBridge"));
   tapBridge1.SetAttribute ("DeviceName", StringValue (tapName1));
   tapBridge1.Install (nodes.Get (0), devices.Get (0));
 
   TapBridgeHelper tapBridge2;
-  tapBridge2.SetAttribute ("Mode", StringValue ("UseLocal"));
+  // tapBridge2.SetAttribute ("Mode", StringValue ("UseLocal"));
+  tapBridge2.SetAttribute ("Mode", StringValue ("UseBridge"));
   tapBridge2.SetAttribute ("DeviceName", StringValue (tapName2));
   tapBridge2.Install (nodes.Get (1), devices.Get (1));
 
