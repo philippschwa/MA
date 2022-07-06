@@ -50,18 +50,19 @@ SIDE_B=veth-$NAME
 
 # Create bridge
 sudo ip link add $BR_NAME type bridge
-sudo ip addr add ${BR_ADDR}/16 dev $BR_NAME
+
 
 # Create TAP device for ns3
 sudo tunctl -t tap-$NAME
 #sudo ifconfig $TAP_NAME hw ether 00:00:00:00:00:01
-sudo ifconfig $TAP_NAME 0.0.0.0 promisc up
+#sudo ifconfig $TAP_NAME 0.0.0.0 promisc up
+sudo ifconfig $TAP_NAME 0.0.0.0 up
 
 # link bridge and TAP device
 sudo brctl addif $BR_NAME $TAP_NAME
 
 # set up bridge
-sudo ifconfig $BR_NAME up
+sudo ifconfig $BR_NAME $BR_ADDR netmask 255.255.0.0 up
 
 echo "Finished setting up bridge and TAP device"
 echo "Setting up Bridge to docker container"

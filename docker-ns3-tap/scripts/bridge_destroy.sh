@@ -10,12 +10,14 @@ if [ -z "$1" ]; then
 fi
 
 NAME=$1
+BR_NAME=br-$NAME
+TAP_NAME=tap-$NAME
 
-sudo ifconfig br-$NAME down
-sudo brctl delif br-$NAME tap-$NAME
-sudo brctl delbr br-$NAME
-sudo ifconfig tap-$NAME down
-sudo tunctl -d tap-$NAME
+sudo ifconfig $BR_NAME down
+sudo brctl delif $BR_NAME $TAP_NAME
+sudo brctl delbr $BR_NAME
+sudo ifconfig $TAP_NAME down
+sudo tunctl -d $TAP_NAME
 
 status=$?
 if [ $status -ne 0 ]; then

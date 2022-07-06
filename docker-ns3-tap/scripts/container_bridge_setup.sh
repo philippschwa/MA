@@ -104,8 +104,8 @@ if [ $status -ne 0 ]; then
 fi
 
 # hier hinzugefüght, damit Container Bridge findet
-sudo ip netns exec $PID ip route add $BR_ADDR dev eth0
-sudo ip netns exec $PID ip route add default via $BR_ADDR
+#sudo ip netns exec $PID ip route add $BR_ADDR dev eth0
+#sudo ip netns exec $PID ip route add default via $BR_ADDR
 
 status=$?
 if [ $status -ne 0 ]; then
