@@ -171,13 +171,12 @@ def setup():
         os.makedirs(pidsDirectory)
     for i in range(0, len(nodeNames)):
         # Speichert die PID von den erzeugten Docker containeren zwischen, damit sie in destroy() richtig gelöscht werden können
-        # cmd = ['docker', 'inspect', '--format', "'{{ .State.Pid }}'", nodeNames[i]]
-        # p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # out, err = p.communicate()
-        # pid = out[1:-2].strip()
-
-        #with open(pidsDirectory + nodeNames[i], "w") as text_file:
-         #   text_file.write(str(pid, 'utf-8'))
+        cmd = ['docker', 'inspect', '--format', "'{{ .State.Pid }}'", nodeNames[i]]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        pid = out[1:-2].strip()
+        with open(pidsDirectory + nodeNames[i], "w") as text_file:
+            text_file.write(str(pid, 'utf-8'))
          
         #status += subprocess.call("bash scripts/container_bridge_setup.sh %s %s %s %s" %
          #                         (nodeNames[i], nodeIPs[i], nodeMACs[i], bridgeIPs[i]), shell=True)
@@ -219,7 +218,7 @@ def destroy():
 
         check_return_code_chill(
             status, "Destroying container, bridge or tap interface %s" % (node))
-        '''
+        
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
                 text = in_file.read()
@@ -231,7 +230,7 @@ def destroy():
         r_code = subprocess.call("rm -rf %s" %
                                  (pidsDirectory + node), shell=True)
         check_return_code_chill(r_code, "Removing pids directory")
-        '''
+        
     return
 
 

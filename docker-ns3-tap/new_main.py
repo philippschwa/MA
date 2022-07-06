@@ -66,7 +66,7 @@ def main():
 ################################################################################
 def check_return_code(rcode, message):
     if rcode == 0:
-        #print("Success: %s" % message)
+        # print("Success: %s" % message)
         return
 
     print("Error: %s" % message)
@@ -75,7 +75,7 @@ def check_return_code(rcode, message):
 
 def check_return_code_chill(rcode, message):
     if rcode == 0:
-        #print("Success: %s" % message)
+        # print("Success: %s" % message)
         return
 
     print("Error: %s" % message)
@@ -91,9 +91,9 @@ def setup():
     #############################
     # First:
     # -> build minimal Docker container (Ubuntu:20.04) with dummy script to keep container running
-    #r_code = subprocess.call("docker build -t %s docker/." %
+    # r_code = subprocess.call("docker build -t %s docker/." %
     #                         baseContainer, shell=True)
-    #check_return_code(r_code, "Building minimal container %s" %
+    # check_return_code(r_code, "Building minimal container %s" %
     #                  baseContainer)
 
     #############################
@@ -105,17 +105,28 @@ def setup():
             "docker run --privileged -dit --net=none --name %s %s" % (
                 name, baseContainer),
             shell=True)
-    
+
     # If something went wrong running the docker containers, we panic and exit
     check_return_code(status, "Running docker containers")
     print('Finished running containers | Date now: %s' %
           datetime.datetime.now())
-    
+
     #############################
     # Third:
     # create bridges and the TAP for NS3 & VETH interfaces docker containers
+    if not os.path.exists(pidsDirectory):
+        os.makedirs(pidsDirectory)
 
     for i in range(0, len(nodeNames)):
+        # Speichert die PID von den erzeugten Docker containeren zwischen, damit sie in destroy() richtig gelöscht werden können
+        cmd = ['docker', 'inspect', '--format', "'{{ .State.Pid }}'", nodeNames[i]]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        pid = out[1:-2].strip()
+        with open(pidsDirectory + nodeNames[i], "w") as text_file:
+            text_file.write(str(pid, 'utf-8'))
+
+        # Create bridges
         status += subprocess.call("bash scripts/setup_bridge_test.sh %s %s" %
                                   (nodeNames[i], nodeIPs[i]), shell=True)
 
@@ -142,7 +153,7 @@ def destroy():
 
         check_return_code_chill(
             status, "Destroying container, bridge or tap interface %s" % (node))
-        '''
+        
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
                 text = in_file.read()
@@ -154,7 +165,7 @@ def destroy():
         r_code = subprocess.call("rm -rf %s" %
                                  (pidsDirectory + node), shell=True)
         check_return_code_chill(r_code, "Removing pids directory")
-        '''
+        
     return
 
 

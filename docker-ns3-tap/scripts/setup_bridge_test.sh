@@ -32,15 +32,16 @@ sudo ifconfig $TAP_NAME 0.0.0.0 down
 sudo ip link add $VETH1 type veth peer name $VETH2
 # löschen mit ip link delete <ifname>
 
+# link PID of container to netns, in order to use netns
+PID=$(docker inspect --format '{{ .State.Pid }}' $NAME)
+sudo mkdir -p /var/run/netns
+sudo ln -s /proc/$PID/ns/net /var/run/netns/$PID
+
 # connect $VETH1 to bridge
 # connect $VETH2 to running docker contaienr, by using PID of container
 PID=$(docker inspect --format '{{ .State.Pid }}' $NAME)
 sudo ip link set $VETH1 master $BR_NAME
 sudo ip link set $VETH2 netns $PID
-
-# save PIDs in temporary folder to have them later for destruction
-#sudo mkdir -p /var/run/netns
-#sudo ln -s /proc/$PID/ns/net /var/run/netns/$PID
 
 # attach TAP interface to the bridge
 ip link set $TAP_NAME master $BR_NAME
