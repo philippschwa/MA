@@ -44,7 +44,7 @@ Die bridges, TAPs und VETHs werden richtig erstellt und ns3 leitet wie gewollt d
 
 TODO: Wazuh agent integrieren --> Problem: noch keine Möglichkeit den Agent direkt in den Containern laufen zu lassen und mit dem Magager kommunizieren zu lassen, da ja keine Verbindung zw. Container und Host besteht. Das Netzwerk ist ja mit ns3 simuliert und die bridges (Container - NS2) habe keine Verbindung zum Host Netzwerk / o.Ä. 
 
---> workaround könnte sein, den Agent auf dem Host laufen zu lassen und die Container von dort aus zu monitoren (z.B. Volumes, vl. über Process ID)
+--> workaround könnte sein, den Agent auf dem Host laufen zu lassen und die Container von dort aus zu monitoren (z.B. Volumes, vl. über Process ID, oder über Ports??)
 
 
 ### Versuch 2: siehe lxc-ns3-tap (eingestellt)
