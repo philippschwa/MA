@@ -1,6 +1,6 @@
 ## Installation
 
-First we need to install the dependencies (1), then we install ns3 (2). Finally we will build the ns3 project (3). For further information and other installation variants, see also the installation guide of [ns3](https://www.nsnam.org/wiki/Installation). But notice, that there is no warranty that it will work with other intallation method, further we are only installing minimum mandatory packages for ns3. 
+First we need to install the dependencies (1), then we install ns3 (2). Finally we will build the ns3 project (3). For further information and other installation methods, see also the installation guide of [ns3](https://www.nsnam.org/wiki/Installation). But notice that there is no warranty that my project it will work with other intallation methods (e.g. the installtion with bake did not work for me), further we are only installing minimum mandatory packages for ns3.
 
 NOTE: If you cloned the whole Repository, check if you have the dependencies installed and skip to (3).
 
