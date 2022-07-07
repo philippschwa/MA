@@ -47,7 +47,7 @@ Third you have to start the simulated network with ns3 (from the /ns-3-allinone/
 
 # VM Snapshots:
 #### Erster Snapshot:
-nur docker und docker compose installiert
+- nur docker und docker compose installiert
 
 #### Zweiter Snapshot: snap2
 - ns3 installiert, dependencies, und aktueller MA ordner drauf 
