@@ -121,6 +121,8 @@ def setup():
         # Create bridges
         status += subprocess.call("bash scripts/bridge_setup.sh %s %s" % (nodeNames[i], nodeIPs[i]), shell=True)
 
+    # deactivate bridge stuff
+    status += subprocess.call("bash scripts/bridge_end_setup.sh", shell=True)
     check_return_code_chill(status, "Creating bridges and interfaces")
     
     return
