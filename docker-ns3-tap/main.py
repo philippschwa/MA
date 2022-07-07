@@ -22,6 +22,7 @@ nodeIPs = ["123.100.10.1", "123.100.20.1"]
 # main ()
 ################################################################################
 def main():
+    global build
 
     # Parse commandline arguments
     parser = argparse.ArgumentParser(description="The name of the operation to perform, options: setup, destroy. \
