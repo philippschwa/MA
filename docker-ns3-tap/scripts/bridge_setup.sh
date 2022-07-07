@@ -16,41 +16,41 @@ fi
 
 NAME=$1
 IP=$2
-BR_NAME=br-${NAME}
-TAP_NAME=tap-${NAME}
-VETH1=veth1-${NAME}
-VETH2=veth2-${NAME}
+BR_NAME=br-$NAME
+TAP_NAME=tap-$NAME
+VETH1=veth1-$NAME
+VETH2=veth2-$NAME
 
 # Create bridge 
-sudo ip link add ${BR_NAME} type bridge
+sudo ip link add $BR_NAME type bridge
 
 # create TAP interface for ns3
-sudo tunctl -t ${TAP_NAME}
-sudo ifconfig ${TAP_NAME} 0.0.0.0 down
+sudo tunctl -t $TAP_NAME
+sudo ifconfig $TAP_NAME 0.0.0.0 down
 
 # create VETH tunnel for connection to container 
-sudo ip link add ${VETH1} type veth peer name ${VETH2}
+sudo ip link add $VETH1 type veth peer name $VETH2
 # löschen mit ip link delete <ifname>
 
 # link PID of container to netns, in order to use netns
-PID=$(docker inspect --format '{{ .State.Pid }}' ${NAME})
+PID=$(docker inspect --format '{{ .State.Pid }}' $NAME)
 sudo mkdir -p /var/run/netns
-sudo ln -s /proc/${PID}/ns/net /var/run/netns/${PID}
+sudo ln -s /proc/$PID/ns/net /var/run/netns/$PID
 
 # connect $VETH1 to bridge
 # connect $VETH2 to running docker contaienr, by using PID of container
-sudo ip link set ${VETH1} master ${BR_NAME}
-sudo ip link set ${VETH2} netns ${PID}
+sudo ip link set $VETH1 master $BR_NAME
+sudo ip link set $VETH2 netns $PID
 
 # attach TAP interface to the bridge
-sudo ip link set ${TAP_NAME} master ${BR_NAME}
+sudo ip link set $TAP_NAME master $BR_NAME
 
 # start interfaces and bridge (on host side)
-sudo ifconfig ${VETH1} up
-sudo ifconfig ${TAP_NAME} up
-sudo ifconfig ${BR_NAME} up
+sudo ifconfig $VETH1 up
+sudo ifconfig $TAP_NAME up
+sudo ifconfig $BR_NAME up
 
 # Setup docker container network interface 
-sudo ip netns exec ${PID} ip link set dev ${VETH2} name eth0
-sudo ip netns exec ${PID} ip addr add ${IP}/24 dev eth0
-sudo ip netns exec ${PID} ip link set eth0 up
+sudo ip netns exec $PID ip link set dev $VETH2 name eth0
+sudo ip netns exec $PID ip addr add $IP/16 dev eth0
+sudo ip netns exec $PID ip link set eth0 up

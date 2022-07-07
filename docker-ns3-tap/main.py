@@ -147,7 +147,7 @@ def destroy():
             with open(pidsDirectory + node, "rt") as in_file:
                 text = in_file.read()
                 status = subprocess.call("rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
-                check_return_code_chill(status, "Destroying docker bridges %s" % (node))
+
 
         status = subprocess.call("rm -rf %s" % (pidsDirectory + node), shell=True)
         check_return_code_chill(status, "Removing pids directory")
