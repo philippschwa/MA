@@ -45,4 +45,13 @@ Third you have to start the simulated network with ns3 (from the /ns-3-allinone/
 ./ns3 run --enable-sudo scratch/my-tap-csma.cc
 ```
 
+# VM Snapshots:
+#### Erster Snapshot:
+- nur docker und docker compose installiert
+
+#### Zweiter Snapshot: snap2
+- ns3 installiert, dependencies, und aktueller MA ordner drauf 
+- einfaches netzwerk aus zwei docker containern die über tap bridge von ns3 miteinander kommunizieren funktioniert
+- next step: suricata und wazuh agent auf vm installieren und traffic monitoren
+
 
