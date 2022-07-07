@@ -39,7 +39,6 @@ sudo ln -s /proc/${PID}/ns/net /var/run/netns/${PID}
 
 # connect $VETH1 to bridge
 # connect $VETH2 to running docker contaienr, by using PID of container
-PID=$(docker inspect --format '{{ .State.Pid }}' ${NAME})
 sudo ip link set ${VETH1} master ${BR_NAME}
 sudo ip link set ${VETH2} netns ${PID}
 
@@ -53,5 +52,5 @@ sudo ifconfig ${BR_NAME} up
 
 # Setup docker container network interface 
 sudo ip netns exec ${PID} ip link set dev ${VETH2} name eth0
-sudo ip netns exec ${PID} ip addr add ${IP}/16 dev eth0
+sudo ip netns exec ${PID} ip addr add ${IP}/24 dev eth0
 sudo ip netns exec ${PID} ip link set eth0 up

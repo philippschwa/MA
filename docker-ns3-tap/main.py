@@ -24,17 +24,20 @@ nodeIPs = ["123.100.10.1", "123.100.20.1"]
 def main():
 
     # Parse commandline arguments
-    parser = argparse.ArgumentParser(description="Helper script to setup / bring down docker containers and bridges. \n \
-         Use -h to print available options. By default the setup mode is used.")
+    parser = argparse.ArgumentParser(description="The name of the operation to perform, options: setup, destroy. \
+            'setup' starts the docker containers, creates necessary bridges and configures the network. \
+            'destroy' removes all created containers and bridges.")
 
-    parser.add_argument("operationStr", action="store",
-                        help="The name of the operation to perform, options: setup or destroy")
+    parser.add_argument("mode", action="store", help="The name of the operation to perform, options: setup or destroy")
 
-    parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 1.0')
+    parser.add_argument("-b", "--build", action="store", help="Set build of minimal docker containers. Default value is 'False', set -b True if you're running the script for the first time in order to build docker image.")
+
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
     args = parser.parse_args()
 
-    operation = args.operationStr
+    if args.build:
+        build = args.build
+    operation = args.mode
 
     if operation == "setup":
         print("\n############################################\n")
@@ -46,7 +49,7 @@ def main():
         print("\n############################################\n")
         setup()
         print("\n############################################\n")
-        print("Work done.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
+        print("Setup finished.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
     elif operation == "destroy":
         print("\n############################################\n")
         print("Destroying stuff...")
@@ -55,7 +58,7 @@ def main():
         print("\n############################################\n")
         print("Work done.\nCheck out running containers with 'docker ps'. \nCheck out if bridges were removed with 'ifconfig'.")
     else:
-        print("No args given. Choose operation mode (setup or destroy).")
+        print("No args given. Choose operation mode ('setup' or 'destroy').")
 
     print("Exiting main.py")
 
@@ -74,7 +77,7 @@ def check_return_code(rcode, message):
 
 def check_return_code_chill(rcode, message):
     if rcode == 0:
-        # print("Success: %s" % message)
+        print("Success: %s \nTimestamp: %s" % (message, datetime.datetime.now()))
         return
 
     print("Error: %s \nTimestamp: %s" % (message, datetime.datetime.now()))
@@ -90,11 +93,12 @@ def setup():
     
     # If build param is set - build minimal Docker container (Ubuntu:20.04) with dummy script to keep container running
     if build:
-        r_code = subprocess.call("docker build -t %s docker/." % baseContainer, shell=True)
-        check_return_code(r_code, "Building minimal container %s" % baseContainer)
+        status = subprocess.call("docker build -t %s docker/." % baseContainer, shell=True)
+        check_return_code(status, "Building minimal container %s" % baseContainer)
 
     # start up containers
     for name in nodeNames:
+        # TODO: Add Volumes
         status += subprocess.call("docker run --privileged -dit --net=none --name %s %s" % (name, baseContainer), shell=True)
 
     check_return_code(status, "Running docker containers")
@@ -114,7 +118,7 @@ def setup():
             text_file.write(str(pid, 'utf-8'))
 
         # Create bridges
-        status += subprocess.call("bash scripts/setup_bridge_test.sh %s %s" % (nodeNames[i], nodeIPs[i]), shell=True)
+        status += subprocess.call("bash scripts/bridge_setup.sh %s %s" % (nodeNames[i], nodeIPs[i]), shell=True)
 
     check_return_code_chill(status, "Creating bridges and interfaces")
     
@@ -141,11 +145,11 @@ def destroy():
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
                 text = in_file.read()
-                r_code = subprocess.call("rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
-                check_return_code_chill(r_code, "Destroying docker bridges %s" % (node))
+                status = subprocess.call("rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
+                check_return_code_chill(status, "Destroying docker bridges %s" % (node))
 
-        r_code = subprocess.call("rm -rf %s" % (pidsDirectory + node), shell=True)
-        check_return_code_chill(r_code, "Removing pids directory")
+        status = subprocess.call("rm -rf %s" % (pidsDirectory + node), shell=True)
+        check_return_code_chill(status, "Removing pids directory")
         
     return
 

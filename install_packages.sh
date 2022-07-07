@@ -1,10 +1,9 @@
 #!/bin/sh
-# Install packages needed for ns3 and other simulation stuff
+# Setup "empty" VM -- install dependencies and ns3 (ns3 has to be run as non sudo)
 
-sudo apt-get update -y && apt-get upgrade -y
+apt-get update -y && apt-get upgrade -y
+apt install -y g++ python3 cmake python3-setuptools git tcpdump uml-utilities bridge-utils
 
+# vtun lxc
 
-sudo apt install -y g++ python3 cmake python3-setuptools git tcpdump vtun lxc uml-utilities bridge-utils
-
-git clone https://gitlab.com/nsnam/ns-3-allinone.git && cd ns-3-allinone && ./download.py -n ns-3.36 \
-    && ./build.py 
+sudo -u caesar git clone https://gitlab.com/nsnam/ns-3-allinone.git && cd ns-3-allinone && ./download.py -n ns-3.36 && ./build.py 
