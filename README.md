@@ -1,42 +1,48 @@
 # Detection of simulated Cyber Attacks against an IIoT Network using a SIEM System
 
+## Description
+
 SIEM systems are already in use as part of the Security Operations Center (SOC) within
 the organizations overall security strategy. They offer comprehensive security analyses
 and enable SIEM analysts to secure the network more efficiently. In the context of the
 IIoT , cyber-attacks are becoming more complex and using more points of attack, which
-is why a holistic view of enterprise security is crucial [VGD+21].
+is why a holistic view of enterprise security is crucial [VGD+21](https://link.springer.com/chapter/10.1007/978-3-030-81242-3_17).
 
-However, within the IIoT environment new security challenges arise due to the high
-connectivity, lack of security standards and heterogeneity of the IIoT devices [TS21,
-YG19]. Furthermore, the IIoT generates masses of unorganized, disparate data that
-cannot be processed and analyzed without a suitable system. Since SIEM systems are
-already often in use in conventional IT systems and have emerged to address the problem
-of monitoring, collecting, analyzing and categorizing machine data from different sources,
-SIEM represents an promising approach in order to help processing the accruing data
-within the IIoT.
+This project simulates an IIoT network. The network is simulated using the open source 
+[ns3](https://www.nsnam.org/) sofware. Within the project various attacks on different 
+nodes are implemented. With the help of Wazuh and Suricata the attack detection is performed.
 
-This leads to new research questions. Given the task of securing an IIoT network or
-application, such as an industrial plant, against cyber-attacks, an interesting question is
-how an enterprise can use a SIEM system in order to enhance the security of their IIoT
-network by using the opportunities offered by SIEM to retrieve the holistic view of the
-ongoing events and logs within their IIoT environment and detect cyber-attacks more
-efficiently. Therefore, this thesis’ general goal is to transfer SIEM to the IIoT and show,
-by using a simulated environment, how cyber-attacks against an IIoT network can be
-detected using a SIEM system
+## Installation (on Ubuntu 20.04 LTS)
 
-This leads to the following research question:
 
-“How can SIEM be transferred to the IIoT ?”
+#### 1. Install [Docker](https://docs.docker.com/engine/install/ubuntu/) (version 20.10.17, build 100c701) and [Docker-Compose](https://docs.docker.com/compose/install/) (version v2.6.0) as described in the respective docs
 
-Based on a theoretical review of the concepts of IIoT, SIEM and the role of simulations
-in cyber-security, basic fundamentals for this work are established. Thereby, the focus
-will be particularly on the originated risks and vulnerabilities within the IIoT . Building on
-this, an overview of SIEM systems in IIoT is given. Thereby challenges and requirements
-are elaborated. An simulation of cyber-attacks will be used to show the usage of SIEM
-systems in the IIoT environment. This brings up the following view on three relevant
-sub-areas on the overall research question:
+#### 2. Clone the repository:
+```bash
+git clone https://github.com/philippschwa/MA.git
+```
 
-- RQ1: What is the state of research and what distinguishes the IIoT from conven-
-tional IT systems from a security perspective?
-- RQ2: Which challenges arise with the adoption of SIEM to IIoT?
-- RQ3: How can simulations help to enhance the cyber-security?
+#### 3. Install ns3 in your /home/<user> directory (see READ.ME in xy)
+
+#### 4. Run the setup script (from the MA folder):
+It installs the necessary packages and the sets up the project.
+```bash
+sudo ./setup.sh
+```
+#### 5. Setup and start the simulation. (TODO: write one setup script, e.g. start.sh/py)
+First you have to start up the Wazuh Manager, Indexer and Dashboard. The docker compose file starts all necessary containers. Therfore run from the wazuh folder:
+```bash
+docker compose up
+```
+
+Second you have to setup the basics for the simulation (docker-ns3 folder):
+```bash
+sudo pyhton3 main.py setup
+```
+
+Third you have to start the simulated network with ns3 (from the /ns-3-allinone/ns-3.36):
+```bash
+./ns3 run --enable-sudo scratch/my-tap-csma.cc
+```
+
+
