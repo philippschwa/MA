@@ -5,57 +5,51 @@
 # options in this file, full documentation can be found at:
 # https://redmine.openinfosecfoundation.org/projects/suricata/wiki/Suricatayaml
 
-# NOTE: This version of the Suricata.yaml file is modified by the Emerging Threats
-# Pro Team to reflect the default assumptions on inspection depths. Comments have been
-# added to note where users may tune defaults back where performance is a
-# concern. The default stance of this config is maximum detection.
-# Decisions on features such as file extraction and pcap logging must be made
-# locally. These are left at defaults.
-
-# Number of packets allowed to be processed simultaneously.  Default is a
-# conservative 1024. A higher number will make sure CPU's/CPU cores will be
-# more easily kept busy, but may negatively impact caching.
-#
-# If you are using the CUDA pattern matcher (b2g_cuda below), different rules
-# apply. In that case try something like 4000 or more. This is because the CUDA
-# pattern matcher scans many packets in parallel.
 max-pending-packets: 5000
 
-# Runmode the engine should use. Please check --list-runmodes to get the available
-# runmodes for each packet acquisition method. Defaults to "autofp" (auto flow pinned
-# load balancing).
-#runmode: autofp
+##
+## Step 1: inform Suricata about your network
+##
 
-# Specifies the kind of flow load balancer used by the flow pinned autofp mode.
-#
-# Supported schedulers are:
-#
-# round-robin       - Flows assigned to threads in a round robin fashion.
-# active-packets    - Flows assigned to threads that have the lowest number of
-#                     unprocessed packets (default).
-# hash              - Flow alloted usihng the address hash. More of a random
-#                     technique. Was the default in Suricata 1.2.1 and older.
-#
-#autofp-scheduler: active-packets
+vars:
+  # more specific is better for alert accuracy and performance
+  address-groups:
+    HOME_NET: "[192.168.2.0/24, 123.100.10.0/24]"
+    #10.0.0.0/8,172.16.0.0/12]"
 
-# Default pid file.
-# Will use this file if no --pidfile in command options.
-#pid-file: /var/run/suricata.pid
+    #EXTERNAL_NET: "any"
+    EXTERNAL_NET: "!$HOME_NET"
+    
+    HTTP_SERVERS: "$HOME_NET"
+    SMTP_SERVERS: "$HOME_NET"
+    SQL_SERVERS: "$HOME_NET"
+    DNS_SERVERS: "$HOME_NET"
+    TELNET_SERVERS: "$HOME_NET"
+    AIM_SERVERS: "$EXTERNAL_NET"
+    DNP3_SERVER: "$HOME_NET"
+    DNP3_CLIENT: "$HOME_NET"
+    MODBUS_CLIENT: "$HOME_NET"
+    MODBUS_SERVER: "$HOME_NET"
+    ENIP_CLIENT: "$HOME_NET"
+    ENIP_SERVER: "$HOME_NET"
 
-# Preallocated size for packet. Default is 1514 which is the classical
-# size for pcap on ethernet. You should adjust this value to the highest
-# packet size (MTU + hardware header) on your system.
-#default-packet-size: 1514
+  port-groups:
+    HTTP_PORTS: "80,81,311,591,593,901,1220,1414,1830,2301,2381,2809,3128,3702,4343,5250,7001,7145,7510,7777,7779,8000,8008,8014,8028,8080,8088,8118,8123,8180,8181,8243,8280,8800,8888,8899,9080,9090,9091,9443,9999,11371,55555"
+    SHELLCODE_PORTS: "!80"
+    ORACLE_PORTS: 1521
+    SSH_PORTS: 22
+    FTP_PORTS: 21
+    DNP3_PORTS: 20000
+
+
+##
+## Step 2: select outputs to enable
+##
 
 # The default logging directory.  Any log or output file will be
 # placed here if its not specified with a full path name.  This can be
 # overridden with the -l command line parameter.
 default-log-dir: /var/log/suricata/
-
-# Unix command socket can be used to pass commands to suricata.
-# An external tool can then connect to get information from suricata
-# or trigger some modification of the engine.
-#unix-command: yes
 
 # Configure the type of alert (and other) logging you would like.
 outputs:
@@ -67,10 +61,9 @@ outputs:
       append: yes
       #filetype: regular # 'regular', 'unix_stream' or 'unix_dgram'
 
-
   # a line based log of HTTP requests (no alerts)
   - http-log:
-      enabled: yes
+      enabled: no
       filename: http.log
       append: yes
       #extended: yes     # enable this for extended logging information
@@ -80,7 +73,7 @@ outputs:
 
   # a line based log of TLS handshake parameters (no alerts)
   - tls-log:
-      enabled: yes  # Log TLS connections.
+      enabled: no  # Log TLS connections.
       filename: tls.log # File to store TLS logs.
       extended: yes # Log extended information like fingerprint
       certs-log-dir: certs # directory to store the certificates files
@@ -108,14 +101,11 @@ outputs:
   - pcap-log:
       enabled:  no
       filename: log.pcap
-
       # File size limit.  Can be specified in kb, mb, gb.  Just a number
       # is parsed as bytes.
       limit: 1000mb
-
       # If set to a value will enable ring buffer mode. Will keep Maximum of "max-files" of size "limit"
       max-files: 2000
-
       mode: normal # normal or sguil.
       #sguil-base-dir: /nsm_data/
       #ts-format: usec # sec or usec second format (default) is filename.sec usec is filename.sec.usec
@@ -324,14 +314,15 @@ af-packet:
     # will not be copied.
     #copy-mode: ips
     #copy-iface: eth1
-  - interface: br-node1
+  - interface: default
     threads: 1
     cluster-id: 98
     cluster-type: cluster_flow
     defrag: yes
-    use-nmap: yes
+    #use-nmap: yes
     #buffer-size: 32768
     #disable-promisc: no
+  
 
 # You can specify a threshold config file by setting "threshold-file"
 # to the path of the threshold config file:
@@ -827,58 +818,6 @@ rule-files:
 
 classification-file: /etc/suricata/classification.config
 reference-config-file: /etc/suricata/reference.config
-
-# Holds variables that would be used by the engine.
-vars:
-
-  # Holds the address group vars that would be passed in a Signature.
-  # These would be retrieved during the Signature address parsing stage.
-  address-groups:
-
-    HOME_NET: "[192.168.2.0/24]"
-    #10.0.0.0/8,172.16.0.0/12]"
-
-    #EXTERNAL_NET: "any"
-
-    HTTP_SERVERS: "$HOME_NET"
-
-    SMTP_SERVERS: "$HOME_NET"
-
-    SQL_SERVERS: "$HOME_NET"
-
-    DNS_SERVERS: "$HOME_NET"
-
-    TELNET_SERVERS: "$HOME_NET"
-
-    AIM_SERVERS: "$EXTERNAL_NET"
-
-    DNP3_SERVER: "$HOME_NET"
-
-    DNP3_CLIENT: "$HOME_NET"
-
-    MODBUS_CLIENT: "$HOME_NET"
-
-    MODBUS_SERVER: "$HOME_NET"
-
-    ENIP_CLIENT: "$HOME_NET"
-
-    ENIP_SERVER: "$HOME_NET"
-
-
-  # Holds the port group vars that would be passed in a Signature.
-  # These would be retrieved during the Signature port parsing stage.
-  port-groups:
-
-    HTTP_PORTS: "80,81,311,591,593,901,1220,1414,1830,2301,2381,2809,3128,3702,4343,5250,7001,7145,7510,7777,7779,8000,8008,8014,8028,8080,8088,8118,8123,8180,8181,8243,8280,8800,8888,8899,9080,9090,9091,9443,9999,11371,55555"
-
-    SHELLCODE_PORTS: "!80"
-
-    ORACLE_PORTS: 1521
-
-    SSH_PORTS: 22
-
-    DNP3_PORTS: 20000
-
 
 # Set the order of alerts bassed on actions
 # The default order is pass, drop, reject, alert
