@@ -31,7 +31,7 @@ def main():
 
     parser.add_argument("mode", action="store", help="The name of the operation to perform, options: setup or destroy")
 
-    parser.add_argument("-b", "--build", action="store", help="Set build of minimal docker containers. Default value is 'False', set -b True if you're running the script for the first time in order to build docker image.")
+    parser.add_argument("-b", "--build", action="store", help="Build docker image.Default value is 'False', set '-b True' if the image should be build.")
 
     parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
     args = parser.parse_args()

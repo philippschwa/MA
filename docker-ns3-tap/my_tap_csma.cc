@@ -76,7 +76,7 @@ int
 main (int argc, char *argv[])
 { 
   int numNodes = 3;
-  std::array<std::string, 3> nodeNames{"node1", "node2", "attacker"};
+  std::array<std::string, 3> tapNames{"tap-node1", "tap-node2", "tap-attacker"};
 
   CommandLine cmd (__FILE__);
   cmd.Parse (argc, argv);
@@ -120,7 +120,7 @@ main (int argc, char *argv[])
   tapBridge.SetAttribute ("Mode", StringValue ("UseBridge"));
 
   for (int i=0; i < numNodes; i++){
-    tapBridge.SetAttribute ("DeviceName", StringValue (nodeNames[i]));
+    tapBridge.SetAttribute ("DeviceName", StringValue (tapNames[i]));
     tapBridge.Install (nodes.Get (i), devices.Get (i));
   }
  
