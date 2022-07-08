@@ -16,9 +16,10 @@ RUN apt-get install -y apt-utils net-tools iproute2 iputils-ping nano
 # install attacker packages
 RUN apt-get install -y hping3 ettercap-common
 
-COPY init.sh ./init.sh
+COPY scripts/init.sh ./init.sh
 RUN chmod +x ./init.sh
 
-COPY attacks/ ./attacks
+COPY scripts/attacks/ ./attacks
+RUN chmod -R +x attacks/
 
 CMD ["./init.sh"]
