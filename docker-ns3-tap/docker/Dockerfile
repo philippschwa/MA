@@ -19,4 +19,6 @@ RUN apt-get install -y hping3 ettercap-common
 COPY init.sh ./init.sh
 RUN chmod +x ./init.sh
 
+COPY ../attacks /ma/attacks
+
 CMD ["./init.sh"]
