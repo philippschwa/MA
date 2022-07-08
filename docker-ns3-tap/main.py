@@ -14,8 +14,8 @@ pidsDirectory = "./var/pid/"
 build = False
 
 # Node Configurations
-nodeNames = ["node1", "node2"]
-nodeIPs = ["123.100.10.1", "123.100.20.1"]
+nodeNames = ["node1", "node2", "attacker"]
+nodeIPs = ["123.100.10.1", "123.100.20.1", "123.100.30.1"]
 
 
 ################################################################################

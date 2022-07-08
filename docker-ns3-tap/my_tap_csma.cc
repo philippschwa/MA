@@ -60,6 +60,8 @@
 //
 #include <iostream>
 #include <fstream>
+#include <array>
+#include <string>
 
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
@@ -72,7 +74,10 @@ NS_LOG_COMPONENT_DEFINE ("TapCsmaVirtualMachineExample");
 
 int 
 main (int argc, char *argv[])
-{
+{ 
+  int numNodes = 3;
+  std::array<std::string, 3> nodeNames{"node1", "node2", "attacker"};
+
   CommandLine cmd (__FILE__);
   cmd.Parse (argc, argv);
 
@@ -89,9 +94,9 @@ main (int argc, char *argv[])
   // on the left side of the network; and the second will represent the VM on 
   // the right side.
   //
-   NS_LOG_INFO("Creating nodes...");
+  NS_LOG_INFO("Creating nodes...");
   NodeContainer nodes;
-  nodes.Create (2);
+  nodes.Create (numNodes);
 
   //
   // Use a CsmaHelper to get a CSMA channel created, and the needed net 
@@ -110,23 +115,25 @@ main (int argc, char *argv[])
   // extended into ns-3.  The install method essentially bridges the specified
   // tap to the specified CSMA device.
   //
-   NS_LOG_INFO("Installing tap-bridges...");
+  NS_LOG_INFO("Installing tap-bridges...");
   TapBridgeHelper tapBridge;
   tapBridge.SetAttribute ("Mode", StringValue ("UseBridge"));
-  tapBridge.SetAttribute ("DeviceName", StringValue ("tap-node1"));
-  tapBridge.Install (nodes.Get (0), devices.Get (0));
 
-  //
+  for (int i=0; i < numNodes; i++){
+    tapBridge.SetAttribute ("DeviceName", StringValue (nodeNames[i]));
+    tapBridge.Install (nodes.Get (i), devices.Get (i));
+  }
+ 
   // Connect the right side tap to the right side CSMA device on the right-side
   // ghost node.
   //
-  tapBridge.SetAttribute ("DeviceName", StringValue ("tap-node2"));
-  tapBridge.Install (nodes.Get (1), devices.Get (1));
+  //tapBridge.SetAttribute ("DeviceName", StringValue ("tap-node2"));
+  //tapBridge.Install (nodes.Get (1), devices.Get (1));
 
   //
   // Run the simulation for ten minutes to give the user time to play around
   //
-   NS_LOG_INFO("Starting simulation...");
+  NS_LOG_INFO("Starting simulation...");
   Simulator::Stop (Seconds (600.));
   Simulator::Run ();
   Simulator::Destroy ();
