@@ -324,13 +324,14 @@ af-packet:
     # will not be copied.
     #copy-mode: ips
     #copy-iface: eth1
-  #- interface: eth1
-   # threads: 1
-   # cluster-id: 98
-   # cluster-type: cluster_flow
-   # defrag: yes
-    # buffer-size: 32768
-    # disable-promisc: no
+  - interface: br-node1
+    threads: 1
+    cluster-id: 98
+    cluster-type: cluster_flow
+    defrag: yes
+    use-nmap: yes
+    #buffer-size: 32768
+    #disable-promisc: no
 
 # You can specify a threshold config file by setting "threshold-file"
 # to the path of the threshold config file:
@@ -685,7 +686,7 @@ logging:
 # PF_RING configuration. for use with native PF_RING support
 # for more info see http://www.ntop.org/PF_RING.html
 pfring:
-  - interface: eth0
+  - interface: enp1s0
     # Number of receive threads (>1 will enable experimental flow pinned
     # runmode)
     threads: 1
