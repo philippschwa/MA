@@ -74,8 +74,8 @@ NS_LOG_COMPONENT_DEFINE ("TapCsmaVirtualMachineExample");
 int 
 main (int argc, char *argv[])
 { 
-  int numNodes = 3;
-  std::array<std::string, 3> tapNames{"tap-node1", "tap-node2", "tap-attacker"};
+  int numNodes = 6;
+  std::array<std::string, 3> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-attacker"};
 
   CommandLine cmd (__FILE__);
   cmd.Parse (argc, argv);

@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from ipaddress import ip_address
 import sys
 import subprocess
 import os
@@ -14,8 +13,8 @@ pidsDirectory = "./var/pid/"
 build = False
 
 # Node Configurations
-nodeNames = ["node1", "node2", "attacker"]
-nodeIPs = ["123.100.10.1", "123.100.20.1", "123.100.30.1"]
+nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.20.1", "123.100.30.1"]
 
 
 ################################################################################
@@ -105,7 +104,7 @@ def setup():
     check_return_code(status, "Running docker containers")
     
 
-    # create bridges and the TAP for NS3 & VETH interfaces docker containers
+    # create bridges and TAPs for NS3 & VETH interfaces for docker containers
     if not os.path.exists(pidsDirectory):
         os.makedirs(pidsDirectory)
 
