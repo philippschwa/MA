@@ -30,8 +30,7 @@
 // HOWTO, but looks like the following:
 //
 //  +----------+                           +----------+
-//  | virtual  |                           | virtual  |
-//  |  Linux   |                           |  Linux   |
+//  |  Docker  |                           |  Docker  |
 //  |   Host   |                           |   Host   |
 //  |          |                           |          |
 //  |   eth0   |                           |   eth0   |
@@ -42,9 +41,9 @@
 //  |  Bridge  |                           |  Bridge  |
 //  +----------+                           +----------+
 //       |                                      |
-//  +------------+                       +-------------+
-//  | "tap-left" |                       | "tap-right" |
-//  +------------+                       +-------------+
+//  +-------------+                      +--------------+
+//  | "tap-node1" |                      |"tap-attacker"|
+//  +-------------+                      +--------------+
 //       |           n0            n1           |
 //       |       +--------+    +--------+       |
 //       +-------|  tap   |    |  tap   |-------+
@@ -90,9 +89,7 @@ main (int argc, char *argv[])
   GlobalValue::Bind ("ChecksumEnabled", BooleanValue (true));
   LogComponentEnable("TapCsmaVirtualMachineExample", LOG_LEVEL_ALL);
   //
-  // Create two ghost nodes.  The first will represent the virtual machine host
-  // on the left side of the network; and the second will represent the VM on 
-  // the right side.
+  // Create the ghost nodes.
   //
   NS_LOG_INFO("Creating nodes...");
   NodeContainer nodes;
@@ -100,17 +97,13 @@ main (int argc, char *argv[])
 
   //
   // Use a CsmaHelper to get a CSMA channel created, and the needed net 
-  // devices installed on both of the nodes.  The data rate and delay for the
-  // channel can be set through the command-line parser.  For example,
+  // devices installed on both of the nodes. 
   //
-  // ./ns3 run "tap=csma-virtual-machine --ns3::CsmaChannel::DataRate=10000000"
-  //
-  CsmaHelper csma;
   NetDeviceContainer devices = csma.Install (nodes);
 
   //
-  // Use the TapBridgeHelper to connect to the pre-configured tap devices for 
-  // the left side.  We go with "UseBridge" mode since the CSMA devices support
+  // Use the TapBridgeHelper to connect to the pre-configured tap devices.
+  // We go with "UseBridge" mode since the CSMA devices support
   // promiscuous mode and can therefore make it appear that the bridge is 
   // extended into ns-3.  The install method essentially bridges the specified
   // tap to the specified CSMA device.
@@ -123,12 +116,6 @@ main (int argc, char *argv[])
     tapBridge.SetAttribute ("DeviceName", StringValue (tapNames[i]));
     tapBridge.Install (nodes.Get (i), devices.Get (i));
   }
- 
-  // Connect the right side tap to the right side CSMA device on the right-side
-  // ghost node.
-  //
-  //tapBridge.SetAttribute ("DeviceName", StringValue ("tap-node2"));
-  //tapBridge.Install (nodes.Get (1), devices.Get (1));
 
   //
   // Run the simulation for ten minutes to give the user time to play around
