@@ -12,6 +12,8 @@ This project simulates an IIoT network. The network is simulated using the open 
 [ns3](https://www.nsnam.org/) sofware. Within the project various attacks on different 
 nodes are implemented. With the help of Wazuh and Suricata the attack detection is performed.
 
+## Architecture
+
 ## Installation (on Ubuntu 20.04 LTS)
 
 
