@@ -1,29 +1,3 @@
-## Installation
-
-First we need to install the dependencies (1), then we install ns3 (2). Finally we will build the ns3 project (3). For further information and other installation methods, see also the installation guide of [ns3](https://www.nsnam.org/wiki/Installation). But notice that there is no warranty that my project it will work with other intallation methods (e.g. the installtion with bake did not work for me), further we are only installing minimum mandatory packages for ns3.
-
-NOTE: If you cloned the whole Repository, check if you have the dependencies installed and skip to (3).
-
-### (1) Install dependencies:
-Run as sudo:
-```bash
-apt-get update -y && apt-get upgrade -y
-apt install -y g++ python3 python3-pip cmake python3-setuptools git tcpdump uml-utilities bridge-utils
-```
-
-### (2) Install ns3 (version 3.36)
-Do NOT run commands as sudo (using sudo will end in an error):
-```bash 
-git clone https://gitlab.com/nsnam/ns-3-allinone.git 
-cd ns-3-allinone 
-./download.py -n ns-3.36 
-```
-### (3) Build ns3
-From the ns-3-allinone directory run build.py in order to build the ns3 project.
-```bash
-./build.py 
-```
-
 ## Versuchslogbuch:
 ### Versuch 1: 
 
