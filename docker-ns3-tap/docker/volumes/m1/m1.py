@@ -72,10 +72,10 @@ def main():
 
     try:
         while True:
-            print("m2 -- Waiting for connections...")
+            print("m1 -- Waiting for connections...")
             con, addr = soc.accept()
 
-            print("m2 -- starting threat with " + addr[0])
+            print("m1 -- starting threat with " + addr[0])
             thread = threading.Thread(target=handle_conn, args=(con, addr))
             thread.start()
 
