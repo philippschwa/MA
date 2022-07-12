@@ -11,10 +11,10 @@ BUFFER_SIZE = 1024
 
 
 def execute_process():
-    print("Starting with my process.")
+    print("Started cleaning.")
     counter = 0
     while counter < 5:
-        print("Processing xy")
+        print("Processing %s" % (counter))
         time.sleep(20)
         if random.randint(0, 1000) % 10 < 9:
             break

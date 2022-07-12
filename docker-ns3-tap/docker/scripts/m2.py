@@ -14,7 +14,7 @@ def execute_process():
     print("Starting high voltage test.")
     counter = 0
     while counter < 5:
-        print("Processing " + counter)
+        print("Processing %s" % (counter))
         time.sleep(20)
         if random.randint(0, 1000) % 10 < 9:
             break
