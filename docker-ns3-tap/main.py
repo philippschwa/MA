@@ -107,7 +107,7 @@ def setup():
     # start up containers
     for name in nodeNames:
         # TODO: Add Volumes
-        status += subprocess.call("docker run --privileged -dit --net=none -v '$pwd'/docker/volumes/%s:/ma --name %s %s" %
+        status += subprocess.call("docker run --privileged -dit --net=none -v '$(pwd)'/docker/volumes/%s:/ma --name %s %s" %
                                   (name, name, baseContainer), shell=True)
 
     check_return_code(status, "Running docker containers")
