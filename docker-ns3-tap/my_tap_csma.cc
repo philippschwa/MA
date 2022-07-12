@@ -75,7 +75,7 @@ int
 main (int argc, char *argv[])
 { 
   int numNodes = 6;
-  std::array<std::string, 3> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-attacker"};
+  std::array<std::string, 6> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-attacker"};
 
   CommandLine cmd (__FILE__);
   cmd.Parse (argc, argv);
@@ -99,6 +99,7 @@ main (int argc, char *argv[])
   // Use a CsmaHelper to get a CSMA channel created, and the needed net 
   // devices installed on both of the nodes. 
   //
+  CsmaHelper csma;
   NetDeviceContainer devices = csma.Install (nodes);
 
   //

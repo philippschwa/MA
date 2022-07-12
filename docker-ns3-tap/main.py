@@ -14,7 +14,8 @@ build = False
 
 # Node Configurations
 nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.20.1", "123.100.30.1"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
+           "123.100.10.4", "123.100.20.1", "123.100.30.1"]
 
 
 ################################################################################
@@ -28,11 +29,14 @@ def main():
             'setup' starts the docker containers, creates necessary bridges and configures the network. \
             'destroy' removes all created containers and bridges.")
 
-    parser.add_argument("mode", action="store", help="The name of the operation to perform, options: setup or destroy")
+    parser.add_argument("mode", action="store",
+                        help="The name of the operation to perform, options: setup or destroy")
 
-    parser.add_argument("-b", "--build", action="store", help="Build docker image. Default value is 'False', set '-b True' if the image should be build.")
+    parser.add_argument("-b", "--build", action="store",
+                        help="Build docker image. Default value is 'False', set '-b True' if the image should be build.")
 
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
+    parser.add_argument('-v', '--version', action='version',
+                        version='%(prog)s 1.0')
     args = parser.parse_args()
 
     if args.build:
@@ -68,8 +72,9 @@ def main():
 ################################################################################
 def check_return_code(rcode, message):
     if rcode == 0:
-        print("Success: %s \nTimestamp: %s" % (message, datetime.datetime.now()))
-        return 
+        print("Success: %s \nTimestamp: %s" %
+              (message, datetime.datetime.now()))
+        return
 
     print("Error: %s" % message)
     sys.exit(2)
@@ -77,7 +82,8 @@ def check_return_code(rcode, message):
 
 def check_return_code_chill(rcode, message):
     if rcode == 0:
-        print("Success: %s \nTimestamp: %s" % (message, datetime.datetime.now()))
+        print("Success: %s \nTimestamp: %s" %
+              (message, datetime.datetime.now()))
         return
 
     print("Error: %s \nTimestamp: %s" % (message, datetime.datetime.now()))
@@ -90,19 +96,21 @@ def check_return_code_chill(rcode, message):
 ################################################################################
 def setup():
     status = 0
-    
+
     # If build param is set - build minimal Docker container (Ubuntu:20.04) with dummy script to keep container running
     if build:
-        status = subprocess.call("docker build -t %s docker/." % baseContainer, shell=True)
-        check_return_code(status, "Building minimal container %s" % baseContainer)
+        status = subprocess.call(
+            "docker build -t %s docker/." % baseContainer, shell=True)
+        check_return_code(
+            status, "Building minimal container %s" % baseContainer)
 
     # start up containers
     for name in nodeNames:
         # TODO: Add Volumes
-        status += subprocess.call("docker run --privileged -dit --net=none --name %s %s" % (name, baseContainer), shell=True)
+        status += subprocess.call("docker run --privileged -dit --net=none --name %s %s" %
+                                  (name, baseContainer), shell=True)
 
     check_return_code(status, "Running docker containers")
-    
 
     # create bridges and TAPs for NS3 & VETH interfaces for docker containers
     if not os.path.exists(pidsDirectory):
@@ -110,20 +118,23 @@ def setup():
 
     for i in range(0, len(nodeNames)):
         # save PID of container, we need it later to destroy them correctly (but maybe not, because docker might rm veth interfaces by default...)
-        cmd = ['docker', 'inspect', '--format', "'{{ .State.Pid }}'", nodeNames[i]]
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cmd = ['docker', 'inspect', '--format',
+               "'{{ .State.Pid }}'", nodeNames[i]]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         out, err = p.communicate()
         pid = out[1:-2].strip()
         with open(pidsDirectory + nodeNames[i], "w") as text_file:
             text_file.write(str(pid, 'utf-8'))
 
         # Create bridges
-        status += subprocess.call("bash scripts/bridge_setup.sh %s %s" % (nodeNames[i], nodeIPs[i]), shell=True)
+        status += subprocess.call("bash scripts/bridge_setup.sh %s %s" %
+                                  (nodeNames[i], nodeIPs[i]), shell=True)
 
     # deactivate bridge stuff
     status += subprocess.call("bash scripts/bridge_end_setup.sh", shell=True)
     check_return_code_chill(status, "Creating bridges and interfaces")
-    
+
     return
 
 
@@ -143,16 +154,17 @@ def destroy():
 
         check_return_code_chill(
             status, "Destroying container, bridge or tap interface %s" % (node))
-        
+
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
                 text = in_file.read()
-                status = subprocess.call("rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
+                status = subprocess.call(
+                    "rm -rf /var/run/netns/%s" % (text.strip()), shell=True)
 
-
-        status = subprocess.call("rm -rf %s" % (pidsDirectory + node), shell=True)
+        status = subprocess.call("rm -rf %s" %
+                                 (pidsDirectory + node), shell=True)
         check_return_code_chill(status, "Removing pids directory")
-        
+
     return
 
 
