@@ -23,7 +23,7 @@ def execute_process():
         print("Process failed. Starting over...")
 
     print("m1 -- Process finished.")
-    return "m1 finished"
+    return "m1 -- finished"
 
 
 def main():
@@ -44,3 +44,5 @@ def main():
 
     finally:
         soc.close()
+
+main()

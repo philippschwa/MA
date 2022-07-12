@@ -11,7 +11,7 @@ BUFFER_SIZE = 1024
 
 
 def execute_process():
-    print("Starting high voltage test.")
+    print("Starting laser labeling.")
     counter = 0
     while counter < 5:
         print("Processing " + counter)
@@ -22,7 +22,7 @@ def execute_process():
         print("Process failed. Starting over")
 
     print("Process finished")
-    return "m2 -- finished"
+    return "m3 -- finished"
 
 
 def inform_plc(msg):
@@ -64,16 +64,16 @@ def main():
     host = ''
     port = 5005
 
-    print("m2 -- Setting up socket...")
+    print("m3 -- Setting up socket...")
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.bind((host, port))
     soc.listen()
 
     while True:
-        print("m2 -- Waiting for connections...")
+        print("m3 -- Waiting for connections...")
         con, addr = soc.accept()
 
-        print("m2 -- starting threat with " + addr[0])
+        print("m3 -- starting threat with " + addr[0])
         thread = threading.Thread(target=handle_conn, args=(con, addr))
         thread.start()
 

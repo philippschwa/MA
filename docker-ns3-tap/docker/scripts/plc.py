@@ -42,18 +42,21 @@ def handle_conn(con, addr):
         con.send(ret_msg.encode())
         
         # Send confirmation message back to Sender; Inform next machine to start working
-        if addr[0] == nodeIPs[0]:
+        if addr[0] == nodeIPs[0] and msg == "m1 -- finished":
             next_machine = nodeIPs[1]
-        elif addr[0] == nodeIPs[1]:
-            next_machine = nodeIPs[2]
-        elif addr[0] == nodeIPs[2]:
+        elif addr[0] == nodeIPs[1] and msg == "m2 -- finished":
+            next_machine = nodeIPs[2] 
+        elif addr[0] == nodeIPs[2] and msg == "m3 -- finished":
             next_machine = nodeIPs[3]
-        elif addr[0] == nodeIPs[3]:
+        elif addr[0] == nodeIPs[3] and msg == "m4 -- finished":
             next_machine = nodeIPs[1]
-     
-        # Inform next machine to start their process
-        thread = threading.Thread(target=inform_next_machine, args=(next_machine,))
-        thread.start()
+
+        if next_machine != "":
+            # Inform next machine to start their process
+            thread = threading.Thread(target=inform_next_machine, args=(next_machine,))
+            thread.start()
+            asdf = "Informing next machine."
+            con.send(asdf.encode())
 
     finally:
         print("Ending threat and closing connection with " + addr[0])
