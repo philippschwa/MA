@@ -57,7 +57,7 @@ def handle_conn(con, addr):
         else:
             print("ERROR: Invalid connection.")
     finally:
-        con.close
+        con.close()
 
 
 def main():
@@ -69,13 +69,15 @@ def main():
     soc.bind((host, port))
     soc.listen()
 
-    while True:
-        print("m3 -- Waiting for connections...")
-        con, addr = soc.accept()
+    try:
+        while True:
+            print("m3 -- Waiting for connections...")
+            con, addr = soc.accept()
 
-        print("m3 -- starting threat with " + addr[0])
-        thread = threading.Thread(target=handle_conn, args=(con, addr))
-        thread.start()
-
+            print("m3 -- starting threat with " + addr[0])
+            thread = threading.Thread(target=handle_conn, args=(con, addr))
+            thread.start()
+    finally:
+        soc.close
 
 main()

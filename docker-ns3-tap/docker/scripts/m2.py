@@ -57,25 +57,26 @@ def handle_conn(con, addr):
         else:
             print("ERROR: Invalid connection.")
     finally:
-        con.close
+        con.close()
 
 
 def main():
     host = ''
-    port = 5005
 
     print("m2 -- Setting up socket...")
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.bind((host, port))
+    soc.bind((host, PLC_PORT))
     soc.listen()
 
-    while True:
-        print("m2 -- Waiting for connections...")
-        con, addr = soc.accept()
+    try:
+        while True:
+            print("m2 -- Waiting for connections...")
+            con, addr = soc.accept()
 
-        print("m2 -- starting threat with " + addr[0])
-        thread = threading.Thread(target=handle_conn, args=(con, addr))
-        thread.start()
-
+            print("m2 -- starting threat with " + addr[0])
+            thread = threading.Thread(target=handle_conn, args=(con, addr))
+            thread.start()
+    finally:
+        soc.close
 
 main()
