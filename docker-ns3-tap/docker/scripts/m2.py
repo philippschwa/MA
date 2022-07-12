@@ -47,7 +47,7 @@ def handle_conn(con, addr):
 
         if addr[0] == PLC_IP and msg == "Start":
             ret_msg = execute_process()
-            thread = threading.Thread(target=inform_plc, args=(ret_msg))
+            thread = threading.Thread(target=inform_plc, args=(ret_msg,))
             thread.start()
             #con.send(ret_msg.encode())
         # Im Moment werden nur "Start" Nachrichten gesendet - evtl noch überarbeiten
