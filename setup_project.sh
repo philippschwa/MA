@@ -2,7 +2,7 @@
 
 # Install dependencies
 sudo apt-get update -y 
-sudo apt install -y g++ python3 python3-pip cmake python3-setuptools git tcpdump uml-utilities bridge-utils jq
+sudo apt install -y g++ python3 python3-pip cmake python3-setuptools git tcpdump uml-utilities bridge-utils jq iproute2
 
 # Install ns3
 git clone https://gitlab.com/nsnam/ns-3-allinone.git && cd ns-3-allinone \
