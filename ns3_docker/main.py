@@ -110,6 +110,8 @@ def setup():
         status += subprocess.call('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/%s --name %s %s' %
                                   (name, "test", name, baseContainer), shell=True)
 
+        status += subprocess.call('docker cp ./docker/volumes/%s/%s.py %s:/ma/'% (name, name, name), shell=True)
+
     # docker run --privileged -dit --net=none -v $(pwd)/docker/volumes/m1/:/ma/ --name asdfjklö myminimalubuntu
 
     check_return_code(status, "Running docker containers")
