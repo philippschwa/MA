@@ -5,8 +5,6 @@ import threading
 import time
 import random
 
-from ns3_docker.docker.volumes.m1.m1 import PROCESS_TIME, WAIT_TIME
-
 PLC_IP = "123.100.20.1"
 PLC_PORT = 5005
 BUFFER_SIZE = 1024
