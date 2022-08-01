@@ -7,6 +7,10 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
+sleep 20
+python3 process.py
+
+
 # Dummy process to keep container running
 echo "########## Dummy process started! ##########"
 tail -f /dev/null
