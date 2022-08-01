@@ -8,21 +8,24 @@ import random
 PLC_IP = "123.100.20.1"
 PLC_PORT = 5005
 BUFFER_SIZE = 1024
+PROCESS_TIME = 20
+WAIT_TIME = 5
 
 
-def execute_process():
-    print("Started cleaning.")
-    counter = 0
-    while counter < 5:
-        print("Processing %s" % (counter))
-        time.sleep(20)
-        if random.randint(0, 1000) % 10 < 9:
-            break
-        counter += 1
-        print("Process failed. Starting over")
+def clean_component():
+    print("[m4] -- Starting labeling process.")
+    print("[m4] -- Equiping component & reading component id.")
+    time.sleep(WAIT_TIME)
 
-    print("Process finished")
-    return "m4 -- finished"
+    print("[m4] -- Cleaning component.")
+    time.sleep(PROCESS_TIME)
+
+    if random.randint(0, 1000) % 100 < 98:
+        print("[m4] -- Finished cleaning. Informing PLC.")
+        return "set_result=True"
+    else:
+        print("[m4] -- Cleaning failed. Informing PLC.")
+        return "set_result=False"
 
 
 def inform_plc(msg):
@@ -30,10 +33,7 @@ def inform_plc(msg):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((PLC_IP, 5005))
         soc.send(msg.encode())
-        ret_msg = soc.recv(1024).decode()
-        print(PLC_IP + " responded: " + ret_msg)
     finally:
-        print("Ending threat and closing connection with " + PLC_IP)
         soc.close()
 
 
@@ -43,38 +43,36 @@ def handle_conn(con, addr):
         if not msg:
             con.close()
             return
-        print(addr[0]+" sends: " + msg)
+        print("[m4] -- Received message: " + msg)
 
-        if addr[0] == PLC_IP and msg == "Start":
-            ret_msg = execute_process()
+        if addr[0] == PLC_IP and msg == "can_produce=True":
+            ret_msg = clean_component()
             thread = threading.Thread(target=inform_plc, args=(ret_msg,))
             thread.start()
-            #con.send(ret_msg.encode())
-        # Im Moment werden nur "Start" Nachrichten gesendet - evtl noch überarbeiten
-        elif addr[0] == PLC_IP and msg == "Failure":
-            ret_msg = "Waiting for next order."
-            con.send(ret_msg.encode())
+            # con.send(ret_msg.encode())
         else:
-            print("ERROR: Invalid connection.")
+            print("[m4] -- ERROR: Invalid connection.")
     finally:
         con.close()
 
 
 def main():
     host = ''
-    port = 5005
 
-    print("m4 -- Setting up socket...")
+    # wait for all containers to be set up
+    time.sleep(10)
+
+    print("[m4] -- Setting up socket...")
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.bind((host, port))
+    soc.bind((host, PLC_PORT))
     soc.listen()
 
     try:
         while True:
-            print("m4 -- Waiting for connections...")
+            print("[m4] -- Waiting for connections...")
             con, addr = soc.accept()
 
-            print("m4 -- starting threat with " + addr[0])
+            print("[m4] -- Received connection from: " + addr[0])
             thread = threading.Thread(target=handle_conn, args=(con, addr))
             thread.start()
     finally:

@@ -4,6 +4,7 @@
 import socket
 import threading
 import random
+import time
 
 # Node Configurations
 nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
@@ -12,24 +13,22 @@ nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
 
 
 def inform_machine(ip):
-    
     try:
-        msg = "Start"
+        print("[PLC] -- Informing next machine.")
+        msg = "can_produce=True"
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((ip, 5005))
         soc.send(msg.encode())
-        ret_msg = soc.recv(1024).decode()
-        print(ip + " responded: " + ret_msg)
+
     finally:
-        print("Ending threat and closing connection with " + ip)
+        print("[PLC] -- Closing connection with " + ip)
         soc.close()
 
 
 def handle_conn(con, addr):
     
     next_machine = ""
-    ret_msg = "Received your message!"
 
     try:
         # load message
@@ -37,29 +36,35 @@ def handle_conn(con, addr):
         if not msg:
             con.close()
             return
-        print(addr[0]+" sends: " + msg)
-        # Send receive confirmation
-        con.send(ret_msg.encode())
+        print("[PLC] -- Received message: " + msg)
         
-        # Send confirmation message back to Sender; Inform next machine to start working
-        if addr[0] == nodeIPs[0] and msg == "m1 -- finished":
-            next_machine = nodeIPs[1]
-        elif addr[0] == nodeIPs[1] and msg == "m2 -- finished":
-            next_machine = nodeIPs[2] 
-        elif addr[0] == nodeIPs[2] and msg == "m3 -- finished":
-            next_machine = nodeIPs[3]
-        elif addr[0] == nodeIPs[3] and msg == "m4 -- finished":
+        
+        # Inform next machine to start working
+        if msg == "set_result=True":
+            if addr[0] == nodeIPs[0]:
+                next_machine = nodeIPs[1]
+            elif addr[0] == nodeIPs[1]:
+                next_machine = nodeIPs[2] 
+            elif addr[0] == nodeIPs[2]:
+                next_machine = nodeIPs[3]
+            elif addr[0] == nodeIPs[3]:
+                print("[PLC] -- Process finished. Starting with next component.")
+                next_machine = nodeIPs[0]
+
+        # If error message received, PLC informs technician and tells m1 to start with the next component
+        elif msg == "set_result=False":
+            print("[PLC] -- Recived Error Code. Discarding component and informing technician.")
+            time.sleep(5)
+            print("[PLC] -- Informing machine 1.")
             next_machine = nodeIPs[0]
 
         if next_machine != "":
-            # Inform next machine to start their process
+            # Inform next machine to start with their process
             thread = threading.Thread(target=inform_machine, args=(next_machine,))
             thread.start()
-            asdf = "Informing next machine."
-            con.send(asdf.encode())
-
+        
     finally:
-        print("Ending threat and closing connection with " + addr[0])
+        print("[PLC]-- Closing connection with " + addr[0])
         con.close()
 
 
@@ -67,21 +72,23 @@ def main():
     host = ''
     port = 5005
 
-    print("PLC -- Setting up socket...")
+    print("[PLC] -- Setting up socket.")
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.bind((host, port))
     soc.listen()
 
     try:
         # inform m1 to start
+        print("[PLC] -- Informing machine 1")
+        time.sleep(15)
         thread = threading.Thread(target=inform_machine, args=(nodeIPs[0],))
         thread.start()
         
         while True:
-            print("PLC -- Waiting for connections...")
+            print("[PLC] -- Waiting for connections.")
             con, addr = soc.accept()
 
-            print("PLC -- Started threat with " + addr[0])
+            print("[PLC] -- Received connection from: " + addr[0])
             thread = threading.Thread(target=handle_conn, args=(con, addr))
             thread.start()
     finally:

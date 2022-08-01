@@ -107,8 +107,8 @@ def setup():
     # start up containers
     for name in nodeNames:
         # TODO: Add Volumes
-        status += subprocess.call('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/ --name %s %s' %
-                                  (name, name, baseContainer), shell=True)
+        status += subprocess.call('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/%s --name %s %s' %
+                                  (name, name, name, baseContainer), shell=True)
 
     # docker run --privileged -dit --net=none -v $(pwd)/docker/volumes/m1/:/ma/ --name asdfjklö myminimalubuntu
 
