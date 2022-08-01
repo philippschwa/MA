@@ -29,7 +29,8 @@ If you have cloned the repo, you can ether use the setup_project.sh script to in
 Run as sudo:
 ```bash
 apt-get update -y && apt-get upgrade -y
-apt install -y g++ python3 python3-pip cmake python3-setuptools git tcpdump uml-utilities bridge-utils
+apt install -y g++ python3 python3-pip cmake python3-setuptools git \
+  tcpdump uml-utilities bridge-utils jq iproute2
 ```
 
 #### 4. Install and build ns3 (version 3.36)
