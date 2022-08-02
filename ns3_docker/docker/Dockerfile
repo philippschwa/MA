@@ -1,13 +1,13 @@
 
 ############################################################
-# Minimal Docker Container for testing purposes
-# Later here should be the attacks and stuff
+# Minimal Docker Container for simulation
 ############################################################
 
 FROM ubuntu:20.04
 
 USER root
 WORKDIR /ma
+RUN mkdir logs
 
 # Update Ubuntu Repo 
 RUN apt-get update -y && apt-get upgrade -y

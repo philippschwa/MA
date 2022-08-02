@@ -4,9 +4,11 @@ import socket
 import random
 import time
 import threading
+import logging as log
 
 
 PLC_IP = "123.100.20.1"
+M1_IP = "123.100.10.1"
 PLC_PORT = 5005
 BUFFER_SIZE = 1024
 PROCESS_TIME = 20
@@ -25,9 +27,11 @@ def perform_leakage_test():
 
     if random.randint(0, 1000) % 100 < 98:
         print("[m1] -- Finished leakage test. Informing PLC.")
+        log.info("%s --> %s: [m1] -- Finished leakage test. Informing PLC.", M1_IP, PLC_IP)
         return "set_result=True"
     else:
         print("[m1] -- Leakeage test failed. Informing PLC.")
+        log.error("%s --> %s: [m1] -- Leakeage test failed. Informing PLC.", M1_IP, PLC_IP)
         return "set_result=False"
 
 
@@ -47,6 +51,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[m1] -- Received message: " + msg)
+        log.info("%s --> %s: [m1] -- Received message: %s", addr[0], M1_IP, msg)
 
         if addr[0] == PLC_IP and msg == "can_produce=True":
             ret_msg = perform_leakage_test()
@@ -60,6 +65,9 @@ def handle_conn(con, addr):
 
 
 def main():
+    # Setup logging
+    log.basicConfig(filename='logs/plc.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
+   
     host = ''
 
     # wait for all containers to be set up

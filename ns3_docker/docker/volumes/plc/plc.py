@@ -3,7 +3,7 @@
 
 import socket
 import threading
-import random
+import logging as log
 import time
 
 # Node Configurations
@@ -15,6 +15,7 @@ nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
 def inform_machine(ip):
     try:
         print("[PLC] -- Informing next machine.")
+        log.info("%s --> %s: [PLC] -- Informing next machine.", nodeIPs[4], ip)
         msg = "can_produce=True"
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,7 +38,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[PLC] -- Received message: " + msg)
-        
+        log.info("%s --> %s: [PLC] -- Received message: %s", addr[0], nodeIPs[4], msg)
         
         # Inform next machine to start working
         if msg == "set_result=True":
@@ -49,11 +50,13 @@ def handle_conn(con, addr):
                 next_machine = nodeIPs[3]
             elif addr[0] == nodeIPs[3]:
                 print("[PLC] -- Process finished. Starting with next component.")
-                next_machine = nodeIPs[0]
+                log.info("[PLC] Process finished. Starting with next component.") #############################################
+                next_machine = nodeIPs[0] 
 
         # If error message received, PLC informs technician and tells m1 to start with the next component
         elif msg == "set_result=False":
             print("[PLC] -- Recived Error Code. Discarding component and informing technician.")
+            log.error("%s --> %s: [PLC] -- Recived error. Discarding component and informing technician", addr[0], nodeIPs[4]) #############################################
             time.sleep(5)
             print("[PLC] -- Informing machine 1.")
             next_machine = nodeIPs[0]
@@ -69,6 +72,9 @@ def handle_conn(con, addr):
 
 
 def main():
+    # Setup logging
+    log.basicConfig(filename='logs/plc.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
+
     host = ''
     port = 5005
 
@@ -79,8 +85,8 @@ def main():
 
     try:
         # inform m1 to start
-        print("[PLC] -- Informing machine 1")
         time.sleep(15)
+        print("[PLC] -- Informing machine 1")
         thread = threading.Thread(target=inform_machine, args=(nodeIPs[0],))
         thread.start()
         
@@ -94,4 +100,7 @@ def main():
     finally:
         soc.close()
 
-main()
+
+
+if __name__ == '__main__':
+    main()

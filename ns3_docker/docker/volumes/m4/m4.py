@@ -4,8 +4,10 @@ import socket
 import threading
 import time
 import random
+import logging as log
 
 PLC_IP = "123.100.20.1"
+M4_IP = "123.100.10.4"
 PLC_PORT = 5005
 BUFFER_SIZE = 1024
 PROCESS_TIME = 20
@@ -22,9 +24,11 @@ def clean_component():
 
     if random.randint(0, 1000) % 100 < 98:
         print("[m4] -- Finished cleaning. Informing PLC.")
+        log.info("%s --> %s: [m4] -- Finished cleaning. Informing PLC.", M4_IP, PLC_IP)
         return "set_result=True"
     else:
         print("[m4] -- Cleaning failed. Informing PLC.")
+        log.error("%s --> %s: [m4] -- Cleaning failed. Informing PLC.", M4_IP, PLC_IP)
         return "set_result=False"
 
 
@@ -44,6 +48,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[m4] -- Received message: " + msg)
+        log.info("%s --> %s: [m4] -- Received message: %s", addr[0], M4_IP, msg)
 
         if addr[0] == PLC_IP and msg == "can_produce=True":
             ret_msg = clean_component()
@@ -57,6 +62,9 @@ def handle_conn(con, addr):
 
 
 def main():
+    # Setup logging
+    log.basicConfig(filename='logs/plc.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
+   
     host = ''
 
     # wait for all containers to be set up
