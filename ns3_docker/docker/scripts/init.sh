@@ -7,8 +7,8 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-sleep 10
-python3 *.py
+#sleep 10
+#python3 *.py
 
 
 # Dummy process to keep container running
