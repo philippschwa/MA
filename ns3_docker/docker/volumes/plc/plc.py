@@ -64,7 +64,7 @@ def handle_conn(con, addr):
             thread.start()
         
     finally:
-        print("[PLC]-- Closing connection with " + addr[0])
+        print("[PLC] -- Closing connection with " + addr[0])
         con.close()
 
 

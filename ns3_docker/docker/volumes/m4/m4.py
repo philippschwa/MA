@@ -13,8 +13,8 @@ WAIT_TIME = 5
 
 
 def clean_component():
-    print("[m4] -- Starting labeling process.")
-    print("[m4] -- Equiping component & reading component id.")
+    print("[m4] -- Starting cleaning process.")
+    print("[m4] -- Equipping component & reading component id.")
     time.sleep(WAIT_TIME)
 
     print("[m4] -- Cleaning component.")

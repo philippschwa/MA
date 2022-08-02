@@ -11,7 +11,7 @@ WORKDIR /ma
 
 # Update Ubuntu Repo 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y apt-utils net-tools iproute2 iputils-ping nano 
+RUN apt-get install -y apt-utils net-tools iproute2 iputils-ping nano nmap
 
 # install attacker packages
 RUN apt-get install -y hping3 ettercap-common
