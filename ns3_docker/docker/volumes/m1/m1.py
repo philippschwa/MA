@@ -67,7 +67,7 @@ def handle_conn(con, addr):
 def main():
     # Setup logging
     log.basicConfig(filename='./sim/logs/m1.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
-   
+    log.info("[m1] -- Starting m1.py")
     host = ''
 
     # wait for all containers to be set up
