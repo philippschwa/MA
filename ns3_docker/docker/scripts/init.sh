@@ -7,7 +7,7 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-python3 /sim/*.py
+python3 ./sim/*.py
 
 
 # Dummy process to keep container running
