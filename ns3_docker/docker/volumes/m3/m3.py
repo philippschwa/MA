@@ -64,6 +64,7 @@ def handle_conn(con, addr):
 def main():
     # Setup logging
     log.basicConfig(filename='./sim/logs/m3.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
+    log.info("[m3] -- Starting up. Waiting for connections.")
 
     host = ''
 

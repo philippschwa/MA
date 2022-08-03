@@ -111,7 +111,7 @@ def setup():
         #                          (name, "test", name, baseContainer), shell=True)
 
         status += subprocess.call('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
-                                  (name, "test", name, baseContainer), shell=True)
+                                  (name, name, baseContainer), shell=True)
 
         #status += subprocess.call('docker cp ./docker/volumes/%s/%s.py %s:/ma/'% (name, name, name), shell=True)
 

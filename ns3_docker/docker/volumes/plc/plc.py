@@ -74,6 +74,7 @@ def handle_conn(con, addr):
 def main():
     # Setup logging
     log.basicConfig(filename='./sim/logs/plc.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
+    log.info("[PLC] -- Starting up. Waiting for connections.")
 
     host = ''
     port = 5005
