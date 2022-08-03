@@ -70,9 +70,6 @@ def main():
     log.info("[m1] -- Starting up. Waiting for connections.")
     host = ''
 
-    # wait for all containers to be set up
-    time.sleep(10)
-
     print("[m1] -- Setting up socket.")
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.bind((host, PLC_PORT))

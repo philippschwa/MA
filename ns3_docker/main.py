@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from calendar import c
 import sys
 import subprocess
 import os
@@ -13,7 +14,7 @@ pidsDirectory = "./var/pid/"
 build = False
 
 # Node Configurations
-nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
+nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi"]
 nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
            "123.100.10.4", "123.100.20.1", "123.100.30.1"]
 
@@ -79,21 +80,67 @@ def check_return_code(rcode, message):
     print("Error: %s" % message)
     sys.exit(2)
 
-
-def check_return_code_chill(rcode, message):
-    if rcode == 0:
-        print("Success: %s \nTimestamp: %s" %
-              (message, datetime.datetime.now()))
-        return
-
-    print("Error: %s \nTimestamp: %s" % (message, datetime.datetime.now()))
-    return
-
-
 ################################################################################
 # setup ()
 # Setup the docker container and bridges and connect container to respective bridge
 ################################################################################
+def createDockerContainers():
+    status = 0
+
+    # If build param is set - build minimal Docker container (Ubuntu:20.04)
+    if build:
+        status = subprocess.call(
+            "docker build -t %s docker/." % baseContainer, shell=True)
+        check_return_code(
+            status, "Building minimal container %s" % baseContainer)
+
+    # start up containers
+    for name in nodeNames:
+        status += subprocess.call('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
+                                  (name, name, baseContainer), shell=True)
+
+    check_return_code(status, "Running docker containers")
+
+
+def createBridges():
+    status=0
+    if not os.path.exists(pidsDirectory):
+        os.makedirs(pidsDirectory)
+
+    for i in range(0, len(nodeNames)):
+        # save PID of containers, we need them later to destroy them correctly
+        cmd = ['docker', 'inspect', '--format',
+               "'{{ .State.Pid }}'", nodeNames[i]]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        pid = out[1:-2].strip()
+        with open(pidsDirectory + nodeNames[i], "w") as text_file:
+            text_file.write(str(pid, 'utf-8'))
+
+        # Create bridges
+        status += subprocess.call("bash scripts/bridge_setup.sh %s %s" %
+                                  (nodeNames[i], nodeIPs[i]), shell=True)
+
+    status += subprocess.call("bash scripts/bridge_end_setup.sh", shell=True)
+    check_return_code(status, "Creating bridges and interfaces")
+
+def startNs3():
+    print ("Yolo")
+
+
+
+def setup_new():
+    # First, we build and start the docker containers
+    createDockerContainers()
+
+    # Second, we create the bridges, TAP interfaces and VETH tunnels 
+    createBridges()
+
+    # Third, we have to start the ns3 network
+    startNs3()
+
+
 def setup():
     status = 0
 
@@ -140,7 +187,7 @@ def setup():
 
     # deactivate bridge stuff
     status += subprocess.call("bash scripts/bridge_end_setup.sh", shell=True)
-    check_return_code_chill(status, "Creating bridges and interfaces")
+    check_return_code(status, "Creating bridges and interfaces")
 
     return
 
@@ -159,8 +206,7 @@ def destroy():
         status += subprocess.call("bash scripts/bridge_destroy.sh %s" %
                                   (node), shell=True)
 
-        check_return_code_chill(
-            status, "Destroying container, bridge or tap interface %s" % (node))
+        check_return_code(status, "Destroying container, bridge or tap interface %s" % (node))
 
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
@@ -170,7 +216,7 @@ def destroy():
 
         status = subprocess.call("rm -rf %s" %
                                  (pidsDirectory + node), shell=True)
-        check_return_code_chill(status, "Removing pids directory")
+        check_return_code(status, "Removing pids directory")
 
     return
 

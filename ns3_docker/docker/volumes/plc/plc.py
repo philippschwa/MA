@@ -86,7 +86,7 @@ def main():
 
     try:
         # inform m1 to start
-        time.sleep(15)
+        time.sleep(30)
         print("[PLC] -- Informing machine 1")
         thread = threading.Thread(target=inform_machine, args=(nodeIPs[0],))
         thread.start()

@@ -7,6 +7,8 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
+
+sleep 20
 python3 ./sim/*.py
 
 
