@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from calendar import c
+from importlib.resources import path
 import sys
 import subprocess
 import os
@@ -11,10 +12,11 @@ import datetime
 # Globale variables
 baseContainer = 'myminimalubuntu'
 pidsDirectory = "./var/pid/"
+ns3_path = "/home/caesar/ns-3-allinone/ns-3.36 "
 build = False
 
 # Node Configurations
-nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi"]
+nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
 nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
            "123.100.10.4", "123.100.20.1", "123.100.30.1"]
 
@@ -24,9 +26,10 @@ nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
 ################################################################################
 def main():
     global build
+    global ns3_path
 
     # Parse commandline arguments
-    parser = argparse.ArgumentParser(description="The name of the operation to perform, options: setup, destroy. \
+    parser = argparse.ArgumentParser(description="The name of the operation to perform, options: 'setup', 'destroy'. \
             'setup' starts the docker containers, creates necessary bridges and configures the network. \
             'destroy' removes all created containers and bridges.")
 
@@ -35,6 +38,9 @@ def main():
 
     parser.add_argument("-b", "--build", action="store",
                         help="Build docker image. Default value is 'False', set '-b True' if the image should be build.")
+    
+    parser.add_argument("-p", "--ns3_path", action="store",
+                        help="Provide custom path to ns3 executable.")
 
     parser.add_argument('-v', '--version', action='version',
                         version='%(prog)s 1.0')
@@ -42,6 +48,8 @@ def main():
 
     if args.build:
         build = args.build
+    elif args.ns3_path:
+        ns3_path = args.ns3_path
     operation = args.mode
 
     if operation == "setup":
@@ -127,6 +135,9 @@ def createBridges():
 
 def startNs3():
     print ("Yolo")
+    print("Starting ns3 Simulation. It is active for 10 minutes.")
+
+    proc = subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path))
 
 
 
