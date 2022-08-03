@@ -16,8 +16,8 @@ RUN apt-get install -y apt-utils python3 net-tools iproute2 iputils-ping nano nm
 # install attacker packages
 RUN apt-get install -y hping3 ettercap-common
 
-# COPY scripts/init.sh /ma/init.sh
-# RUN chmod +x /ma/init.sh
+COPY scripts/init.sh /ma/init.sh
+RUN chmod +x /ma/init.sh
 
 #COPY scripts/attacks/ ./attacks
 #RUN chmod -R +x attacks/
