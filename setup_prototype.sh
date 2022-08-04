@@ -13,7 +13,7 @@ git clone https://gitlab.com/nsnam/ns-3-allinone.git && cd ns-3-allinone \
 sudo curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - 
 sudo echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list 
 sudo apt-get update 
-sudo WAZUh_MANAGER="123.123.0.2" apt-get install -y wazuh-agent
+sudo WAZUH_MANAGER="123.123.0.2" apt-get install -y wazuh-agent
 sudo echo "wazuh-agent hold" | dpkg --set-selections
 
 # Install Suricata
@@ -23,9 +23,10 @@ sudo add-apt-repository ppa:oisf/suricata-stable
 sudo apt-get update && apt-get install -y suricata
 
 # Copy custom config files for agent and suricata
-sudo cp ns3_docker/config/suricata.yaml /etc/suricata/suricata.yaml
-sudo cp ns3_docker/config/ossec.conf /var/ossec/etc/ossec.conf
-sudo cp ns3_docker/rules/ /etc/suricata/rules/
+sudo cp network_monitoring/suricata/suricata.yaml /etc/suricata/suricata.yaml
+sudo cp network_monitoring/suricata/rules/ /etc/suricata/rules/
+sudo cp network_monitoring/wazuh_agent/ossec.conf /var/ossec/etc/ossec.conf
+
 
 
 # Start suricata and wazuh
