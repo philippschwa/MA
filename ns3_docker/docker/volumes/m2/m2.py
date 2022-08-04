@@ -42,8 +42,9 @@ def inform_plc(msg):
     except ConnectionError:
         #time.sleep(5)
         #inform_machine(ip)
-        log.error("Connection Error.")
-        sys.exit(141)
+        log.error("%s --> %s: [m2] -- PLC not reachable.", M2_IP, PLC_IP)
+        time.sleep(5)
+        inform_plc(msg)
 
     finally:
         soc.close()

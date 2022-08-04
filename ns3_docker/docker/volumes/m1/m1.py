@@ -41,6 +41,14 @@ def inform_plc(msg):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((PLC_IP, 5005))
         soc.send(msg.encode())
+    
+    except ConnectionError:
+        #time.sleep(5)
+        #inform_machine(ip)
+        log.error("%s --> %s: [m1] -- PLC not reachable.", M1_IP, PLC_IP)
+        time.sleep(5)
+        inform_plc(msg)
+
     finally:
         soc.close()
 
