@@ -7,9 +7,14 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
+sleep 5
+while 1:
+do 
+python3 ./sim/*.py
+done
 
-#sleep 20
-#python3 ./sim/*.py
+echo "hallo warum wird hier nichts erkannt.s"
+
 
 
 # Dummy process to keep container running

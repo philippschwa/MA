@@ -2,6 +2,7 @@
 
 
 import socket
+import sys
 import threading
 import logging as log
 import time
@@ -21,6 +22,11 @@ def inform_machine(ip):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((ip, 5005))
         soc.send(msg.encode())
+    
+    except ConnectionError:
+        #time.sleep(5)
+        #inform_machine(ip)
+        sys.exit(141)
 
     finally:
         print("[PLC] -- Closing connection with " + ip)
