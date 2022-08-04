@@ -94,25 +94,21 @@ def check_return_code(rcode, message):
 # Setup the docker container and bridges and connect container to respective bridge
 ################################################################################
 def createDockerContainers():
-    status = 0
 
     # If build param is set - build minimal Docker container (Ubuntu:20.04)
     if build:
-        status = subprocess.run(
-            "docker build -t %s docker/." % baseContainer, shell=True, check=True)
-        check_return_code(
-            status, "Building minimal container %s" % baseContainer)
+        subprocess.run("docker build -t %s docker/." % baseContainer, shell=True, check=True)
+        #check_return_code(            status, "Building minimal container %s" % baseContainer)
 
     # start up containers
     for name in nodeNames:
-        status += subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
+        subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
                                   (name, name, baseContainer), shell=True, check=True)
 
-    check_return_code(status, "Running docker containers")
+    #check_return_code(status, "Running docker containers")
 
 
 def createBridges():
-    status=0
     if not os.path.exists(pidsDirectory):
         os.makedirs(pidsDirectory)
 
@@ -128,17 +124,17 @@ def createBridges():
             text_file.write(str(pid, 'utf-8'))
 
         # Create bridges
-        status += subprocess.run("bash scripts/bridge_setup.sh %s %s" %
+        subprocess.run("bash scripts/bridge_setup.sh %s %s" %
                                   (nodeNames[i], nodeIPs[i]), shell=True, check=True)
 
-    status += subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
-    check_return_code(status, "Creating bridges and interfaces")
+    subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
+    #check_return_code(status, "Creating bridges and interfaces")
 
 def startNs3():
     print ("Yolo")
     print("Starting ns3 Simulation. It is active for 10 minutes.")
 
-    proc = subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path), shell=True)
+    subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path), shell=True)
 
 
 
@@ -158,14 +154,14 @@ def setup():
 
     # If build param is set - build minimal Docker container (Ubuntu:20.04) with dummy script to keep container running
     if build:
-        status = subprocess.run(
+        status = subprocess.call(
             "docker build -t %s docker/." % baseContainer, shell=True, check=True)
         check_return_code(
             status, "Building minimal container %s" % baseContainer)
 
     # start up containers
     for name in nodeNames:
-        status += subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
+        subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
                                   (name, name, baseContainer), shell=True, check=True)
 
     check_return_code(status, "Running docker containers")
@@ -186,11 +182,11 @@ def setup():
             text_file.write(str(pid, 'utf-8'))
 
         # Create bridges
-        status += subprocess.run("bash scripts/bridge_setup.sh %s %s" %
+        subprocess.run("bash scripts/bridge_setup.sh %s %s" %
                                   (nodeNames[i], nodeIPs[i]), shell=True, check=True)
 
     # deactivate bridge stuff
-    status += subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
+    subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
     check_return_code(status, "Creating bridges and interfaces")
 
     return
@@ -202,25 +198,24 @@ def setup():
 ################################################################################
 def destroy():
 
-    status = 0
     for node in nodeNames:
         # remove docker container
-        status += subprocess.run("docker rm -f %s" % (node), shell=True, check=True)
+        subprocess.run("docker rm -f %s" % (node), shell=True, check=True)
         # remove bridge and taps
-        status += subprocess.run("bash scripts/bridge_destroy.sh %s" %
+        subprocess.run("bash scripts/bridge_destroy.sh %s" %
                                   (node), shell=True, check=True)
 
-        check_return_code(status, "Destroying container, bridge or tap interface %s" % (node))
+#        check_return_code(status, "Destroying container, bridge or tap interface %s" % (node))
 
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
                 text = in_file.read()
-                status = subprocess.run(
+                subprocess.run(
                     "rm -rf /var/run/netns/%s" % (text.strip()), shell=True, check=True)
 
-        status = subprocess.run("rm -rf %s" %
+        subprocess.run("rm -rf %s" %
                                  (pidsDirectory + node), shell=True, check=True)
-        check_return_code(status, "Removing pids directory")
+        #check_return_code(status, "Removing pids directory")
 
     return
 
