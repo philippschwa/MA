@@ -134,8 +134,8 @@ def startNs3():
     print ("Yolo")
     print("Starting ns3 Simulation. It is active for 10 minutes.")
 
-    subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path), shell=True)
-
+    #subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path), shell=True)
+    subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/test.cc" % (ns3_path), shell=True)
 
 
 def setup_new():
