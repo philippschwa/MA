@@ -8,8 +8,8 @@ if [ $status -ne 0 ]; then
 fi
 
 
-sleep 20
-python3 ./sim/*.py
+#sleep 20
+#python3 ./sim/*.py
 
 
 # Dummy process to keep container running

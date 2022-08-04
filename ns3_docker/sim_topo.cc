@@ -75,7 +75,7 @@ int
 main (int argc, char *argv[])
 { 
   int numNodes = 6;
-  std::array<std::string, 6> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-attacker"};
+  std::array<std::string, 6> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-hmi"};
 
   CommandLine cmd (__FILE__);
   cmd.Parse (argc, argv);

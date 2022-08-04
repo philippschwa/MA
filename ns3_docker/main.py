@@ -16,7 +16,7 @@ ns3_path = "/home/caesar/ns-3-allinone/ns-3.36 "
 build = False
 
 # Node Configurations
-nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
+nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi"]
 nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
            "123.100.10.4", "123.100.20.1", "123.100.30.1"]
 
