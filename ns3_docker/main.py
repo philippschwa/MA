@@ -140,7 +140,7 @@ def createBridges():
 
 
 def startNs3():
-    subprocess.Popen("cd %s && ./ns3 run scratch/sim_topo.cc" % (ns3_path), shell=True, check=True)
+    subprocess.run("cd %s && ./ns3 run scratch/sim_topo.cc" % (ns3_path), shell=True, check=True)
     # subprocess.run("cd %s && ./ns3 run scratch/test.cc" % (ns3_path), shell=True, check=True)
 
 
