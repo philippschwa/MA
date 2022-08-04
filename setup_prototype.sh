@@ -9,6 +9,11 @@ git clone https://gitlab.com/nsnam/ns-3-allinone.git && cd ns-3-allinone \
 && ./download.py -n ns-3.36 \
 && ./build.py
 
+# Copy custom ns3 file and virtual network configuration file; Build the virtual network.
+cp ns3_docker/ns3/ns3 ns-3-allinone/ns-3.36/ns3
+cp ns3_docker/ns3/sim_topo.cc ns-3-allinone/ns-3.36/scratch/sim_topo.cc
+./ns-3-allinone/ns-3.36/ns3 build sim_topo.cc
+
 # Install wazuh agent
 sudo curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - 
 sudo echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list 
