@@ -7,7 +7,6 @@ import threading
 import logging as log
 import time
 
-from ns3_docker.docker.volumes.m1.m1 import PLC_IP
 
 # Node Configurations
 nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
@@ -28,7 +27,7 @@ def inform_machine(ip):
     except ConnectionError:
         #time.sleep(5)
         #inform_machine(ip)
-        log.error("%s --> %s: [PLC] -- Machine not reachable. Retrying in 5 seconds.", PLC_IP, ip)
+        log.error("%s --> %s: [PLC] -- Machine not reachable. Retrying in 5 seconds.", nodeIPs[4], ip)
         time.sleep(5)
         inform_machine(msg)
 
