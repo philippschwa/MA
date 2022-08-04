@@ -27,7 +27,7 @@ def inform_machine(ip):
         #time.sleep(5)
         #inform_machine(ip)
         log.error("Connection Error.")
-        sys.exit(141)
+        sys.exit(2)
 
     finally:
         print("[PLC] -- Closing connection with " + ip)

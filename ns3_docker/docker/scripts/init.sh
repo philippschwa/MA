@@ -7,10 +7,11 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-sleep 5
-while 1:
+
+while true
 do 
-python3 ./sim/*.py
+python3 sim/*.py
+sleep 5
 done
 
 echo "hallo warum wird hier nichts erkannt.s"
