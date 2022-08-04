@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Install dependencies
+DEBIAN_FRONTEND=noninteractive
 sudo apt-get update -y 
 sudo apt install -y g++ python3 python3-pip cmake python3-setuptools git tcpdump uml-utilities bridge-utils jq iproute2
 
@@ -22,7 +23,7 @@ sudo WAZUH_MANAGER="123.123.0.2" apt-get install -y wazuh-agent
 sudo echo "wazuh-agent hold" | dpkg --set-selections
 
 # Install Suricata
-sudo apt install -y software-properties-common 
+sudo DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common 
 sudo apt-get update
 sudo add-apt-repository ppa:oisf/suricata-stable 
 sudo apt-get update && apt-get install -y suricata
