@@ -66,12 +66,12 @@ def main():
 
     if operation == "setup":
         print("\n############################################\n")
-        print("Setting up simulation prototype.")
+        print("Setting up simulation prototype. \nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
         print("\n############################################\n")
         # setup()
         setup_new()
-        # print("\n############################################\n")
-        #print("Setup finished.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
+        print("\n############################################\n")
+        print("Simulation finished.")
         # print("\n############################################\n")
     elif operation == "destroy":
         print("\n############################################\n")
@@ -140,9 +140,8 @@ def createBridges():
 
 
 def startNs3():
-    #subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path), shell=True)
-    subprocess.run("cd %s && ./ns3 run scratch/test.cc" %
-                     (ns3_path), shell=True, check=True)
+    subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path), shell=True, check=True)
+    # subprocess.run("cd %s && ./ns3 run scratch/test.cc" % (ns3_path), shell=True, check=True)
 
 
 def setup_new():
