@@ -26,6 +26,7 @@ def inform_machine(ip):
     except ConnectionError:
         #time.sleep(5)
         #inform_machine(ip)
+        log.error("Connection Error.")
         sys.exit(141)
 
     finally:
