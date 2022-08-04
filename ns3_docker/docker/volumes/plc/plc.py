@@ -82,9 +82,12 @@ def main():
     # Setup logging
     log.basicConfig(filename='./sim/logs/plc.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
     log.info("[PLC] -- Starting up. Waiting for connections.")
-
+    time.sleep(30)
+    log.info("[PLC] waited 30 seconds.")
     host = ''
     port = 5005
+
+    
 
     print("[PLC] -- Setting up socket.")
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -93,7 +96,7 @@ def main():
 
     try:
         # inform m1 to start
-        time.sleep(30)
+        
         print("[PLC] -- Informing machine 1")
         thread = threading.Thread(target=inform_machine, args=(nodeIPs[0],))
         thread.start()
