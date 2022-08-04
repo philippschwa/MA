@@ -23,6 +23,7 @@ def perform_leakage_test():
     ret_msg = ""
 
     print("[m1] -- Testing for leakage.")
+    
     time.sleep(PROCESS_TIME)
 
     if random.randint(0, 1000) % 100 < 98:
@@ -80,7 +81,7 @@ def main():
             print("[m1] -- Waiting for connections.")
             con, addr = soc.accept()
 
-            print("[m1] -- Recieved connection from: " + addr[0])
+            print("[m1] -- Received connection from: " + addr[0])
             thread = threading.Thread(target=handle_conn, args=(con, addr))
             thread.start()
 

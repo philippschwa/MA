@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import socket
+import sys
 import threading
 import time
 import random
@@ -37,6 +38,13 @@ def inform_plc(msg):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((PLC_IP, 5005))
         soc.send(msg.encode())
+    
+    except ConnectionError:
+        #time.sleep(5)
+        #inform_machine(ip)
+        log.error("Connection Error.")
+        sys.exit(141)
+
     finally:
         soc.close()
 
