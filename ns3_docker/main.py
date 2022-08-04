@@ -223,6 +223,8 @@ def destroy():
         subprocess.run("rm -rf %s" %
                        (pidsDirectory + node), shell=True, check=True)
 
+    subprocess.run("rm -rf var", shell=True, check=True)
+        
 
 if __name__ == '__main__':
     main()
