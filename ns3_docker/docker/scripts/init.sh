@@ -14,9 +14,6 @@ python3 sim/*.py
 sleep 5
 done
 
-echo "hallo warum wird hier nichts erkannt.s"
-
-
 
 # Dummy process to keep container running
 echo "########## Dummy process started! ##########"

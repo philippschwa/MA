@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-from calendar import c
-from importlib.resources import path
 import sys
 import subprocess
 import os
@@ -13,7 +11,9 @@ import datetime
 baseContainer = 'myminimalubuntu'
 pidsDirectory = "./var/pid/"
 ns3_path = "/home/caesar/ns-3-allinone/ns-3.36"
+ns3_time = "600"
 build = False
+debug = False
 
 # Node Configurations
 nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi"]
@@ -26,21 +26,29 @@ nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
 ################################################################################
 def main():
     global build
+    global debug
     global ns3_path
+    global ns3_time
 
     # Parse commandline arguments
-    parser = argparse.ArgumentParser(description="The name of the operation to perform, options: 'setup', 'destroy'. \
+    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Run this program if you want to perform a network simulation. The simulator has been developed as part of my masters thesis. For more information visit the GitHub project. You can choose two execution modes: 'setup', 'destroy'. \
             'setup' starts the docker containers, creates necessary bridges and configures the network. \
             'destroy' removes all created containers and bridges.")
 
     parser.add_argument("mode", action="store",
-                        help="The name of the operation to perform, options: setup or destroy")
+                        help="The name of the operation to perform, available options: 'setup' or 'destroy'")
 
     parser.add_argument("-b", "--build", action="store",
                         help="Build docker image. Default value is 'False', set '-b True' if the image should be build.")
-    
+
+    parser.add_argument("-d", "--debug", action="store",
+                        help="Enable debugging.")
+
     parser.add_argument("-p", "--ns3_path", action="store",
                         help="Provide custom path to ns3 executable.")
+
+    parser.add_argument("-t", "--ns3_time", action="store",
+                        help="Time in seconds of the ns3 simulation.")
 
     parser.add_argument('-v', '--version', action='version',
                         version='%(prog)s 1.0')
@@ -48,25 +56,26 @@ def main():
 
     if args.build:
         build = args.build
+    elif args.debug:
+        debug = True
     elif args.ns3_path:
         ns3_path = args.ns3_path
+    elif args.ns3_time:
+        ns3_time = args.ns3_time
     operation = args.mode
 
     if operation == "setup":
         print("\n############################################\n")
-        print("Destroying legacy stuff...")
+        print("Setting up simulation prototype.")
         print("\n############################################\n")
-        destroy()
-        print("\n############################################\n")
-        print("Setting up stuff...")
-        print("\n############################################\n")
-        #setup()
+        # setup()
         setup_new()
-        print("\n############################################\n")
-        print("Setup finished.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
+        # print("\n############################################\n")
+        #print("Setup finished.\nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
+        # print("\n############################################\n")
     elif operation == "destroy":
         print("\n############################################\n")
-        print("Destroying stuff...")
+        print("Destroying simulation prototype.")
         print("\n############################################\n")
         destroy()
         print("\n############################################\n")
@@ -93,19 +102,19 @@ def check_return_code(rcode, message):
 # setup ()
 # Setup the docker container and bridges and connect container to respective bridge
 ################################################################################
+
+
 def createDockerContainers():
 
     # If build param is set - build minimal Docker container (Ubuntu:20.04)
     if build:
-        subprocess.run("docker build -t %s docker/." % baseContainer, shell=True, check=True)
-        #check_return_code(            status, "Building minimal container %s" % baseContainer)
+        subprocess.run("docker build -t %s docker/." %
+                       baseContainer, shell=True, check=True)
 
     # start up containers
     for name in nodeNames:
         subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
-                                  (name, name, baseContainer), shell=True, check=True)
-
-    #check_return_code(status, "Running docker containers")
+                       (name, name, baseContainer), shell=True, check=True)
 
 
 def createBridges():
@@ -125,27 +134,28 @@ def createBridges():
 
         # Create bridges
         subprocess.run("bash scripts/bridge_setup.sh %s %s" %
-                                  (nodeNames[i], nodeIPs[i]), shell=True, check=True)
+                       (nodeNames[i], nodeIPs[i]), shell=True, check=True)
 
     subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
-    #check_return_code(status, "Creating bridges and interfaces")
+
 
 def startNs3():
-    print ("Yolo")
-    print("Starting ns3 Simulation. It is active for 10 minutes.")
-
     #subprocess.Popen("cd %s && ./ns3 run --enable-sudo scratch/sim_topo.cc" % (ns3_path), shell=True)
-    subprocess.Popen("cd %s && ./ns3 run scratch/test.cc" % (ns3_path), shell=True)
+    subprocess.Popen("cd %s && ./ns3 run scratch/test.cc" %
+                     (ns3_path), shell=True)
 
 
 def setup_new():
     # First, we build and start the docker containers
+    print("Creating docker containers.")
     createDockerContainers()
 
-    # Second, we create the bridges, TAP interfaces and VETH tunnels 
+    # Second, we create the bridges, TAP interfaces and VETH tunnels
+    print("Setting up bridges.")
     createBridges()
 
     # Third, we have to start the ns3 network
+    print("Starting ns3.")
     startNs3()
 
 
@@ -162,7 +172,7 @@ def setup():
     # start up containers
     for name in nodeNames:
         subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
-                                  (name, name, baseContainer), shell=True, check=True)
+                       (name, name, baseContainer), shell=True, check=True)
 
     check_return_code(status, "Running docker containers")
 
@@ -183,7 +193,7 @@ def setup():
 
         # Create bridges
         subprocess.run("bash scripts/bridge_setup.sh %s %s" %
-                                  (nodeNames[i], nodeIPs[i]), shell=True, check=True)
+                       (nodeNames[i], nodeIPs[i]), shell=True, check=True)
 
     # deactivate bridge stuff
     subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
@@ -203,9 +213,7 @@ def destroy():
         subprocess.run("docker rm -f %s" % (node), shell=True, check=True)
         # remove bridge and taps
         subprocess.run("bash scripts/bridge_destroy.sh %s" %
-                                  (node), shell=True, check=True)
-
-#        check_return_code(status, "Destroying container, bridge or tap interface %s" % (node))
+                       (node), shell=True, check=True)
 
         if os.path.exists(pidsDirectory + node):
             with open(pidsDirectory + node, "rt") as in_file:
@@ -214,10 +222,7 @@ def destroy():
                     "rm -rf /var/run/netns/%s" % (text.strip()), shell=True, check=True)
 
         subprocess.run("rm -rf %s" %
-                                 (pidsDirectory + node), shell=True, check=True)
-        #check_return_code(status, "Removing pids directory")
-
-    return
+                       (pidsDirectory + node), shell=True, check=True)
 
 
 if __name__ == '__main__':

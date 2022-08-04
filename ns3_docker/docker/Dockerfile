@@ -7,20 +7,15 @@ FROM ubuntu:20.04
 
 USER root
 WORKDIR /ma
-#RUN mkdir logs
 
-# Update Ubuntu Repo 
+# update packages & install dependencies
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y apt-utils python3 net-tools iproute2 iputils-ping nano nmap tcpdump
+RUN apt-get install -y apt-utils python3 net-tools iproute2 iputils-ping nano 
 
-# install attacker packages
-RUN apt-get install -y hping3 ettercap-common
+# install packages for attacks
+RUN apt-get install -y hping3 ettercap-common nmap tcpdump
 
 COPY scripts/init.sh /ma/init.sh
 RUN chmod +x /ma/init.sh
 
-#COPY scripts/attacks/ ./attacks
-#RUN chmod -R +x attacks/
-
 CMD ["/ma/init.sh"]
-#CMD ["python3 *.py"]

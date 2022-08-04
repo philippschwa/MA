@@ -38,3 +38,4 @@ docker container hat bereits eigene Bridge. Jetzt wäre der nächste Versch einf
 
 
 
+ns3 Executable sudo methode auskommentiert. Anfang der main methode.

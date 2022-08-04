@@ -27,6 +27,7 @@ sudo cp ns3_docker/config/suricata.yaml /etc/suricata/suricata.yaml
 sudo cp ns3_docker/config/ossec.conf /var/ossec/etc/ossec.conf
 sudo cp ns3_docker/rules/ /etc/suricata/rules/
 
+
 # Start suricata and wazuh
 sudo systemctl daemon-reload
 sudo systemctl enable suricata
