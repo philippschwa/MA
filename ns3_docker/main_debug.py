@@ -10,7 +10,7 @@ import datetime
 # Globale variables
 baseContainer = 'myminimalubuntu'
 pidsDirectory = "./var/pid/"
-ns3_path = "../ns-3-allinone/ns-3.36"
+ns3_path = "/home/caesar/ns-3-allinone/ns-3.36"
 ns3_time = "600"
 build = False
 debug = False

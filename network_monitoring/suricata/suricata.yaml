@@ -755,7 +755,7 @@ ipfw:
 default-rule-path: /etc/suricata/rules/
 rule-files:
  - local.rules
- - suricata.rules
+ #- suricata.rules
 
 ##Malware/trojan oriented rules
 # - emerging-trojan.rules
