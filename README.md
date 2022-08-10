@@ -83,6 +83,7 @@ systemctl enable wazuh-agent
 #systemctl start suricata
 ```
 
+#### 6. Enjoy. All dependencies are installed.
 
 ## Usage
 
