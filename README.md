@@ -14,8 +14,13 @@ nodes are implemented. With the help of Wazuh and Suricata the attack detection 
 
 ## Architecture
 
-## Installation (on Ubuntu 20.04 LTS)
+The architecture of the protoype consists of three main building blocks:
+- The **Virtual Environment** represents the simulation environment of the prototype. Here, the IIoT network is simulated and the attacks are executed. For the virtual network [ns-3](https://www.nsnam.org/) is used. The IIoT devices are implemented through Docker containers.
+- The **Network Monitoring** module monitors the virtual environments and informs the SIEM about alerts. 
+- The **SIEM** system is realized with the open source security platform [Wazuh](https://wazuh.com/)
 
+
+## Installation (on Ubuntu 20.04 LTS)
 
 #### 1. Install [Docker](https://docs.docker.com/engine/install/ubuntu/) (version 20.10.17, build 100c701) and [Docker-Compose](https://docs.docker.com/compose/install/) (version v2.6.0) as described in the respective docs
 
@@ -80,20 +85,26 @@ systemctl enable wazuh-agent
 
 
 ## Usage
-Setup and start the simulation. (TODO: write one setup script, e.g. start.sh/py)
-First you have to start up the Wazuh Manager, Indexer and Dashboard. The docker compose file starts all necessary containers. Therfore run from the wazuh folder:
+
+#### 1. Start the wazuh-single-node deployment
+Run the following command from the wazuh-single-node folder to start the Wazuh Manager, Indexer and Dashboard.  
 ```bash
 docker compose up
 ```
-
-Second you have to setup the basics for the simulation (docker-ns3 folder):
+#### 2. Setup and start the virtual network and the simulation 
+Run the following command from the ns3_docker folder:
 ```bash
 sudo pyhton3 main.py setup
 ```
 
-Third you have to start the simulated network with ns3 (from the /ns-3-allinone/ns-3.36):
+#### 3. Start the network monitoring module
+If you used the setup_project.sh script the wazuh agent should be configured and running. You can check the status of the agent with:
 ```bash
-./ns3 run --enable-sudo scratch/my-tap-csma.cc
+sudo service wazuh-agent status
+```
+To start Suricata for network monitoring, execute:
+```bash
+sudo suricata -i br-plc
 ```
 
 # VM Snapshots:
