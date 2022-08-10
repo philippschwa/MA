@@ -12,7 +12,7 @@ git clone https://gitlab.com/nsnam/ns-3-allinone.git && cd ns-3-allinone \
 # Copy custom ns3 file and virtual network configuration file; Build the virtual network.
 cp ns3_docker/ns3/ns3 ns-3-allinone/ns-3.36/ns3
 cp ns3_docker/ns3/sim_topo.cc ns-3-allinone/ns-3.36/scratch/sim_topo.cc
-./ns-3-allinone/ns-3.36/ns3 build sim_topo.cc
+./ns-3-allinone/ns-3.36/ns3 build scratch/sim_topo.cc
 
 # Install wazuh agent
 curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - 
@@ -29,14 +29,12 @@ apt-get update && apt-get install -y suricata
 
 # Copy custom config files for agent and suricata
 cp network_monitoring/suricata/suricata.yaml /etc/suricata/suricata.yaml
-cp network_monitoring/suricata/rules/ /etc/suricata/rules/ # FEHLER
+cp network_monitoring/suricata/rules/local.rules /etc/suricata/rules/local.rules
 cp network_monitoring/wazuh_agent/ossec.conf /var/ossec/etc/ossec.conf
-
-
 
 # Start suricata and wazuh
 systemctl daemon-reload
 systemctl enable suricata
 systemctl enable wazuh-agent
-#sudo systemctl start wazuh-agent
+systemctl start wazuh-agent
 #sudo systemctl start suricata

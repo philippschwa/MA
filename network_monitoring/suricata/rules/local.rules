@@ -6,8 +6,8 @@ alert ip any any -> any any (msg:"TEST"; flow:established,to_server; sid:9000001
 alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"LOCAL DOS SYN packet flood inbound, Potential DOS"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000002;)
 alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"LOCAL DOS SYN packet flood outbound, Potential DOS"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000003;)
 alert tcp $HOME_NET any -> $HOME_NET any (msg:"Potential TCP DOS - RETTE SICH WER KANN!!"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000004;)
-
-alert ip $HOME_NET any -> $HOME_NET any (msg:"Potential IP DOS - RETTE SICH WER KANN!!"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000005;)
 alert icmp $HOME_NET any -> $HOME_NET any (msg:"Potential ICMP DOS - RETTE SICH WER KANN!!"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000006;)
 
-#alert icmp $HOME_NET any -> $HOME_NET any (msg:"ET DOS ICMP Path MTU lowered below acceptable threshold"; itype: 3; icode: 4; byte_test:2,<,576,6; byte_test:2,!=,0,7; reference:cve,CAN-2004-1060; reference:url,www.microsoft.com/technet/security/bulletin/MS05-019.mspx; reference:url,isc.sans.org/diary.php?date=2005-04-12; reference:url,doc.emergingthreats.net/bin/view/Main/2001882; classtype:denial-of-service; sid:2001882; rev:10; metadata:created_at 2010_07_30, updated_at 2010_07_30;)
+# Andere Regeln..
+
+
