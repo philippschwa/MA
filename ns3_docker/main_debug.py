@@ -16,9 +16,8 @@ build = False
 debug = False
 
 # Node Configurations
-nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
-           "123.100.10.4", "123.100.20.1", "123.100.30.1"]
+nodeNames = ["m1", "m2"]
+nodeIPs = ["123.100.10.1", "123.100.10.2"]
 
 
 ################################################################################
@@ -108,7 +107,7 @@ def createDockerContainers():
 
     # If build param is set - build minimal Docker container (Ubuntu:20.04)
     if build:
-        subprocess.run("docker build -t %s docker/." %
+        subprocess.run("docker build -t %s docker/debug/." %
                        baseContainer, shell=True, check=True)
 
     # start up containers
@@ -140,7 +139,7 @@ def createBridges():
 
 
 def startNs3():
-    subprocess.run("cd %s && ./ns3 run scratch/sim_topo.cc" % (ns3_path), shell=True, check=True)
+    subprocess.run("cd %s && ./ns3 run scratch/debug.cc" % (ns3_path), shell=True, check=True)
     # subprocess.run("cd %s && ./ns3 run scratch/test.cc" % (ns3_path), shell=True, check=True)
 
 
