@@ -7,6 +7,7 @@ This deployment is defined in the `docker-compose.yml` file with one Wazuh manag
 $ sysctl -w vm.max_map_count=262144
 ```
 2) Run the certificate creation script:
+
 **Note:** If you cloned the gitHub Repo you don't have to genreate new certificates before running the prototype.
 ```
 $ docker-compose -f generate-indexer-certs.yml run --rm generator
