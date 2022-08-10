@@ -29,7 +29,7 @@ apt-get update && apt-get install -y suricata
 
 # Copy custom config files for agent and suricata
 cp network_monitoring/suricata/suricata.yaml /etc/suricata/suricata.yaml
-cp network_monitoring/suricata/rules/ /etc/suricata/rules/
+cp network_monitoring/suricata/rules/ /etc/suricata/rules/ # FEHLER
 cp network_monitoring/wazuh_agent/ossec.conf /var/ossec/etc/ossec.conf
 
 
