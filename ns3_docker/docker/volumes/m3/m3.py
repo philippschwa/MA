@@ -25,11 +25,11 @@ def label_component():
 
     if random.randint(0, 1000) % 100 < 98:
         print("[m3] -- Finished labeling. Informing PLC.")
-        log.info("%s --> %s: [m3] -- Finished labeling. Informing PLC.", M3_IP, PLC_IP)
+        log.info("M3 %s -> %s: Finished labeling. Informing PLC.", M3_IP, PLC_IP)
         return "set_result=True"
     else:
         print("[m3] -- Labeling failed. Informing PLC.")
-        log.error("%s --> %s: [m3] -- Leakeage test failed. Informing PLC.", M3_IP, PLC_IP)
+        log.error("M3 %s -> %s: Leakeage test failed. Informing PLC.", M3_IP, PLC_IP)
         return "set_result=False"
 
 
@@ -42,7 +42,7 @@ def inform_plc(msg):
     except ConnectionError:
         #time.sleep(5)
         #inform_machine(ip)
-        log.error("%s --> %s: [m3] -- PLC not reachable.", M3_IP, PLC_IP)
+        log.error("M3 %s -> %s: PLC not reachable.", M3_IP, PLC_IP)
         time.sleep(5)
         inform_plc(msg)
 
@@ -57,7 +57,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[m3] -- Received message: " + msg)
-        log.info("%s --> %s: [m3] -- Received message: %s", addr[0], M3_IP, msg)
+        log.info("M3 %s -> %s: Received message: %s", addr[0], M3_IP, msg)
 
         if addr[0] == PLC_IP and msg == "can_produce=True":
             ret_msg = label_component()
@@ -72,8 +72,8 @@ def handle_conn(con, addr):
 
 def main():
     # Setup logging
-    log.basicConfig(filename='./sim/logs/m3.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
-    log.info("[m3] -- Starting up. Waiting for connections.")
+    log.basicConfig(filename='./sim/logs/m3.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
+    log.info("M3 123.100.10.3 -> 123.100.10.3: Starting up. Waiting for connections.")
 
     host = ''
 

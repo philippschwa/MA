@@ -28,11 +28,11 @@ def perform_leakage_test():
 
     if random.randint(0, 1000) % 100 < 98:
         print("[m1] -- Finished leakage test. Informing PLC.")
-        log.info("%s --> %s: [m1] -- Finished leakage test. Informing PLC.", M1_IP, PLC_IP)
+        log.info("M1 %s -> %s: Finished leakage test. Informing PLC.", M1_IP, PLC_IP)
         return "set_result=True"
     else:
         print("[m1] -- Leakeage test failed. Informing PLC.")
-        log.error("%s --> %s: [m1] -- Leakeage test failed. Informing PLC.", M1_IP, PLC_IP)
+        log.error("M1 %s -> %s: Leakeage test failed. Informing PLC.", M1_IP, PLC_IP)
         return "set_result=False"
 
 
@@ -45,7 +45,7 @@ def inform_plc(msg):
     except ConnectionError:
         #time.sleep(5)
         #inform_machine(ip)
-        log.error("%s --> %s: [m1] -- PLC not reachable.", M1_IP, PLC_IP)
+        log.error("M1 %s -> %s: PLC not reachable.", M1_IP, PLC_IP)
         time.sleep(5)
         inform_plc(msg)
 
@@ -60,7 +60,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[m1] -- Received message: " + msg)
-        log.info("%s --> %s: [m1] -- Received message: %s", addr[0], M1_IP, msg)
+        log.info("M1 %s -> %s: Received message: %s", addr[0], M1_IP, msg)
 
         if addr[0] == PLC_IP and msg == "can_produce=True":
             ret_msg = perform_leakage_test()
@@ -75,8 +75,8 @@ def handle_conn(con, addr):
 
 def main():
     # Setup logging
-    log.basicConfig(filename='./sim/logs/m1.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
-    log.info("[m1] -- Starting up. Waiting for connections.")
+    log.basicConfig(filename='./sim/logs/m1.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
+    log.info("M1 123.100.10.1 -> 123.100.10.1: Starting up. Waiting for connections.")
     host = ''
 
     print("[m1] -- Setting up socket.")

@@ -30,7 +30,7 @@ sudo ifconfig $TAP_NAME 0.0.0.0 down
 
 # create VETH tunnel for connection to container 
 sudo ip link add $VETH1 type veth peer name $VETH2
-# löschen mit ip link delete <ifname>
+# delete with ip link delete <ifname>
 
 # link PID of container to netns, in order to use netns
 PID=$(docker inspect --format '{{ .State.Pid }}' $NAME)

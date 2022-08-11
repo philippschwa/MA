@@ -25,11 +25,11 @@ def clean_component():
 
     if random.randint(0, 1000) % 100 < 98:
         print("[m4] -- Finished cleaning. Informing PLC.")
-        log.info("%s --> %s: [m4] -- Finished cleaning. Informing PLC.", M4_IP, PLC_IP)
+        log.info("M4 %s -> %s: Finished cleaning. Informing PLC.", M4_IP, PLC_IP)
         return "set_result=True"
     else:
         print("[m4] -- Cleaning failed. Informing PLC.")
-        log.error("%s --> %s: [m4] -- Cleaning failed. Informing PLC.", M4_IP, PLC_IP)
+        log.error("M4 %s -> %s: Cleaning failed. Informing PLC.", M4_IP, PLC_IP)
         return "set_result=False"
 
 
@@ -42,7 +42,7 @@ def inform_plc(msg):
     except ConnectionError:
         #time.sleep(5)
         #inform_machine(ip)
-        log.error("%s --> %s: [m4] -- PLC not reachable.", M4_IP, PLC_IP)
+        log.error("M4 %s -> %s: PLC not reachable.", M4_IP, PLC_IP)
         time.sleep(5)
         inform_plc(msg)
 
@@ -57,7 +57,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[m4] -- Received message: " + msg)
-        log.info("%s --> %s: [m4] -- Received message: %s", addr[0], M4_IP, msg)
+        log.info("M4 %s -> %s: Received message: %s", addr[0], M4_IP, msg)
 
         if addr[0] == PLC_IP and msg == "can_produce=True":
             ret_msg = clean_component()
@@ -72,8 +72,8 @@ def handle_conn(con, addr):
 
 def main():
     # Setup logging
-    log.basicConfig(filename='./sim/logs/m4.log', format='%(levelname)s %(asctime)s -- %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=log.DEBUG)
-    log.info("[m4] -- Starting up. Waiting for connections.")
+    log.basicConfig(filename='./sim/logs/m4.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
+    log.info("M4 123.100.10.4 -> 123.100.10.4: Starting up. Waiting for connections.")
 
     host = ''
 
