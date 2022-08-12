@@ -9,7 +9,7 @@ import datetime
 
 
 # Globale variables
-baseContainer = 'myminimalubuntu'
+baseContainer = 'img_alp_machines'
 pidsDirectory = "./var/pid/"
 ns3_path = "/home/caesar/MA/ns-3-allinone/ns-3.36"
 ns3_time = "600"
