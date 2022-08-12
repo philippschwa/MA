@@ -117,8 +117,9 @@ def createDockerContainers():
     # start up containers
     for name in nodeNames:
         if name == nodeNames[5]:
-            subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s/logs:/ma/logs --name %s img_hmi' %
+            subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s/logs/sshd.log:/ma/logs/sshd.log --name %s img_hmi' %
                        (name, name), shell=True, check=True)
+            # docker run --privileged -dit -v /home/caesar/MA/ns3_docker/docker/volumes/hmi/logs/sshd.log:/var/log/sshd.log img_hmi
             
         else:
             subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
