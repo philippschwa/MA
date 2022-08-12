@@ -20,8 +20,6 @@ RUN echo 'admin:nimda' | chpasswd
 
 COPY scripts/dos.sh /ma/dos.sh
 COPY scripts/mitm.sh /ma/mitm.sh
+COPY scripts/init.sh /ma/init.sh
 
-RUN service ssh start
-EXPOSE 22
-
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/ma/init.sh"]
