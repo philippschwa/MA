@@ -47,7 +47,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[PLC] -- Received message: " + msg)
-        log.info("PLC %s --> %s: Received message: %s", addr[0], nodeIPs[4], msg)
+        log.info("PLC %s -> %s: Received message: %s", addr[0], nodeIPs[4], msg)
         
         # Inform next machine to start working
         if msg == "set_result=True":
