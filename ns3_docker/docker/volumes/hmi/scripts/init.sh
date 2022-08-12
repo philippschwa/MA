@@ -9,4 +9,7 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-tail -0f /var/log/sshd.log | tee -a logs/sshd.log 
+tail -f /var/log/sshd.log | tee -a logs/sshd.log
+
+# Dummy process to keep container running
+tail -f /dev/null
