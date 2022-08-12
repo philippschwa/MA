@@ -22,4 +22,6 @@ COPY scripts/dos.sh /ma/dos.sh
 COPY scripts/mitm.sh /ma/mitm.sh
 COPY scripts/init.sh /ma/init.sh
 
+RUN chmod +x /ma/*.sh
+
 CMD ["/ma/init.sh"]
