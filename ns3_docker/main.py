@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from ast import AsyncFunctionDef
 import sys
 import subprocess
 import os
@@ -110,10 +111,17 @@ def createDockerContainers():
     if build:
         subprocess.run("docker build -t %s docker/." %
                        baseContainer, shell=True, check=True)
+        
+        subprocess.run("docker build -t img_hmi docker/volumes/hmi/.", shell=True, check=True)
 
     # start up containers
     for name in nodeNames:
-        subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
+        if name == nodeNames[5]:
+            subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s/logs:/ma/logs --name %s img_hmi' %
+                       (name, name), shell=True, check=True)
+            
+        else:
+            subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
                        (name, name, baseContainer), shell=True, check=True)
 
 
