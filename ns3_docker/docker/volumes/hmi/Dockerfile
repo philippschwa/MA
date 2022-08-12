@@ -1,6 +1,6 @@
 
 ############################################################
-# Minimal Docker Container for simulation
+# Minimal Docker Container for HMI simulation
 ############################################################
 
 FROM ubuntu:20.04
@@ -15,7 +15,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils python3 net-tool
 # install packages for attacks
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y hping3 ettercap-common nmap tcpdump openssh-server openssh-client
 
-COPY scripts/init.sh /ma/init.sh
-RUN chmod +x /ma/init.sh
+RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 admin 
+RUN echo 'admin:nimda' | chpasswd
 
-CMD ["/ma/init.sh"]
+COPY scripts/dos.sh /ma/dos.sh
+COPY scripts/mitm.sh /ma/mitm.sh
+
+RUN service ssh start
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]
