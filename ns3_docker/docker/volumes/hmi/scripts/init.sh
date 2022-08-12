@@ -1,6 +1,7 @@
 #!/bin/bash
 
-#service ssh start
+service rsyslog start
+service ssh start
 
 status=$?
 if [ $status -ne 0 ]; then
