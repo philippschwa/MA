@@ -18,9 +18,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y hping3 ettercap-common nma
 RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 admin 
 RUN echo 'admin:nimda' | chpasswd
 
-COPY scripts/*.sh /ma/
-#COPY scripts/mitm.sh /ma/mitm.sh
-#COPY scripts/init.sh /ma/init.sh
 COPY scripts/hmi.py /ma/hmi.py
 
 COPY config/log.conf /etc/ssh/sshd_config.d
