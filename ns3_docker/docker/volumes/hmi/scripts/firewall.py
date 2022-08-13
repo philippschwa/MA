@@ -47,7 +47,7 @@ def parse_packets(pkt):
             log.info("%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" % {
             "srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()})
 
-    if protocol_id == 2048:  # protocol is icmp
+    elif protocol_id == 2048:  # protocol is icmp
 
         if (pkt[ICMP].type == 0):
             icmp_type = "ICMP-REPLY"
