@@ -27,8 +27,7 @@ def check_arp_spoof(pkt):
     else:
         # check if IP is already used by another mac adress
         if (known_mac_adresses[ip_src] != mac):
-            log = "%(srcip)s -> %(dstip)s ARP-SPOOF-WARNING: %(srcip)s had old_mac=%(old_mac)s new_mac=%(new_mac)s" % {"srcip": ip_src, "dstip": ip_dest, "old_mac":known_mac_adresses[ip_src], "new_mac":mac} 
-            log.warning(log)
+            log.warning("%(srcip)s -> %(dstip)s ARP-SPOOF-WARNING: %(srcip)s had old_mac=%(old_mac)s new_mac=%(new_mac)s" % {"srcip": ip_src, "dstip": ip_dest, "old_mac":known_mac_adresses[ip_src], "new_mac":mac})
 
 
 def parse_packets(pkt):
@@ -58,11 +57,9 @@ def parse_packets(pkt):
             icmp_type = "ICMP-REQUEST"
         else:
             icmp_type = "ICMP-OTHER"
-        log = "%(srcip)s -> %(dstip)s %(icmp_type)s: %(summary)s" % {
-            "srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()}
-
-        print(log)
-        log.info(log)
+        
+        log.info( "%(srcip)s -> %(dstip)s %(icmp_type)s: %(summary)s" % {
+            "srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()})
 
 
 pkts = sniff(filter="icmp or arp", prn=lambda x: parse_packets(x))
