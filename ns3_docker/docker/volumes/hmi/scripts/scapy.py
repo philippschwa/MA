@@ -5,7 +5,7 @@ import logging
 import time
 
 
-HMI_IP = "123.100.10.6"
+HMI_IP = "123.100.30.1"
 global known_mac_adresses
 known_mac_adresses={}
 #sniff(offline="tcpdump.pcap", prn=check_mitm(), filter='tcp or udp')
@@ -48,32 +48,13 @@ def tcp_parse(pkt):
             arp_op="ARP-OTHER"
             check_arp_spoof(pkt)
           
-        #log="%(srcip)s %(dstip)s %(arp_op)s: %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
-       
-        log="%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
-        # this is MAC returned by arp reply, check for mismatch (mitm) print(pkt.hwsrc)
-        
+        log="%(srcip)s -> %(dstip)s %(arp_op)s - %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
      
         if (pkt[ARP].pdst != HMI_IP) and (pkt[ARP].psrc != HMI_IP): 
             #so that hmi's firewall isn't logged
             print(log)
             logging.info(log)
-
-    elif protocol_id==2048: #protocol is icmp
  
-        if (pkt[ICMP].type == 0):
-            icmp_type="ICMP-REPLY"
-        elif (pkt[ICMP].type == 8):
-            icmp_type="ICMP-REQUEST"
-        else:
-            icmp_type="ICMP-OTHER"
-        log="%(srcip)s -> %(dstip)s %(icmp_type)s: %(summary)s" % {"srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()}
-        
-        print(log)
-        logging.info(log)
-       
-        #MACs: pkt.src, pkt.dst
-
     
 
 pkts = sniff(filter="icmp or arp",prn=lambda x: tcp_parse(x))

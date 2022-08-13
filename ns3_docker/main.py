@@ -18,10 +18,7 @@ debug = False
 
 # Node Configurations
 nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi"]
-#nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
-#           "123.100.10.4", "123.100.20.1", "123.100.30.1"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
-           "123.100.10.4", "123.100.10.5", "123.100.10.6"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.20.1", "123.100.30.1"]
 
 ################################################################################
 # main ()
@@ -153,8 +150,6 @@ def createBridges():
 def startNs3():
     subprocess.run("cd %s && ./ns3 run scratch/sim_topo.cc" %
                    (ns3_path), shell=True, check=True)
-    # subprocess.run("cd %s && ./ns3 run scratch/test.cc" % (ns3_path), shell=True, check=True)
-
 
 def setup_new():
     # First, we build and start the docker containers
