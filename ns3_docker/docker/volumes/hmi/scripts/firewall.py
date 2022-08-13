@@ -9,7 +9,9 @@ known_mac_adresses={}
 #sniff(offline="tcpdump.pcap", prn=check_mitm(), filter='tcp or udp')
 #pkts = sniff(offline="tcpdump.pcap",prn = check_mitm())
 
-logging.basicConfig(filename='logs/scapy.log',format='firewall.log %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+# 'Dec 29 10:00:01'
+logging.basicConfig(filename='logs/scapy.log',format="%(asctime)s HMI scapy: %(levelname)s %(message)s", datefmt='%b %d %H:%M:%S', level=logging.DEBUG)
+#logging.basicConfig(filename='logs/scapy.log',format='scapy %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
 
 def check_arp_spoof(pkt):
     global known_mac_adresses
@@ -22,7 +24,7 @@ def check_arp_spoof(pkt):
     else:
         #check if IP is already used by another mac adress
         if (known_mac_adresses[ip_src] != mac):
-            log="%(srcip)s %(dstip)s "%{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].psrc}+"ARP-SPOOF-WARNING: "+mac+" and "+ known_mac_adresses[ip_src] 
+            log="%(srcip)s -> %(dstip)s "%{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].psrc}+"ARP-SPOOF-WARNING: "+mac+" and "+ known_mac_adresses[ip_src] 
             print(log)
             logging.warning(log)
     
