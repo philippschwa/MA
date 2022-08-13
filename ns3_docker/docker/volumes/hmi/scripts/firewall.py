@@ -37,17 +37,15 @@ def parse_packets(pkt):
             arp_op = "ARP-REQUEST"
         elif (pkt[ARP].op == 2):
             arp_op = "ARP-REPLY"
+            check_arp_spoof(pkt)
         else:
             arp_op = "ARP-OTHER"
+            check_arp_spoof(pkt)
 
         if (pkt[ARP].pdst != HMI_IP) and (pkt[ARP].psrc != HMI_IP):
             # so that hmi's firewall isn't logged
             log.info("%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" % {
             "srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()})
-
-            if arp_op != "ARP-REQUEST":
-                check_arp_spoof(pkt)
-
 
     if protocol_id == 2048:  # protocol is icmp
 
