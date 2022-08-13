@@ -32,14 +32,17 @@ def check_arp_spoof(pkt):
                         {"srcip": ip_src, "dstip": ip_dest, "old_mac": known_mac_adresses[ip_src], "new_mac": mac})
 
 
-def parse_packets(pkt):
+def tcp_parse(pkt):
     protocol_id = pkt.type
+    print("tcp_parse")
 
     if protocol_id == 2054:  # protocol is arp
         if (pkt[ARP].op == 1):
             arp_op = "ARP-REQUEST"
+            print("ARP_REQUEST")
         elif (pkt[ARP].op == 2):
             arp_op = "ARP-REPLY"
+            print("ARP_REPLY")
             check_arp_spoof(pkt)
         else:
             arp_op = "ARP-OTHER"
@@ -47,9 +50,10 @@ def parse_packets(pkt):
 
         log_msg = "%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" % {
             "srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
-
+        print(log_msg)
         if (pkt[ARP].pdst != HMI_IP) and (pkt[ARP].psrc != HMI_IP):
             # so that hmi's firewall isn't logged
+            print("adfölaksdjfölkjaö")
             log.info(log_msg)
 
     elif protocol_id == 2048:  # protocol is icmp
@@ -65,4 +69,4 @@ def parse_packets(pkt):
             "srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()})
 
 
-pkts = sniff(filter="icmp or arp", prn=lambda x: parse_packets(x))
+pkts = sniff(filter="icmp or arp", prn=lambda x: tcp_parse(x))
