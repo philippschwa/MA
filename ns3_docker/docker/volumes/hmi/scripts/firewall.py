@@ -43,7 +43,7 @@ def tcp_parse(pkt):
           
         #log="%(srcip)s %(dstip)s %(arp_op)s: %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
        
-        log="%(srcip)s %(dstip)s %(arp_op)s: %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
+        log="%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
         # this is MAC returned by arp reply, check for mismatch (mitm) print(pkt.hwsrc)
         
      
@@ -60,7 +60,7 @@ def tcp_parse(pkt):
             icmp_type="ICMP-REQUEST"
         else:
             icmp_type="ICMP-OTHER"
-        log="%(srcip)s %(dstip)s %(icmp_type)s: %(summary)s" %{"srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()}
+        log="%(srcip)s -> %(dstip)s %(icmp_type)s: %(summary)s" % {"srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()}
         
         print(log)
         logging.info(log)
