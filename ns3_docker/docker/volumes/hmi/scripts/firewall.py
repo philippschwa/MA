@@ -1,79 +1,68 @@
 #!/usr/bin/python3
 
 from scapy.all import *
-import logging
+import logging as log 
 import time
 
 
-HMI_IP = "123.100.10.6"
+HMI_IP = "123.100.30.1"
 global known_mac_adresses
-known_mac_adresses={}
-#sniff(offline="tcpdump.pcap", prn=check_mitm(), filter='tcp or udp')
-#pkts = sniff(offline="tcpdump.pcap",prn = check_mitm())
+known_mac_adresses = {}
 
 # 'Dec 29 10:00:01'
-logging.basicConfig(filename='logs/scapy.log',format="%(asctime)s HMI scapy: %(levelname)s %(message)s", datefmt='%b %d %H:%M:%S', level=logging.DEBUG)
-#logging.basicConfig(filename='logs/scapy.log',format='scapy %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+log.basicConfig(filename='logs/scapy.log', format="%(asctime)s HMI scapy: %(levelname)s %(message)s",
+                    datefmt='%b %d %H:%M:%S', level=log.DEBUG)
 
 def check_arp_spoof(pkt):
+    print("Check ARP spoof")
+
     ip_src = pkt[ARP].psrc
+    ip_dest = pkt[ARP].pdst
     mac = (pkt.hwsrc)
-    print("check_arp_spoof")
+
     if not ip_src in known_mac_adresses:
-        print("new entry")
-        #add new entry
+        # add new entry
         known_mac_adresses[ip_src] = mac
         print(known_mac_adresses[ip_src], ip_src)
     else:
-        #check if IP is already used by another mac adress
-        print("warning log")
+        # check if IP is already used by another mac adress
         if (known_mac_adresses[ip_src] != mac):
-            log="%(srcip)s -> %(dstip)s "%{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].psrc}+"ARP-SPOOF-WARNING: "+mac+" and "+ known_mac_adresses[ip_src] 
-            print(log)
-            logging.warning(log)
-    
+            log = "%(srcip)s -> %(dstip)s ARP-SPOOF-WARNING: %(srcip)s had old_mac=%(old_mac)s new_mac=%(new_mac)s" % {"srcip": ip_src, "dstip": ip_dest, "old_mac":known_mac_adresses[ip_src], "new_mac":mac} 
+            log.warning(log)
 
-def tcp_parse(pkt):
-    #pkt.show()
-    
-    protocol_id=pkt.type
-    if protocol_id==2054: #protocol is arp
+
+def parse_packets(pkt):
+    protocol_id = pkt.type
+    if protocol_id == 2054:  # protocol is arp
         if (pkt[ARP].op == 1):
-            arp_op="ARP-REQUEST"
+            arp_op = "ARP-REQUEST"
         elif (pkt[ARP].op == 2):
-            
-            arp_op="ARP-REPLY"
-            check_arp_spoof(pkt)
+            arp_op = "ARP-REPLY"
         else:
-            arp_op="ARP-OTHER"
-            check_arp_spoof(pkt)
-          
-        #log="%(srcip)s %(dstip)s %(arp_op)s: %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
-       
-        log="%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" %{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()}
-        # this is MAC returned by arp reply, check for mismatch (mitm) print(pkt.hwsrc)
-        
-     
-        if (pkt[ARP].pdst != HMI_IP) and (pkt[ARP].psrc != HMI_IP): 
-            #so that hmi's firewall isn't logged
-            print(log)
-            logging.info(log)
+            arp_op = "ARP-OTHER"
 
-    elif protocol_id==2048: #protocol is icmp
- 
+        if (pkt[ARP].pdst != HMI_IP) and (pkt[ARP].psrc != HMI_IP):
+            # so that hmi's firewall isn't logged
+            log.info("%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" % {
+            "srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()})
+
+            if arp_op != "ARP-REQUEST":
+                check_arp_spoof(pkt)
+
+
+    if protocol_id == 2048:  # protocol is icmp
+
         if (pkt[ICMP].type == 0):
-            icmp_type="ICMP-REPLY"
+            icmp_type = "ICMP-REPLY"
         elif (pkt[ICMP].type == 8):
-            icmp_type="ICMP-REQUEST"
+            icmp_type = "ICMP-REQUEST"
         else:
-            icmp_type="ICMP-OTHER"
-        log="%(srcip)s -> %(dstip)s %(icmp_type)s: %(summary)s" % {"srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()}
-        
+            icmp_type = "ICMP-OTHER"
+        log = "%(srcip)s -> %(dstip)s %(icmp_type)s: %(summary)s" % {
+            "srcip": pkt[IP].src, "dstip": pkt[IP].dst, "icmp_type": icmp_type, "summary": pkt.summary()}
+
         print(log)
-        logging.info(log)
-       
-        #MACs: pkt.src, pkt.dst
+        log.info(log)
 
-    
 
-pkts = sniff(filter="icmp or arp",prn=lambda x: tcp_parse(x))
+pkts = sniff(filter="icmp or arp", prn=lambda x: parse_packets(x))
