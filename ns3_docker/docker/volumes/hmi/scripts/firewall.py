@@ -5,7 +5,7 @@ import logging
 import time
 
 
-HMI_IP = "123.100.30.1"
+HMI_IP = "123.100.10.6"
 global known_mac_adresses
 known_mac_adresses={}
 #sniff(offline="tcpdump.pcap", prn=check_mitm(), filter='tcp or udp')
