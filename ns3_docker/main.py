@@ -111,19 +111,20 @@ def createDockerContainers():
     if build:
         subprocess.run("docker build -t %s docker/." %
                        baseContainer, shell=True, check=True)
-        
-        subprocess.run("docker build -t img_hmi docker/volumes/hmi/.", shell=True, check=True)
+
+        subprocess.run(
+            "docker build -t img_hmi docker/volumes/hmi/.", shell=True, check=True)
 
     # start up containers
     for name in nodeNames:
         if name == nodeNames[5]:
             subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s/logs/sshd.log:/ma/logs/sshd.log --name %s img_hmi' %
-                       (name, name), shell=True, check=True)
+                           (name, name), shell=True, check=True)
             # docker run --privileged -dit -v /home/caesar/MA/ns3_docker/docker/volumes/hmi/logs/sshd.log:/var/log/sshd.log img_hmi
-            
+
         else:
             subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
-                       (name, name, baseContainer), shell=True, check=True)
+                           (name, name, baseContainer), shell=True, check=True)
 
 
 def createBridges():
@@ -149,7 +150,8 @@ def createBridges():
 
 
 def startNs3():
-    subprocess.run("cd %s && ./ns3 run scratch/sim_topo.cc" % (ns3_path), shell=True, check=True)
+    subprocess.run("cd %s && ./ns3 run scratch/sim_topo.cc" %
+                   (ns3_path), shell=True, check=True)
     # subprocess.run("cd %s && ./ns3 run scratch/test.cc" % (ns3_path), shell=True, check=True)
 
 
@@ -231,6 +233,15 @@ def destroy():
 
         subprocess.run("rm -rf %s" %
                        (pidsDirectory + node), shell=True, check=True)
+
+        # clear logs
+        subprocess.run("> docker/volumes/%s/logs/*.log" %
+                       (node), shell=True, check=True)
+        #subprocess.run("rm -f docker/volumes/%s/logs/*.log")
+        # if node == nodeNames[5]:
+        #    subprocess.run("touch docker/volumes/%s/logs/sshd.log"%(node), shell=True, check=True)
+        # else:
+        #    subprocess.run("touch docker/volumes/%s/logs/%s.log"%(node, node), shell=True, check=True)
 
     subprocess.run("rm -rf var", shell=True, check=True)
 
