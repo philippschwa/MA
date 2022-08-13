@@ -4,6 +4,8 @@ from scapy.all import *
 import logging
 import time
 
+
+HMI_IP = "123.100.30.1"
 global known_mac_adresses
 known_mac_adresses={}
 #sniff(offline="tcpdump.pcap", prn=check_mitm(), filter='tcp or udp')
@@ -17,12 +19,15 @@ def check_arp_spoof(pkt):
     global known_mac_adresses
     ip_src = pkt[ARP].psrc
     mac = (pkt.hwsrc)
+    print("check_arp_spoof")
     if not ip_src in known_mac_adresses:
+        print("new entry")
         #add new entry
         known_mac_adresses[ip_src] = mac
         print(known_mac_adresses[ip_src], ip_src)
     else:
         #check if IP is already used by another mac adress
+        print("warning log")
         if (known_mac_adresses[ip_src] != mac):
             log="%(srcip)s -> %(dstip)s "%{"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].psrc}+"ARP-SPOOF-WARNING: "+mac+" and "+ known_mac_adresses[ip_src] 
             print(log)
@@ -49,7 +54,7 @@ def tcp_parse(pkt):
         # this is MAC returned by arp reply, check for mismatch (mitm) print(pkt.hwsrc)
         
      
-        if (pkt[ARP].pdst != "10.0.0.4") and (pkt[ARP].psrc != "10.0.0.4"): 
+        if (pkt[ARP].pdst != HMI_IP) and (pkt[ARP].psrc != HMI_IP): 
             #so that hmi's firewall isn't logged
             print(log)
             logging.info(log)
