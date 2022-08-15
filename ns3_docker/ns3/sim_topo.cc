@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 {
   double SimulationTime = 1800.0;
   int numNodes = 7;
-  std::array<std::string, 7> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-hmi", "attacker"};
+  std::array<std::string, 7> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-hmi", "tap-attacker"};
 
   CommandLine cmd(__FILE__);
   cmd.AddValue("SimulationTime", "Total simulation time.", SimulationTime);
