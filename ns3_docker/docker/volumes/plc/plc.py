@@ -82,7 +82,7 @@ def handle_conn(con, addr):
 
 def main():
     # Setup logging
-    log.basicConfig(filename='./sim/logs/plc.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
+    log.basicConfig(filename='./src/logs/plc.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
     log.info("PLC 123.100.20.1 -> 123.100.20.1: Starting up. Waiting for connections.")
     time.sleep(30)
     log.info("PLC 123.100.20.1 -> 123.100.20.1: Waited 30 seconds.")

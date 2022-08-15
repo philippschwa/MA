@@ -72,7 +72,7 @@ def handle_conn(con, addr):
 
 def main():
     # Setup logging
-    log.basicConfig(filename='./sim/logs/m4.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
+    log.basicConfig(filename='./src/logs/m4.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
     log.info("M4 123.100.10.4 -> 123.100.10.4: Starting up. Waiting for connections.")
 
     host = ''
