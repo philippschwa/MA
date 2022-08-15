@@ -243,7 +243,7 @@ def destroy():
                        (pidsDirectory + node), shell=True, check=True)
 
         # clear logs (Attacker has no logs)
-        if node != nodeIPs[6]:
+        if node != nodeNames[6]:
             subprocess.run("> docker/volumes/%s/logs/*.log" %
                        (node), shell=True, check=True)
     
