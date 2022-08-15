@@ -4,7 +4,7 @@ from scapy.all import *
 import logging as log
 import time
 
-
+"""
 HMI_IP = "123.100.30.1"
 global known_mac_adresses
 known_mac_adresses = {}
@@ -71,5 +71,7 @@ def parse_packet(pkt):
 
 pkts = sniff(filter="icmp or arp", prn=lambda x: parse_packet(x))
 #pkts = sniff(iface="eth0", filter="icmp and arp", prn=lambda x: parse_packet(x))
-
+pkts = sniff(prn=lambda x: parse_packet(x))
 pkts.summary()
+"""
+print("Hallo")
