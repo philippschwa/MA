@@ -74,8 +74,8 @@ NS_LOG_COMPONENT_DEFINE("IIoT_Network_Simulation");
 int main(int argc, char *argv[])
 {
   double SimulationTime = 18000.0;
-  int numNodes = 2;
-  std::array<std::string, 2> tapNames{"tap-m1", "tap-m2"};
+  int numNodes = 3;
+  std::array<std::string, 3> tapNames{"tap-m1", "tap-m2", "tap-attacker"};
 
   CommandLine cmd(__FILE__);
   cmd.AddValue("SimulationTime", "Total simulation time.", SimulationTime);

@@ -16,8 +16,8 @@ build = False
 debug = False
 
 # Node Configurations
-nodeNames = ["m1", "m2"]
-nodeIPs = ["123.100.10.1", "123.100.10.2"]
+nodeNames = ["m1", "m2", "attacker"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3"]
 
 
 ################################################################################
@@ -109,10 +109,12 @@ def createDockerContainers():
     if build:
         subprocess.run("docker build -t %s docker/debug/." %
                        baseContainer, shell=True, check=True)
+        
+        subprocess.run("docker build -t img_attacker docker/volumes/attacker/.", shell=True, check=True)
 
     # start up containers
     for name in nodeNames:
-        subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
+        subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/src --name %s %s' %
                        (name, name, baseContainer), shell=True, check=True)
 
 
