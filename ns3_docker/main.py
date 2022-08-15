@@ -17,8 +17,8 @@ build = False
 debug = False
 
 # Node Configurations
-nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.20.1", "123.100.30.1"]
+nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi", "attacker"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.20.1", "123.100.30.1", "123.100.30.2"]
 #nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.10.5", "123.100.10.6"]
 
 ################################################################################
@@ -106,23 +106,32 @@ def check_return_code(rcode, message):
 
 def createDockerContainers():
 
-    # If build param is set - build minimal Docker container (Ubuntu:20.04)
+    # If build param is set - build docker containers
+    # Machines -> alpine linux
+    # HMI -> ubuntu(20.04)
+    # Attacker -> kali linux
     if build:
         subprocess.run("docker build -t %s docker/." %
                        baseContainer, shell=True, check=True)
 
         subprocess.run(
             "docker build -t img_hmi docker/volumes/hmi/.", shell=True, check=True)
+        
+        subprocess.run("docker build -t img_attacker docker/volumes/attacker/.", shell=True, check=True)
 
     # start up containers
     for name in nodeNames:
         if name == nodeNames[5]:
             subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s/logs/sshd.log:/ma/logs/sshd.log --name %s img_hmi' %
                            (name, name), shell=True, check=True)
-            # docker run --privileged -dit -v /home/caesar/MA/ns3_docker/docker/volumes/hmi/logs/sshd.log:/var/log/sshd.log img_hmi
+            # docker run --privileged -dit -v /home/caesar/MA/ns3_docker/docker/volumes/hmi/logs/:/var/log/ img_hmi
 
+        elif name == nodeNames[6]:
+            subprocess.run('docker run --privileged -dit --net=none --name %s img_attacker' %
+                           (name), shell=True, check=True)
+            # docker run --privileged -d --name kali_test img-attacker
         else:
-            subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
+            subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/src --name %s %s' %
                            (name, name, baseContainer), shell=True, check=True)
 
 

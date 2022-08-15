@@ -73,9 +73,9 @@ NS_LOG_COMPONENT_DEFINE("IIoT_Network_Simulation");
 
 int main(int argc, char *argv[])
 {
-  double SimulationTime = 600.0;
-  int numNodes = 6;
-  std::array<std::string, 6> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-hmi"};
+  double SimulationTime = 1800.0;
+  int numNodes = 7;
+  std::array<std::string, 7> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-hmi", "attacker"};
 
   CommandLine cmd(__FILE__);
   cmd.AddValue("SimulationTime", "Total simulation time.", SimulationTime);
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
   //
   // Run the simulation for ten minutes
   //
-  NS_LOG_INFO("Starting virutal network simulation. By default it is up for 10 minutes.");
+  NS_LOG_INFO("Starting virutal network simulation. By default it is up for 30 minutes.");
   Simulator::Stop(Seconds(SimulationTime));
   Simulator::Run();
   Simulator::Destroy();

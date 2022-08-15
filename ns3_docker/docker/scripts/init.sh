@@ -10,7 +10,7 @@ fi
 
 while true
 do 
-python3 sim/*.py
+python3 src/*.py
 sleep 5
 done
 

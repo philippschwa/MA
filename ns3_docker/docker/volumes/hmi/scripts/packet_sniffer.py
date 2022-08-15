@@ -70,5 +70,5 @@ def parse_packet(pkt):
 
 
 #pkts = sniff(filter="icmp or arp", prn=lambda x: tcp_parse(x))
-pkts = sniff(iface="eth0", prn=lambda x: parse_packet(x))
+pkts = sniff(iface="eth0", filter="icmp and arp", prn=lambda x: parse_packet(x))
 pkts.summary()
