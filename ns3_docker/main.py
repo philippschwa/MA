@@ -242,15 +242,11 @@ def destroy():
         subprocess.run("rm -rf %s" %
                        (pidsDirectory + node), shell=True, check=True)
 
-        # clear logs
-        subprocess.run("> docker/volumes/%s/logs/*.log" %
+        # clear logs (Attacker has no logs)
+        if node != nodeIPs[6]:
+            subprocess.run("> docker/volumes/%s/logs/*.log" %
                        (node), shell=True, check=True)
-        #subprocess.run("rm -f docker/volumes/%s/logs/*.log")
-        # if node == nodeNames[5]:
-        #    subprocess.run("touch docker/volumes/%s/logs/sshd.log"%(node), shell=True, check=True)
-        # else:
-        #    subprocess.run("touch docker/volumes/%s/logs/%s.log"%(node, node), shell=True, check=True)
-
+    
     subprocess.run("rm -rf var", shell=True, check=True)
 
 
