@@ -8,7 +8,7 @@ import datetime
 
 
 # Globale variables
-baseContainer = 'myminimalubuntu'
+baseContainer = 'img_hmi'
 pidsDirectory = "./var/pid/"
 ns3_path = "/home/caesar/MA/ns-3-allinone/ns-3.36"
 ns3_time = "600"
@@ -107,8 +107,8 @@ def createDockerContainers():
 
     # If build param is set - build minimal Docker container (Ubuntu:20.04)
     if build:
-        subprocess.run("docker build -t %s docker/debug/." %
-                       baseContainer, shell=True, check=True)
+        #subprocess.run("docker build -t %s docker/debug/." %
+        #               baseContainer, shell=True, check=True)
         
         subprocess.run("docker build -t img_attacker docker/volumes/attacker/.", shell=True, check=True)
 
