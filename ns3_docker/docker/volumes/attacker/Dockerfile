@@ -15,7 +15,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y hping3 ettercap-common nma
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-scapy hydra
 
 COPY scripts/* /ma/
-COPY scripts/src/* /ma/src/
-RUN chmod +x /ma/*.sh
+COPY src/* /ma/src/
+RUN chmod +x /ma/*
 
 CMD ["./init.sh"]
