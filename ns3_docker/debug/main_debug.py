@@ -108,7 +108,7 @@ def createDockerContainers():
                     (nodeNames[0], nodeNames[0], baseContainer), shell=True, check=True)
     # M2
     subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
-                    (nodeNames[0], nodeNames[0], baseContainer), shell=True, check=True)    
+                    (nodeNames[1], nodeNames[1], baseContainer), shell=True, check=True)    
     # Attacker
     subprocess.run('docker run --privileged -dit --net=none --name attacker img_attacker', shell=True, check=True)
 
