@@ -53,5 +53,5 @@ sudo ip link set $VETH1 up
 
 # Setup docker container network interface 
 sudo ip netns exec $PID ip link set dev $VETH2 name eth0
-sudo ip netns exec $PID ip addr add $IP/24 brd + dev eth0
+sudo ip netns exec $PID ip addr add $IP/16 brd + dev eth0
 sudo ip netns exec $PID ip link set eth0 up
