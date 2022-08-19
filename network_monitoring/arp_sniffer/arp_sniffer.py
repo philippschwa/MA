@@ -8,7 +8,7 @@ global known_mac_adresses
 known_mac_adresses = {}
 
 # 'Dec 29 10:00:01'
-log.basicConfig(filename='./arp.log', format="%(asctime)s NetworkMonitoring arp-sniffer: %(levelname)s %(message)s",
+log.basicConfig(filename='arp.log', format="%(asctime)s NetworkMonitoring arp-sniffer: %(levelname)s %(message)s",
                 datefmt='%b %d %H:%M:%S', level=log.DEBUG)
 
 
