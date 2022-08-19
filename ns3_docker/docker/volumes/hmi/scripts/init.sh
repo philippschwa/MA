@@ -1,17 +1,14 @@
 #!/bin/bash
 
+# Start Syslog and SSH service
 service rsyslog start
 service ssh start
 
-status=$?
-if [ $status -ne 0 ]; then
-    echo "Failed to execute deploy script!"
-    exit $status
-fi
+# Start ARP Sniffer
+python3 ./arp_sniffer.py &
 
-python3 ./packet_sniffer.py &
-
+# Write SSH logs to sshd.log
 tail -f /var/log/sshd.log | tee -a logs/sshd.log
 
-# Dummy process to keep container running
+# keep container running 
 tail -f /dev/null

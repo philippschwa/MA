@@ -16,8 +16,8 @@ build = False
 debug = False
 
 # Node Configurations
-nodeNames = ["m1", "m2", "attacker"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3"]
+nodeNames = ["m1", "m2", "hmi", "attacker"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4"]
 
 
 ################################################################################
@@ -108,9 +108,14 @@ def createDockerContainers():
                     (nodeNames[0], nodeNames[0], baseContainer), shell=True, check=True)
     # M2
     subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
-                    (nodeNames[1], nodeNames[1], baseContainer), shell=True, check=True)    
+                    (nodeNames[1], nodeNames[1], baseContainer), shell=True, check=True)
+    
+    # HMI
+    subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
+                    (nodeNames[2], nodeNames[2], baseContainer), shell=True, check=True)  
+
     # Attacker
-    subprocess.run('docker run --privileged -dit --net=none --name attacker img_attacker', shell=True, check=True)
+    subprocess.run('docker run --privileged -dit --net=none --name %s img_attacker'%(nodeNames[3]), shell=True, check=True)
 
 
 def createBridges():

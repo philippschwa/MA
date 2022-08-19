@@ -1,30 +1,60 @@
-from scapy.all import Ether, ARP, srp, sniff, conf
+#!/usr/bin/python3
 
-def get_mac(ip):
-    """
-    Returns the MAC address of `ip`, if it is unable to find it
-    for some reason, throws `IndexError`
-    """
-    p = Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip)
-    result = srp(p, timeout=3, verbose=False)[0]
-    return result[0][1].hwsrc
+from scapy.all import *
+import logging as log
+import time
 
-def process(packet):
-    # if the packet is an ARP packet
-    if packet.haslayer(ARP):
-        # if it is an ARP response (ARP reply)
-        if packet[ARP].op == 2:
-            try:
-                # get the real MAC address of the sender
-                real_mac = get_mac(packet[ARP].psrc)
-                # get the MAC address from the packet sent to us
-                response_mac = packet[ARP].hwsrc
-                # if they're different, definitely there is an attack
-                if real_mac != response_mac:
-                    print(f"[!] You are under attack, REAL-MAC: {real_mac.upper()}, FAKE-MAC: {response_mac.upper()}")
-            except IndexError:
-                # unable to find the real mac
-                # may be a fake IP or firewall is blocking packets
-                pass
+global known_mac_adresses
+known_mac_adresses = {}
 
-sniff(store=False, prn=process)
+# 'Dec 29 10:00:01'
+log.basicConfig(filename='/ma/logs/scapy.log', format="%(asctime)s HMI scapy: %(levelname)s %(message)s",
+                datefmt='%b %d %H:%M:%S', level=log.DEBUG)
+
+
+def check_arp_spoof(pkt, arp_op):
+    print("Check ARP spoof.")
+
+    ip_src = pkt[ARP].psrc
+    ip_dest = pkt[ARP].pdst
+    mac = (pkt.hwsrc)
+
+    if not ip_src in known_mac_adresses:
+        # add new entry to known adresses
+        known_mac_adresses[ip_src] = mac
+        log.info("%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" % {"srcip": ip_src, "dstip": ip_dest, "arp_op": arp_op, "summary": pkt.summary()})
+        print("Unknown IP. New entry added: " + ip_src, mac )
+    else:
+        # check if IP is already used by another mac adress
+        if (known_mac_adresses[ip_src] != mac):
+            print("IP already used by other MAC. Potential ARP Spoof detected.")
+            log.warning("%(srcip)s -> %(dstip)s ARP-SPOOF-WARNING: %(srcip)s had old_mac=%(old_mac)s new_mac=%(new_mac)s" %
+                        {"srcip": ip_src, "dstip": ip_dest, "old_mac": known_mac_adresses[ip_src], "new_mac": mac})
+
+
+def parse_packet(pkt):
+    protocol_id = pkt.type
+
+    # check if protocol is arp
+    if protocol_id == 2054:
+        # If ARP Reques -> log request
+        if (pkt[ARP].op == 1):
+            arp_op = "ARP-REQUEST"
+            print(str(pkt[ARP].op) + " --- "+pkt.summary())
+            log.info("%(srcip)s -> %(dstip)s %(arp_op)s: %(summary)s" % {"srcip": pkt[ARP].psrc, "dstip": pkt[ARP].pdst, "arp_op": arp_op, "summary": pkt.summary()})
+        
+        # If ARP Reply -> check for ARP Spoofing
+        elif (pkt[ARP].op == 2):
+            arp_op = "ARP-REPLY"
+            print(str(pkt[ARP].op) + " --- "+pkt.summary())
+            check_arp_spoof(pkt, arp_op)
+        else:
+            arp_op = "ARP-OTHER"
+            check_arp_spoof(pkt, arp_op)    
+
+
+
+pkts = sniff(iface="eth0", filter="arp", prn=lambda x: parse_packet(x))
+#pkts = sniff(iface="eth0", filter="icmp and arp", prn=lambda x: parse_packet(x))
+#pkts = sniff(prn=lambda x: parse_packet(x))
+#pkts.summary()

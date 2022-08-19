@@ -74,8 +74,8 @@ NS_LOG_COMPONENT_DEFINE("IIoT_Network_Simulation");
 int main(int argc, char *argv[])
 {
   double SimulationTime = 18000.0;
-  int numNodes = 3;
-  std::array<std::string, 3> tapNames{"tap-m1", "tap-m2", "tap-attacker"};
+  int numNodes = 4;
+  std::array<std::string, 4> tapNames{"tap-m1", "tap-m2", "tap-hmi", "tap-attacker"};
 
   CommandLine cmd(__FILE__);
   cmd.AddValue("SimulationTime", "Total simulation time.", SimulationTime);
@@ -102,9 +102,10 @@ int main(int argc, char *argv[])
   // devices installed on both of the nodes.
   //
   CsmaHelper csma;
+  csma.SetChannelAttribute ("DataRate", DataRateValue (DataRate (5000000)));
+  csma.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (2))); 
   NetDeviceContainer devices = csma.Install(nodes);
-  devices.SetPromiscReceiveCallback();
-
+  
   //
   // Use the TapBridgeHelper to connect to the pre-configured tap devices.
   // We go with "UseBridge" mode since the CSMA devices support
@@ -123,12 +124,12 @@ int main(int argc, char *argv[])
   }
 
   //
-  // Run the simulation for ten minutes
+  // Run the simulation for 1,5 hours
   //
-  NS_LOG_INFO("Starting virutal network simulation. By default it is up for 30 minutes.");
+  NS_LOG_INFO("ns3 - Starting virutal network simulation. By default it is up for 1,5 hours.");
   Simulator::Stop(Seconds(SimulationTime));
   Simulator::Run();
   Simulator::Destroy();
 
-  NS_LOG_INFO("Simulation finished. Shut down virtual network.");
+  NS_LOG_INFO("ns3 - Simulation finished. Shut down virtual network.");
 }
