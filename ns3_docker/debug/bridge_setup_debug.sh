@@ -60,7 +60,7 @@ sudo ip link set $BR_NAME up
 
 # Setup docker container network interface 
 sudo ip netns exec $PID ip link set dev $VETH2 name eth0
-sudo ip netns exec $PID ip addr add $IP/24 dev eth0
+sudo ip netns exec $PID ip addr add $IP/24 brd + dev eth0
 #udo ip netns exec $PID ip addr add $IP/24 dev eth0
 #sudo ip netns exec $PID ip addr add $IP/8 dev eth0
 #sudo ip netns exec $PID ifconfig eth0 broadcast 123.100.10.255
