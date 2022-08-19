@@ -65,17 +65,21 @@ def main():
         print("\n############################################\n")
         print("main_debug.py - Setting up simulation debug prototype. \nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
         print("\n############################################\n")
-        # setup()
-        setup_new()
+
+        setup()
+
         print("\n############################################\n")
         print("main_debug.py - Simulation finished. Destroying simulation prototype.")
         print("\n############################################\n")
+
         destroy()
     elif operation == "destroy":
         print("\n############################################\n")
         print("main_debug.py - Destroying simulation debug prototype.")
         print("\n############################################\n")
+
         destroy()
+        
         print("\n############################################\n")
         print("main_debug.py - Work done.\nCheck out running containers with 'docker ps'. \nCheck out if bridges were removed with 'ifconfig'.")
     else:
