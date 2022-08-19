@@ -28,12 +28,10 @@ sudo ip link set $BR_NAME promisc on
 # create TAP interface for ns3
 sudo tunctl -t $TAP_NAME
 sudo ip link set $TAP_NAME promisc on
-#sudo ifconfig $TAP_NAME promisc up
-# sudo ifconfig $TAP_NAME 0.0.0.0 promisc up
-# sudo ifconfig $TAP_NAME 0.0.0.0 down
 
 # create VETH tunnel for connection to container 
 sudo ip link add $VETH1 type veth peer name $VETH2
+sudo ip link set $VETH1 promisc on
 # delete with ip link delete <ifname>
 
 # link PID of container to netns, in order to use netns
@@ -50,9 +48,6 @@ sudo ip link set $VETH2 netns $PID
 sudo ip link set $TAP_NAME master $BR_NAME
 
 # start interfaces and bridge (on host side)
-#sudo ifconfig $VETH1 up
-#sudo ifconfig $TAP_NAME up
-#sudo ifconfig $BR_NAME up
 sudo ip link set $VETH1 up
 sudo ip link set $TAP_NAME up
 sudo ip link set $BR_NAME up
@@ -61,7 +56,4 @@ sudo ip link set $BR_NAME up
 # Setup docker container network interface 
 sudo ip netns exec $PID ip link set dev $VETH2 name eth0
 sudo ip netns exec $PID ip addr add $IP/24 brd + dev eth0
-#udo ip netns exec $PID ip addr add $IP/24 dev eth0
-#sudo ip netns exec $PID ip addr add $IP/8 dev eth0
-#sudo ip netns exec $PID ifconfig eth0 broadcast 123.100.10.255
 sudo ip netns exec $PID ip link set eth0 up
