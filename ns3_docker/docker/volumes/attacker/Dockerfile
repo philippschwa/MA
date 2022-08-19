@@ -12,7 +12,7 @@ RUN apt update -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils python3 python3-pip net-tools iproute2 iputils-ping nano
 # install packages for attacks
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y hping3 ettercap-common nmap tcpdump openssh-server openssh-client rsyslog tcptraceroute
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-scapy hydra goldeneye
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-scapy hydra 
 
 COPY scripts/* /ma/
 COPY src/* /ma/src/

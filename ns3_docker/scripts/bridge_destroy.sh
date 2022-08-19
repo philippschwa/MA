@@ -10,11 +10,11 @@ NAME=$1
 BR_NAME=br-$NAME
 TAP_NAME=tap-$NAME
 
-sudo ifconfig $BR_NAME down
-sudo brctl delif $BR_NAME $TAP_NAME
-sudo brctl delbr $BR_NAME
-sudo ifconfig $TAP_NAME down
-sudo tunctl -d $TAP_NAME
+# Remove tap intefaces and bridges
+sudo ip link set $BR_NAME down
+sudo ip link set $TAP_NAME down
+sudo ip link del $TAP_NAME
+sudo ip link del $BR_NAME
 
 status=$?
 if [ $status -ne 0 ]; then

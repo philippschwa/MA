@@ -53,7 +53,7 @@ def parse_packet(pkt):
             check_arp_spoof(pkt, arp_op)    
 
 
-
+print("ARP sniffer started.")
 pkts = sniff(iface="eth0", filter="arp", prn=lambda x: parse_packet(x))
 #pkts = sniff(iface="eth0", filter="icmp and arp", prn=lambda x: parse_packet(x))
 #pkts = sniff(prn=lambda x: parse_packet(x))
