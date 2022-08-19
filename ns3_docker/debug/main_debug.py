@@ -132,7 +132,7 @@ def createBridges():
         subprocess.run("bash ./bridge_setup_debug.sh %s %s" %
                        (nodeNames[i], nodeIPs[i]), shell=True, check=True)
 
-    subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
+    subprocess.run("bash ../scripts/bridge_end_setup.sh", shell=True, check=True)
 
 
 def startNs3():
