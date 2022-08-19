@@ -7,7 +7,7 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-
+sleep 20
 while true
 do 
 python3 src/*.py
