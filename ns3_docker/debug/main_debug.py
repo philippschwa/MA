@@ -8,7 +8,7 @@ import datetime
 
 
 # Globale variables
-baseContainer = 'img_hmi'
+baseContainer = 'img_hmi_debug'
 pidsDirectory = "./var/pid/"
 ns3_path = "/home/caesar/MA/ns-3-allinone/ns-3.36"
 ns3_time = "600"
@@ -104,18 +104,16 @@ def createDockerContainers():
         subprocess.run("docker build -t img_attacker ../docker/volumes/attacker/.", shell=True, check=True)
 
     # M1
-    subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
-                    (nodeNames[0], nodeNames[0], baseContainer), shell=True, check=True)
-    # M2
-    subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
-                    (nodeNames[1], nodeNames[1], baseContainer), shell=True, check=True)
+    subprocess.run('docker run --privileged -dit --net=none --name m1 img_hmi_debug', shell=True, check=True)
     
+    # M2
+    subprocess.run('docker run --privileged -dit --net=none --name m2 img_hmi_debug', shell=True, check=True)
+
     # HMI
-    subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
-                    (nodeNames[2], nodeNames[2], baseContainer), shell=True, check=True)  
+    subprocess.run('docker run --privileged -dit --net=none --name hmi img_hmi_debug', shell=True, check=True)
 
     # Attacker
-    subprocess.run('docker run --privileged -dit --net=none --name %s img_attacker'%(nodeNames[3]), shell=True, check=True)
+    subprocess.run('docker run --privileged -dit --net=none --name attacker img_attacker', shell=True, check=True)
 
 
 def createBridges():
