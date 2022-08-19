@@ -108,7 +108,7 @@ def createDockerContainers():
 
     # If build param is set - build docker containers
     # Machines -> alpine linux
-    # HMI -> ubuntu(20.04)
+    # HMI -> ubuntu 20.04
     # Attacker -> kali linux
     if build:
         subprocess.run("docker build -t %s docker/." %
@@ -121,17 +121,17 @@ def createDockerContainers():
 
     # start up containers
     for name in nodeNames:
+        # HMI Container
         if name == nodeNames[5]:
             subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s/logs:/ma/logs --name %s img_hmi' %
                            (name, name), shell=True, check=True)
-            #subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s/logs/sshd.log:/ma/logs/sshd.log --name %s img_hmi' %
-            #               (name, name), shell=True, check=True)
-            # docker run --privileged -dit -v /home/caesar/MA/ns3_docker/docker/volumes/hmi/logs:/ma/logs img_hmi
 
+        # Attacker Container
         elif name == nodeNames[6]:
             subprocess.run('docker run --privileged -dit --net=none --name %s img_attacker' %
                            (name), shell=True, check=True)
-            # docker run --privileged -d --name kali_test img-attacker
+
+        # Machine Containers
         else:
             subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/src --name %s %s' %
                            (name, name, baseContainer), shell=True, check=True)

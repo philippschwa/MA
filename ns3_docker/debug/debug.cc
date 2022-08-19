@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
   //
   CsmaHelper csma;
   NetDeviceContainer devices = csma.Install(nodes);
+  devices.SetPromiscReceiveCallback();
 
   //
   // Use the TapBridgeHelper to connect to the pre-configured tap devices.

@@ -30,9 +30,7 @@ def main():
     global ns3_time
 
     # Parse commandline arguments
-    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Run this program if you want to perform a network simulation. The simulator has been developed as part of my masters thesis. For more information visit the GitHub project. You can choose two execution modes: 'setup', 'destroy'. \
-            'setup' starts the docker containers, creates necessary bridges and configures the network. \
-            'destroy' removes all created containers and bridges.")
+    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Debuger. Only three nodes are created. Enough for stuff testing.")
 
     parser.add_argument("mode", action="store",
                         help="The name of the operation to perform, available options: 'setup' or 'destroy'")
@@ -65,37 +63,26 @@ def main():
 
     if operation == "setup":
         print("\n############################################\n")
-        print("Setting up simulation prototype. \nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
+        print("main_debug.py - Setting up simulation debug prototype. \nCheck out container status with 'docker ps'. \nCheck out created bridges with 'ifconfig'.")
         print("\n############################################\n")
         # setup()
         setup_new()
         print("\n############################################\n")
-        print("Simulation finished.")
-        # print("\n############################################\n")
+        print("main_debug.py - Simulation finished. Destroying simulation prototype.")
+        print("\n############################################\n")
+        destroy()
     elif operation == "destroy":
         print("\n############################################\n")
-        print("Destroying simulation prototype.")
+        print("main_debug.py - Destroying simulation debug prototype.")
         print("\n############################################\n")
         destroy()
         print("\n############################################\n")
-        print("Work done.\nCheck out running containers with 'docker ps'. \nCheck out if bridges were removed with 'ifconfig'.")
+        print("main_debug.py - Work done.\nCheck out running containers with 'docker ps'. \nCheck out if bridges were removed with 'ifconfig'.")
     else:
-        print("No args given. Choose operation mode ('setup' or 'destroy').")
+        print("main_debug.py - No args given. Choose operation mode ('setup' or 'destroy').")
 
-    print("Exiting main.py")
+    print("main_debug.py - Exiting.")
 
-
-################################################################################
-# Handle errors
-################################################################################
-def check_return_code(rcode, message):
-    if rcode == 0:
-        print("Success: %s \nTimestamp: %s" %
-              (message, datetime.datetime.now()))
-        return
-
-    print("Error: %s" % message)
-    sys.exit(2)
 
 ################################################################################
 # setup ()
@@ -107,15 +94,19 @@ def createDockerContainers():
 
     # If build param is set - build minimal Docker container (Ubuntu:20.04)
     if build:
-        #subprocess.run("docker build -t %s docker/debug/." %
-        #               baseContainer, shell=True, check=True)
+        subprocess.run("docker build -t %s ../docker/volumes/hmi/ ." %
+                       baseContainer, shell=True, check=True)
         
-        subprocess.run("docker build -t img_attacker docker/volumes/attacker/.", shell=True, check=True)
+        subprocess.run("docker build -t img_attacker ../docker/volumes/attacker/ .", shell=True, check=True)
 
-    # start up containers
-    for name in nodeNames:
-        subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/src --name %s %s' %
-                       (name, name, baseContainer), shell=True, check=True)
+    # M1
+    subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
+                    (nodeNames[0], nodeNames[0], baseContainer), shell=True, check=True)
+    # M2
+    subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
+                    (nodeNames[0], nodeNames[0], baseContainer), shell=True, check=True)    
+    # Attacker
+    subprocess.run('docker run --privileged -dit --net=none --name attacker img_attacker', shell=True, check=True)
 
 
 def createBridges():
@@ -134,7 +125,7 @@ def createBridges():
             text_file.write(str(pid, 'utf-8'))
 
         # Create bridges
-        subprocess.run("bash scripts/bridge_setup.sh %s %s" %
+        subprocess.run("bash ./bridge_setup_debug.sh %s %s" %
                        (nodeNames[i], nodeIPs[i]), shell=True, check=True)
 
     subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
@@ -142,64 +133,20 @@ def createBridges():
 
 def startNs3():
     subprocess.run("cd %s && ./ns3 run scratch/debug.cc" % (ns3_path), shell=True, check=True)
-    # subprocess.run("cd %s && ./ns3 run scratch/test.cc" % (ns3_path), shell=True, check=True)
-
-
-def setup_new():
-    # First, we build and start the docker containers
-    print("Creating docker containers.")
-    createDockerContainers()
-
-    # Second, we create the bridges, TAP interfaces and VETH tunnels
-    print("Setting up bridges.")
-    createBridges()
-
-    # Third, we have to start the ns3 network
-    print("Starting ns3.")
-    startNs3()
 
 
 def setup():
-    status = 0
+    # First, we build and start the docker containers
+    print("main_debug.py - Creating docker containers.")
+    createDockerContainers()
 
-    # If build param is set - build minimal Docker container (Ubuntu:20.04) with dummy script to keep container running
-    if build:
-        status = subprocess.call(
-            "docker build -t %s docker/." % baseContainer, shell=True, check=True)
-        check_return_code(
-            status, "Building minimal container %s" % baseContainer)
+    # Second, we create the bridges, TAP interfaces and VETH tunnels
+    print("main_debug.py - Setting up bridges.")
+    createBridges()
 
-    # start up containers
-    for name in nodeNames:
-        subprocess.run('docker run --privileged -dit --net=none -v "$(pwd)"/docker/volumes/%s:/ma/sim --name %s %s' %
-                       (name, name, baseContainer), shell=True, check=True)
-
-    check_return_code(status, "Running docker containers")
-
-    # create bridges and TAPs for NS3 & VETH interfaces for docker containers
-    if not os.path.exists(pidsDirectory):
-        os.makedirs(pidsDirectory)
-
-    for i in range(0, len(nodeNames)):
-        # save PID of container, we need it later to destroy them correctly (but maybe not, because docker might rm veth interfaces by default...)
-        cmd = ['docker', 'inspect', '--format',
-               "'{{ .State.Pid }}'", nodeNames[i]]
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        pid = out[1:-2].strip()
-        with open(pidsDirectory + nodeNames[i], "w") as text_file:
-            text_file.write(str(pid, 'utf-8'))
-
-        # Create bridges
-        subprocess.run("bash scripts/bridge_setup.sh %s %s" %
-                       (nodeNames[i], nodeIPs[i]), shell=True, check=True)
-
-    # deactivate bridge stuff
-    subprocess.run("bash scripts/bridge_end_setup.sh", shell=True, check=True)
-    check_return_code(status, "Creating bridges and interfaces")
-
-    return
+    # Third, we have to start the ns3 network
+    print("main_debug.py - Starting ns3.")
+    startNs3()
 
 
 ################################################################################
@@ -221,6 +168,7 @@ def destroy():
                 subprocess.run(
                     "rm -rf /var/run/netns/%s" % (text.strip()), shell=True, check=True)
 
+        # empty log files
         subprocess.run("rm -rf %s" %
                        (pidsDirectory + node), shell=True, check=True)
 

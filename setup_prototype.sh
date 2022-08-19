@@ -31,6 +31,7 @@ apt-get update && apt-get install -y suricata
 cp network_monitoring/suricata/suricata.yaml /etc/suricata/suricata.yaml
 cp network_monitoring/suricata/rules/local.rules /etc/suricata/rules/local.rules
 cp network_monitoring/wazuh_agent/ossec.conf /var/ossec/etc/ossec.conf
+cp network_monitoring/wazuh_agent/close_ssh.sh /var/ossec/active-response/bin/close_ssh.sh
 
 # Start suricata and wazuh
 systemctl daemon-reload
