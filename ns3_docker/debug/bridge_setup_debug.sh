@@ -24,10 +24,14 @@ VETH2=veth2-$NAME
 # Create bridge 
 sudo ip link add $BR_NAME type bridge
 sudo ip link set $BR_NAME promisc on
+sudo ip link set $BR_NAME up
 
 # create TAP interface for ns3
 sudo tunctl -t $TAP_NAME
 sudo ip link set $TAP_NAME promisc on
+# set up and attach TAP interface to the bridge 
+sudo ip link set $TAP_NAME master $BR_NAME
+sudo ip link set $TAP_NAME up
 
 # create VETH tunnel for connection to container 
 sudo ip link add $VETH1 type veth peer name $VETH2
@@ -44,14 +48,8 @@ sudo ln -s /proc/$PID/ns/net /var/run/netns/$PID
 sudo ip link set $VETH1 master $BR_NAME
 sudo ip link set $VETH2 netns $PID
 
-# attach TAP interface to the bridge
-sudo ip link set $TAP_NAME master $BR_NAME
-
 # start interfaces and bridge (on host side)
 sudo ip link set $VETH1 up
-sudo ip link set $TAP_NAME up
-sudo ip link set $BR_NAME up
-
 
 # Setup docker container network interface 
 sudo ip netns exec $PID ip link set dev $VETH2 name eth0
