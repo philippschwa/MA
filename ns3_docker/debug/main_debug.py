@@ -98,10 +98,10 @@ def createDockerContainers():
 
     # If build param is set - build minimal Docker container (Ubuntu:20.04)
     if build:
-        subprocess.run("docker build -t %s ../docker/volumes/hmi/ ." %
+        subprocess.run("docker build -t %s ../docker/volumes/hmi/." %
                        baseContainer, shell=True, check=True)
         
-        subprocess.run("docker build -t img_attacker ../docker/volumes/attacker/ .", shell=True, check=True)
+        subprocess.run("docker build -t img_attacker ../docker/volumes/attacker/.", shell=True, check=True)
 
     # M1
     subprocess.run('docker run --privileged -dit --net=none -v /home/caesar/MA/ns3_docker/docker/volumes/%s:/ma/src --name %s %s' %
