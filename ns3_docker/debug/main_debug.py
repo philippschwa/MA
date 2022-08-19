@@ -166,7 +166,7 @@ def destroy():
         # remove docker container
         subprocess.run("docker rm -f %s" % (node), shell=True, check=True)
         # remove bridge and taps
-        subprocess.run("bash ../scripts/bridge_destroy.sh %s" %
+        subprocess.run("bash ./bridge_destroy_debug.sh %s" %
                        (node), shell=True, check=True)
 
         if os.path.exists(pidsDirectory + node):
