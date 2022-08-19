@@ -79,7 +79,7 @@ def main():
         print("\n############################################\n")
 
         destroy()
-        
+
         print("\n############################################\n")
         print("main_debug.py - Work done.\nCheck out running containers with 'docker ps'. \nCheck out if bridges were removed with 'ifconfig'.")
     else:
@@ -163,7 +163,7 @@ def destroy():
         # remove docker container
         subprocess.run("docker rm -f %s" % (node), shell=True, check=True)
         # remove bridge and taps
-        subprocess.run("bash scripts/bridge_destroy.sh %s" %
+        subprocess.run("bash ../scripts/bridge_destroy.sh %s" %
                        (node), shell=True, check=True)
 
         if os.path.exists(pidsDirectory + node):
@@ -172,7 +172,6 @@ def destroy():
                 subprocess.run(
                     "rm -rf /var/run/netns/%s" % (text.strip()), shell=True, check=True)
 
-        # empty log files
         subprocess.run("rm -rf %s" %
                        (pidsDirectory + node), shell=True, check=True)
 
