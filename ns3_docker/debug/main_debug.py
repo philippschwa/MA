@@ -16,8 +16,10 @@ build = False
 debug = False
 
 # Node Configurations
-nodeNames = ["m1", "m2", "hmi", "attacker"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4"]
+#nodeNames = ["m1", "m2", "hmi", "attacker"]
+#nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4"]
+nodeNames = ["m1", "m2", "attacker"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3"]
 
 
 ################################################################################
@@ -110,7 +112,7 @@ def createDockerContainers():
     subprocess.run('docker run --privileged -dit --net=none --name m2 img_hmi_debug', shell=True, check=True)
 
     # HMI
-    subprocess.run('docker run --privileged -dit --net=none --name hmi img_hmi_debug', shell=True, check=True)
+    #subprocess.run('docker run --privileged -dit --net=none --name hmi img_hmi_debug', shell=True, check=True)
 
     # Attacker
     subprocess.run('docker run --privileged -dit --net=none --name attacker img_attacker', shell=True, check=True)
