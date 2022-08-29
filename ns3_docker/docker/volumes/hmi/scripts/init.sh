@@ -4,9 +4,6 @@
 service rsyslog start
 service ssh start
 
-# Start ARP Sniffer
-python3 ./arp_sniffer.py &
-
 # Write SSH logs to sshd.log
 tail -f /var/log/sshd.log | tee -a logs/sshd.log
 

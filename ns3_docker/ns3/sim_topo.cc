@@ -1,62 +1,5 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation;
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
 
-//
-// This is an illustration of how one could use virtualization techniques to
-// allow running applications on virtual machines talking over simulated
-// networks.
-//
-// The actual steps required to configure the virtual machines can be rather
-// involved, so we don't go into that here.  Please have a look at one of
-// our HOWTOs on the nsnam wiki for more details about how to get the
-// system confgured.  For an example, have a look at "HOWTO Use Linux
-// Containers to set up virtual networks" which uses this code as an
-// example.
-//
-// The configuration you are after is explained in great detail in the
-// HOWTO, but looks like the following:
-//
-//  +----------+                           +----------+
-//  |  Docker  |                           |  Docker  |
-//  |   Host   |                           |   Host   |
-//  |          |                           |          |
-//  |   eth0   |                           |   eth0   |
-//  +----------+                           +----------+
-//       |                                      |
-//  +----------+                           +----------+
-//  |  Linux   |                           |  Linux   |
-//  |  Bridge  |                           |  Bridge  |
-//  +----------+                           +----------+
-//       |                                      |
-//  +-------------+                      +--------------+
-//  | "tap-node1" |                      |"tap-attacker"|
-//  +-------------+                      +--------------+
-//       |           n0            n1           |
-//       |       +--------+    +--------+       |
-//       +-------|  tap   |    |  tap   |-------+
-//               | bridge |    | bridge |
-//               +--------+    +--------+
-//               |  CSMA  |    |  CSMA  |
-//               +--------+    +--------+
-//                   |             |
-//                   |             |
-//                   |             |
-//                   ===============
-//                      CSMA LAN
-//
 #include <iostream>
 #include <fstream>
 #include <array>
@@ -73,7 +16,7 @@ NS_LOG_COMPONENT_DEFINE("IIoT_Network_Simulation");
 
 int main(int argc, char *argv[])
 {
-  double SimulationTime = 1800.0;
+  double SimulationTime = 1200.0;
   int numNodes = 7;
   std::array<std::string, 7> tapNames{"tap-m1", "tap-m2", "tap-m3", "tap-m4", "tap-plc", "tap-hmi", "tap-attacker"};
 
@@ -90,10 +33,10 @@ int main(int argc, char *argv[])
   GlobalValue::Bind("SimulatorImplementationType", StringValue("ns3::RealtimeSimulatorImpl"));
   GlobalValue::Bind("ChecksumEnabled", BooleanValue(true));
   LogComponentEnable("IIoT_Network_Simulation", LOG_LEVEL_ALL);
+  
   //
   // Create the ghost nodes.
   //
-  // NS_LOG_INFO("Creating nodes...");
   NodeContainer nodes;
   nodes.Create(numNodes);
 
@@ -111,7 +54,6 @@ int main(int argc, char *argv[])
   // extended into ns-3.  The install method essentially bridges the specified
   // tap to the specified CSMA device.
   //
-  // NS_LOG_INFO("Installing tap-bridges...");
   TapBridgeHelper tapBridge;
   tapBridge.SetAttribute("Mode", StringValue("UseBridge"));
 
@@ -124,7 +66,7 @@ int main(int argc, char *argv[])
   //
   // Run the simulation for ten minutes
   //
-  NS_LOG_INFO("Starting virutal network simulation. By default it is up for 30 minutes.");
+  NS_LOG_INFO("Starting virutal network simulation. By default it is up for 60 minutes.");
   Simulator::Stop(Seconds(SimulationTime));
   Simulator::Run();
   Simulator::Destroy();

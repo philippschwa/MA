@@ -23,7 +23,6 @@ VETH2=veth2-$NAME
 
 # Create bridge 
 sudo ip link add $BR_NAME type bridge
-# sudo ip link set $BR_NAME promisc on
 sudo ip link set $BR_NAME up
 
 # create TAP interface for ns3
@@ -35,8 +34,6 @@ sudo ip link set $TAP_NAME up
 
 # create VETH tunnel for connection to container 
 sudo ip link add $VETH1 type veth peer name $VETH2
-# sudo ip link set $VETH1 promisc on
-# delete with ip link delete <ifname>
 
 # link PID of container to netns, in order to use netns
 PID=$(docker inspect --format '{{ .State.Pid }}' $NAME)

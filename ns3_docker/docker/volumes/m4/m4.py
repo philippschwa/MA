@@ -7,8 +7,10 @@ import time
 import random
 import logging as log
 
+NAME="M4"
+IP = "123.100.10.4"
+
 PLC_IP = "123.100.20.1"
-M4_IP = "123.100.10.4"
 PLC_PORT = 5005
 BUFFER_SIZE = 1024
 PROCESS_TIME = 20
@@ -25,24 +27,25 @@ def clean_component():
 
     if random.randint(0, 1000) % 100 < 98:
         print("[m4] -- Finished cleaning. Informing PLC.")
-        log.info("M4 %s -> %s: Finished cleaning. Informing PLC.", M4_IP, PLC_IP)
+        log.info("%s %s -> %s: Finished cleaning. Informing PLC.", NAME, 
+        IP, PLC_IP)
         return "set_result=True"
     else:
         print("[m4] -- Cleaning failed. Informing PLC.")
-        log.error("M4 %s -> %s: Cleaning failed. Informing PLC.", M4_IP, PLC_IP)
+        log.error("%s %s -> %s: Cleaning failed. Informing PLC.", NAME, 
+        IP, PLC_IP)
         return "set_result=False"
 
 
 def inform_plc(msg):
     try:
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        soc.connect((PLC_IP, 5005))
-        soc.send(msg.encode())
+        soc.connect((PLC_IP, PLC_PORT))
+        soc.send(msg.encode())  
 
     except ConnectionError:
-        #time.sleep(5)
-        #inform_machine(ip)
-        log.error("M4 %s -> %s: PLC not reachable.", M4_IP, PLC_IP)
+        log.error("%s %s -> %s: PLC not reachable.", NAME, 
+        IP, PLC_IP)
         time.sleep(5)
         inform_plc(msg)
 
@@ -57,7 +60,8 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[m4] -- Received message: " + msg)
-        log.info("M4 %s -> %s: Received message: %s", addr[0], M4_IP, msg)
+        log.info("%s %s -> %s: Received message: %s", NAME, addr[0], 
+        IP, msg)
 
         if addr[0] == PLC_IP and msg == "can_produce=True":
             ret_msg = clean_component()
@@ -73,7 +77,7 @@ def handle_conn(con, addr):
 def main():
     # Setup logging
     log.basicConfig(filename='./src/logs/m4.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
-    log.info("M4 123.100.10.4 -> 123.100.10.4: Starting up. Waiting for connections.")
+    log.info("%s %s -> %s: Starting up. Waiting for connections."%(NAME, IP, IP))
 
     host = ''
 

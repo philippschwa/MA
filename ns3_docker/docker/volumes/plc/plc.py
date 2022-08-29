@@ -1,38 +1,36 @@
 #!/usr/bin/python3
 
-
 import socket
-import sys
 import threading
 import logging as log
 import time
 
 
+IP = "123.100.20.1"
+NAME = "PLC"
+
 # Node Configurations
-nodeNames = ["m1", "m2", "m3", "m4", "plc", "attacker"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3",
-           "123.100.10.4", "123.100.20.1", "123.100.30.1"]
+nodeNames = ["M1", "M2", "M3", "M4"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4"]
 
 
-def inform_machine(ip):
+def inform_machine(next_ip):
     try:
         print("[PLC] -- Informing next machine.")
-        log.info("PLC %s -> %s: Informing next machine.", nodeIPs[4], ip)
+        log.info("%s %s -> %s: Informing next machine.", NAME, IP, next_ip)
         msg = "can_produce=True"
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        soc.connect((ip, 5005))
+        soc.connect((next_ip, 5005))
         soc.send(msg.encode())
     
     except ConnectionError:
-        #time.sleep(5)
-        #inform_machine(ip)
-        log.error("PLC %s -> %s: Machine not reachable. Retrying in 5 seconds.", nodeIPs[4], ip)
+        log.error("%s %s -> %s: Machine not reachable. Retrying in 5 seconds.", NAME, IP, next_ip)
         time.sleep(5)
         inform_machine(msg)
 
     finally:
-        print("[PLC] -- Closing connection with " + ip)
+        print("[PLC] -- Closing connection with " + next_ip)
         soc.close()
 
 
@@ -47,7 +45,7 @@ def handle_conn(con, addr):
             con.close()
             return
         print("[PLC] -- Received message: " + msg)
-        log.info("PLC %s -> %s: Received message: %s", addr[0], nodeIPs[4], msg)
+        log.info("%s %s -> %s: Received message: %s", NAME, addr[0], IP, msg)
         
         # Inform next machine to start working
         if msg == "set_result=True":
@@ -59,13 +57,13 @@ def handle_conn(con, addr):
                 next_machine = nodeIPs[3]
             elif addr[0] == nodeIPs[3]:
                 print("[PLC] -- Process finished. Starting with next component.")
-                log.info("PLC 123.100.20.1 -> 123.100.20.1: Process finished. Starting with next component.") 
+                log.info("%s %s -> %s: Process finished. Starting with next component.", NAME, IP, nodeIPs[0]) 
                 next_machine = nodeIPs[0] 
 
         # If error message received, PLC informs technician and tells m1 to start with the next component
         elif msg == "set_result=False":
-            print("[PLC] -- Recived Error Code. Discarding component and informing technician.")
-            log.error("PLC %s -> %s: Received error. Discarding component and informing technician.", addr[0], nodeIPs[4])
+            print("[PLC] -- Received Error Code. Discarding component and informing technician.")
+            log.error("%s %s -> %s: Received error. Discarding component and informing technician.", NAME, addr[0], IP)
             time.sleep(5)
             print("[PLC] -- Informing machine 1.")
             next_machine = nodeIPs[0]
@@ -83,9 +81,10 @@ def handle_conn(con, addr):
 def main():
     # Setup logging
     log.basicConfig(filename='./src/logs/plc.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
-    log.info("PLC 123.100.20.1 -> 123.100.20.1: Starting up. Waiting for connections.")
+    log.info("%s %s -> %s: Starting up. Waiting for connections."%(NAME, IP, IP))
+    
     time.sleep(30)
-    log.info("PLC 123.100.20.1 -> 123.100.20.1: Waited 30 seconds.")
+    log.info("%s %s -> %s: Waited 30 seconds.", NAME, IP, IP)
     host = ''
     port = 5005
 

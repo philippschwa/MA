@@ -2,7 +2,6 @@
 
 from scapy.all import *
 import logging as log
-import time
 
 global known_mac_adresses
 known_mac_adresses = {}
@@ -55,6 +54,3 @@ def parse_packet(pkt):
 
 print("ARP sniffer started.")
 pkts = sniff(iface="br-hmi", filter="arp", prn=lambda x: parse_packet(x))
-#pkts = sniff(iface="eth0", filter="icmp and arp", prn=lambda x: parse_packet(x))
-#pkts = sniff(prn=lambda x: parse_packet(x))
-#pkts.summary()

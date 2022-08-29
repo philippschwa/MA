@@ -14,7 +14,7 @@ debug = False
 # Node Configurations
 nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi", "attacker"]
 nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.20.1", "123.100.30.1", "123.100.30.2"]
-#nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.10.5", "123.100.10.6"]
+
 
 ################################################################################
 # main ()
@@ -25,18 +25,15 @@ def main():
     global ns3_path
 
     # Parse commandline arguments
-    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Run this program if you want to perform a network simulation. The simulator has been developed as part of my masters thesis. For more information visit the GitHub project. You can choose two execution modes: 'setup', 'destroy'. \
-            'setup' starts the docker containers, creates necessary bridges and configures the network. \
-            'destroy' removes all created containers and bridges.")
+    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Run this program if you want to perform a network simulation. The simulator has been developed as part of my masters thesis. For more information visit the GitHub project (https://github.com/). \
+            You can choose two execution modes: 'setup', 'destroy'. 'setup' starts the docker containers, creates necessary bridges and \
+            configures the network. The network is up for 30 minutes. The 'destroy' mode removes all created containers and bridges.")
 
     parser.add_argument("mode", action="store",
                         help="The name of the operation to perform, available options: 'setup' or 'destroy'")
 
     parser.add_argument("-b", "--build", action="store",
                         help="Build docker image. Default value is 'False', set '-b True' if the image should be build.")
-
-    parser.add_argument("-d", "--debug", action="store",
-                        help="Enable debugging.")
 
     parser.add_argument("-p", "--ns3_path", action="store",
                         help="Provide custom path to ns3 executable.")

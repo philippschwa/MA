@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# This file basically destroys the network bridges and TAP interfaces
 if [ -z "$1" ]; then
     echo "bridge_destroy.sh --- No name supplied"
     exit 1

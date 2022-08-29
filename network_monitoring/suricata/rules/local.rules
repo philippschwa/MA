@@ -1,15 +1,12 @@
 
 # Test rule from Michael
-alert ip any any -> any any (msg:"TEST"; flow:established,to_server; sid:9000001;rev:1;)
+# alert ip any any -> any any (msg:"TEST"; flow:established,to_server; sid:9000001;rev:1;)
 
 # DoS detection 
-alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"Inbound packet flood, potential DOS - RUN FOR YOUR LIVES!!"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000002;)
-alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"Outbound packet flood, potential DOS - RUN FOR YOUR LIVES!!"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000003;)
-alert tcp $HOME_NET any -> $HOME_NET any (msg:"Internal packet flood, potential DOS - RUN FOR YOUR LIVES!!"; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000004;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"Inbound packet flood, potential DOS attack."; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000002;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"Outbound packet flood, potential DOS attack."; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000003;)
+alert tcp $HOME_NET any -> $HOME_NET any (msg:"Internal packet flood, potential DOS attack."; flow:to_server; flags: S,12; threshold: type both, track by_dst, count 5000, seconds 5; classtype:misc-activity; sid:9000004;)
 
 
 # detection of nmap SYN scap: nmap -sS -F <target_ip> 
 alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"Inbound SYNSTEALTH SCAN DETECTED"; flow:stateless; flags:S,12; reference:arachnids,198; classtype:attempted-recon; priority:5; rev:8; threshold:type threshold, track by_src, count 50, seconds 1;sid:9000005;)
-
-
-# Andere Regeln..

