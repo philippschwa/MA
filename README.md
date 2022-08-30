@@ -2,15 +2,10 @@
 
 ## Description
 
-SIEM systems are already in use as part of the Security Operations Center (SOC) within
-the organizations overall security strategy. They offer comprehensive security analyses
-and enable SIEM analysts to secure the network more efficiently. In the context of the
-IIoT , cyber-attacks are becoming more complex and using more points of attack, which
-is why a holistic view of enterprise security is crucial [VGD+21](https://link.springer.com/chapter/10.1007/978-3-030-81242-3_17).
+SIEM systems are already in use as part of the Security Operations Center (SOC) within the organizations overall security strategy. They offer comprehensive security analyses and enable SIEM analysts to secure the network more efficiently. In the context of the IIoT, cyber-attacks are becoming more complex and using more points of attack, which is why a holistic view of enterprise security is crucial [[VGD+21](https://link.springer.com/chapter/10.1007/978-3-030-81242-3_17)].
 
-This project simulates an IIoT network. The network is simulated using the open source 
-[ns3](https://www.nsnam.org/) sofware. Within the project various attacks on different 
-nodes are implemented. With the help of Wazuh and Suricata the attack detection is performed.
+Applying SIEM to IIoT applications poses a promising approach to enhance cyber security. This work proposes a prototypical implementation of an IIoT network simulator and demonstrates the application of SIEM systems in the IIoT. To demonstrate the convenience of the SIEM, three use cases are implemented. The use cases represent various cyber attacks on the simulated network. Based on the attacks, it is shown how a SIEM system can be adapted to the IIoT to detect cyber attacks. In the long term, an IIoT network can thus be incorporated into the enterprise-wide security infrastructure. 
+
 
 ## Architecture
 
@@ -18,6 +13,7 @@ The architecture of the protoype consists of three main building blocks:
 - The **Virtual Environment** represents the simulation environment of the prototype. Here, the IIoT network is simulated and the attacks are executed. For the virtual network [ns-3](https://www.nsnam.org/) is used. The IIoT devices are implemented through Docker containers.
 - The **Network Monitoring** module monitors the virtual environments and informs the SIEM about alerts. 
 - The **SIEM** system is realized with the open source security platform [Wazuh](https://wazuh.com/)
+
 
 
 ## Installation (on Ubuntu 20.04 LTS)
