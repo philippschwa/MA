@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 
 import socket
-import sys
 import threading
 import time
 import random
 import logging as log
 
-NAME="M1"
+NAME="M2"
 IP = "123.100.10.2"
 PLC_IP = "123.100.20.1"
 PLC_PORT = 5005

@@ -178,8 +178,8 @@ def destroy():
 
         # clear logs (Attacker has no logs)
         if node != nodeNames[6]:
-            subprocess.run("> docker/volumes/%s/logs/*.log" %
-                       (node), shell=True, check=True)
+            subprocess.run("> docker/volumes/%s/logs/%s.log" %
+                       (node, node), shell=True, check=True)
     
     subprocess.run("rm -rf var", shell=True, check=True)
 
