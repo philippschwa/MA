@@ -116,7 +116,7 @@ sudo python3 arp_sniffer.py
 ```
 
 #### 4. Use
-After everything is up and running, the prototype is fully functionell. The Cyber-attacks can be launched from the attacker container. To connect to any container use:
+After everything is up and running, the prototype is fully functional. The Cyber-attacks can be launched from the attacker container. To connect to any container use:
 ```bash
 docker exec -it <container-name> bash
 ```
