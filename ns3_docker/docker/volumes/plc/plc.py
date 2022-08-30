@@ -81,8 +81,9 @@ def handle_conn(con, addr):
 def main():
     # Setup logging
     log.basicConfig(filename='./src/logs/plc.log', format='machinelog %(levelname)s %(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=log.DEBUG)
-    log.info("%s %s -> %s: Starting up. Waiting for connections."%(NAME, IP, IP))
+    log.info("%s %s -> %s: Starting up."%(NAME, IP, IP))
     
+    # Sleep, to give other containers the chance to start up
     time.sleep(30)
     log.info("%s %s -> %s: Waited 30 seconds.", NAME, IP, IP)
     host = ''
