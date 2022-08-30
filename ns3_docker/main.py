@@ -9,11 +9,11 @@ baseContainer = 'img_alp_machines'
 pidsDirectory = "./var/pid/"
 ns3_path = "/home/caesar/MA/ns-3-allinone/ns-3.36"
 build = False
-debug = False
 
 # Node Configurations
 nodeNames = ["m1", "m2", "m3", "m4", "plc", "hmi", "attacker"]
-nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", "123.100.20.1", "123.100.30.1", "123.100.30.2"]
+nodeIPs = ["123.100.10.1", "123.100.10.2", "123.100.10.3", "123.100.10.4", 
+        "123.100.20.1", "123.100.30.1", "123.100.30.2"]
 
 
 ################################################################################
@@ -25,7 +25,8 @@ def main():
     global ns3_path
 
     # Parse commandline arguments
-    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Run this program if you want to perform a network simulation. The simulator has been developed as part of my masters thesis. For more information visit the GitHub project (https://github.com/). \
+    parser = argparse.ArgumentParser(description="IIoT Network Simulator -- Run this program if you want to perform a network simulation. \
+            The simulator has been developed as part of my masters thesis. For more information visit the GitHub project. \
             You can choose two execution modes: 'setup', 'destroy'. 'setup' starts the docker containers, creates necessary bridges and \
             configures the network. The network is up for 30 minutes. The 'destroy' mode removes all created containers and bridges.")
 
@@ -66,7 +67,7 @@ def main():
         print("\n############################################\n")
 
         destroy()
-        
+
         print("\n############################################\n")
         print("Work done.\nCheck out running containers with 'docker ps'. \nCheck out if bridges were removed with 'ifconfig'.")
     else:
@@ -93,8 +94,9 @@ def createDockerContainers():
 
         subprocess.run(
             "docker build -t img_hmi docker/volumes/hmi/.", shell=True, check=True)
-        
-        subprocess.run("docker build -t img_attacker docker/volumes/attacker/.", shell=True, check=True)
+
+        subprocess.run(
+            "docker build -t img_attacker docker/volumes/attacker/.", shell=True, check=True)
 
     # start up containers
     for name in nodeNames:
@@ -140,6 +142,7 @@ def startNs3():
     subprocess.run("cd %s && ./ns3 run scratch/sim_topo.cc" %
                    (ns3_path), shell=True, check=True)
 
+
 def setup():
     # First, we build and start the docker containers
     print("Creating docker containers.")
@@ -179,8 +182,8 @@ def destroy():
         # clear logs (Attacker has no logs)
         if node != nodeNames[6]:
             subprocess.run("> docker/volumes/%s/logs/%s.log" %
-                       (node, node), shell=True, check=True)
-    
+                           (node, node), shell=True, check=True)
+
     subprocess.run("rm -rf var", shell=True, check=True)
 
 
