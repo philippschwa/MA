@@ -18,7 +18,7 @@ RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 admin
 RUN echo 'admin:nimda' | chpasswd
 
 # Copy Scripts and Configs
-COPY scripts/* /ma/
+COPY scripts/init.sh /ma/
 COPY config/log.conf /etc/ssh/sshd_config.d
 COPY config/sshd.conf /etc/rsyslog.d/sshd.conf
 
