@@ -14,7 +14,7 @@ The architecture of the protoype consists of three main building blocks:
 - The **Network Monitoring** module monitors the virtual environments and informs the SIEM about alerts. 
 - The **SIEM** system is realized with the open source security platform [Wazuh](https://wazuh.com/)
 
-![My animated logo](4_Architecture.pdf)
+![Architecutre](Architecture.png)
 
 ## Installation (on Ubuntu 20.04 LTS)
 
