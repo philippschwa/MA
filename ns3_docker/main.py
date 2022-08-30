@@ -44,8 +44,6 @@ def main():
 
     if args.build:
         build = args.build
-    elif args.debug:
-        debug = True
     elif args.ns3_path:
         ns3_path = args.ns3_path
     operation = args.mode

@@ -35,7 +35,7 @@ Run as sudo:
 ```bash
 apt-get update -y && apt-get upgrade -y
 apt install -y g++ python3 python3-pip cmake python3-setuptools git \
-  tcpdump uml-utilities bridge-utils jq iproute2
+  tcpdump uml-utilities bridge-utils jq iproute2 net-tools
 ```
 
 #### 4. Install and build ns3 (version 3.36)
@@ -51,6 +51,13 @@ cd ns-3-allinone
 ./download.py -n ns-3.36 
 ./build.py
 ```
+
+Copy custom ns3 files and build virtual network
+```bash
+cp ns3_docker/ns3/ns3 ns-3-allinone/ns-3.36/ns3
+cp ns3_docker/ns3/sim_topo.cc ns-3-allinone/ns-3.36/scratch/sim_topo.cc
+./ns-3-allinone/ns-3.36/ns3 build scratch/sim_topo.cc
+``` 
 
 #### 5. Install Suricata and Wazuh agent
 Install Wazuh Agent (see also [Wazuh's](https://documentation.wazuh.com/current/installation-guide/wazuh-agent/wazuh-agent-package-linux.html) official documentation)
@@ -70,20 +77,20 @@ apt-get update && apt-get install -y suricata
 ```
 Copy custom config files
 ```bash
-cp docker-ns3-tap/config/suricata.yaml /etc/suricata/suricata.yaml
-cp docker-ns3-tap/config/ossec.conf /var/ossec/etc/ossec.conf
-cp docker-ns3-tap/rules/ /etc/suricata/rules/
+cp network_monitoring/suricata/suricata.yaml /etc/suricata/suricata.yaml
+cp network_monitoring/suricata/rules/local.rules /etc/suricata/rules/local.rules
+cp network_monitoring/wazuh_agent/ossec.conf /var/ossec/etc/ossec.conf
+cp network_monitoring/wazuh_agent/close_ssh.sh /var/ossec/active-response/bin/close_ssh.sh
 ```
 Enable Wazuh and Suricata service
 ```bash
 systemctl daemon-reload
 systemctl enable suricata
 systemctl enable wazuh-agent
-#systemctl start wazuh-agent
-#systemctl start suricata
+systemctl start wazuh-agent
 ```
 
-#### 6. Enjoy. All dependencies are installed.
+#### 6. Enjoy. All dependencies are installed. The simulation prototype is ready to use. 
 
 ## Usage
 
@@ -106,6 +113,16 @@ sudo service wazuh-agent status
 To start Suricata for network monitoring, execute:
 ```bash
 sudo suricata -i br-plc
+```
+The ARP Spoof detection can be started with:
+```bash
+sudo python3 arp_sniffer.py
+```
+
+#### 4. Use
+After everything is up and running, the prototype is fully functionell. The Cyber-attacks can be launched from the attacker container. To connect to any container use:
+```bash
+docker exec -it <container-name> bash
 ```
 
 
