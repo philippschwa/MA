@@ -121,5 +121,9 @@ After everything is up and running, the prototype is fully functionell. The Cybe
 docker exec -it <container-name> bash
 ```
 
-
-
+The Wazuh dashboard can be accessed from a Web Browser. You need to add the certificate in order to access the dashboard. The address is:
+```bash
+https://192.168.2.173:443
+User: admin
+Pw: SecretPassword
+```
