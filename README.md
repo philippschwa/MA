@@ -2,7 +2,7 @@
 
 ## Description
 
-SIEM systems are already in use as part of the Security Operations Center (SOC) within the organizations overall security strategy. They offer comprehensive security analyses and enable SIEM analysts to secure the network more efficiently. In the context of the IIoT, cyber-attacks are becoming more complex and using more points of attack, which is why a holistic view of enterprise security is crucial [[VGD+21](https://link.springer.com/chapter/10.1007/978-3-030-81242-3_17)].
+SIEM systems are already in use as part of the Security Operations Center (SOC) within the organizations overall security strategy. They offer comprehensive security analyses and enable SIEM analysts to secure the network more efficiently. In the context of the IIoT, cyber-attacks are becoming more complex and using more points of attack, which is why a holistic view of enterprise security is crucial. [[VGD+21](https://link.springer.com/chapter/10.1007/978-3-030-81242-3_17)]
 
 Applying SIEM to IIoT applications poses a promising approach to enhance cyber security. This work proposes a prototypical implementation of an IIoT network simulator and demonstrates the application of SIEM systems in the IIoT. To demonstrate the convenience of the SIEM, three use cases are implemented. The use cases represent various cyber attacks on the simulated network. Based on the attacks, it is shown how a SIEM system can be adapted to the IIoT to detect cyber attacks. In the long term, an IIoT network can thus be incorporated into the enterprise-wide security infrastructure. 
 
